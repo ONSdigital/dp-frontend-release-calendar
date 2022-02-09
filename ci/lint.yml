@@ -1,0 +1,15 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: latest
+
+inputs:
+  - name: dp-frontend-release-calendar
+
+run:
+  path: dp-frontend-release-calendar/ci/scripts/lint.sh
