@@ -1,0 +1,18 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: 1.17.6
+
+inputs:
+  - name: dp-frontend-release-calendar
+
+caches:
+  - path: go/
+
+run:
+  path: dp-frontend-release-calendar/ci/scripts/unit.sh
