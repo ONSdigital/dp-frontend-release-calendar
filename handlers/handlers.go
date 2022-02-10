@@ -1,19 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/log.go/v2/log"
 )
-
-// ClientError is an interface that can be used to retrieve the status code if a client has errored
-type ClientError interface {
-	Error() string
-	Code() int
-}
 
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
@@ -26,30 +19,30 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 }
 
-// TODO: remove hello world example handler
-// HelloWorld Handler
-func HelloWorld(cfg config.Config) http.HandlerFunc {
+func ReleaseSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		helloWorld(w, req, cfg)
+		releaseSample(w, req, rc, cfg)
 	}
 }
 
-func helloWorld(w http.ResponseWriter, req *http.Request, cfg config.Config) {
+func releaseSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
 	ctx := req.Context()
-	greetingsModel := mapper.HelloModel{Greeting: "Hello", Who: "World"}
-	m := mapper.HelloWorld(ctx, greetingsModel, cfg)
+	basePage := rc.NewBasePageModel()
+	m := mapper.CreateRelease(ctx, basePage, cfg)
 
-	b, err := json.Marshal(m)
-	if err != nil {
-		setStatusCode(req, w, err)
-		return
-	}
+	rc.BuildPage(w, m, "release")
+}
 
-	_, err = w.Write(b)
-	if err != nil {
-		log.Error(ctx, "failed to write bytes for http response", err)
-		setStatusCode(req, w, err)
-		return
+func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		calendarSample(w, req, rc, cfg)
 	}
-	return
+}
+
+func calendarSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
+	ctx := req.Context()
+	basePage := rc.NewBasePageModel()
+	m := mapper.CreateCalendar(ctx, basePage, cfg)
+
+	rc.BuildPage(w, m, "calendar")
 }

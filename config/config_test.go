@@ -20,12 +20,13 @@ func TestConfig(t *testing.T) {
 			})
 
 			Convey("Then the values should be set to the expected defaults", func() {
+				So(cfg.Debug, ShouldBeFalse)
 				So(cfg.BindAddr, ShouldEqual, ":27700")
+				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/613c855")
+				So(cfg.SupportedLanguages, ShouldResemble, []string{"en", "cy"})
 				So(cfg.GracefulShutdownTimeout, ShouldEqual, 5*time.Second)
 				So(cfg.HealthCheckInterval, ShouldEqual, 30*time.Second)
 				So(cfg.HealthCheckCriticalTimeout, ShouldEqual, 90*time.Second)
-				// TODO: Remove assertion once configuration variable has been removed from config.go
-				So(cfg.HelloWorldEmphasise, ShouldEqual, true)
 			})
 
 			Convey("Then a second call to config should return the same config", func() {

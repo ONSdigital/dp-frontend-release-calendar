@@ -1,5 +1,7 @@
 package mapper
 
+// TODO: add tests when final mappers are created
+/*
 import (
 	"context"
 	"testing"
@@ -31,3 +33,4 @@ func TestUnitMapper(t *testing.T) {
 		So(hw.HelloWho, ShouldEqual, "Hello World!")
 	})
 }
+*/
