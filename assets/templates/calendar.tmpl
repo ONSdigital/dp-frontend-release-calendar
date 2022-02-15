@@ -1,15 +1,15 @@
 <div class="ons-page__container ons-container">
     <div class="ons-grid ons-u-ml-no">
-        {{ template "partials/breadcrumb" . }}
         <h1 class="ons-u-fs-xxxl ons-u-mt-s">{{ .Page.Metadata.Title }}</h1>
 
-        {{range .CalendarPagination.CalendarItem }}
-            <h2>
-            {{ .Description.Title }}
-            </h2>
-            <h2>
-            {{ .Description.Summary }}
-            </h2>
-        {{end}}
+        <div class="ons-grid__col ons-col-4@m" style="padding: 0">
+            <!-- <div class="ons-pl-grid-col">Left</div> -->
+            {{ template "partial-filters" . }}
+        </div>
+
+        <div class="ons-grid__col ons-col-8@m">
+            <!-- <div class="ons-pl-grid-col">Right</div> -->
+            {{ template "partial-calendar-items" . }}
+        </div>
     </div>
 </div>
