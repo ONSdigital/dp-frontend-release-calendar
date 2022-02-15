@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"time"
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
@@ -28,23 +29,43 @@ func CreateCalendar(ctx context.Context, basePage coreModel.Page, cfg config.Con
 	calendar.Metadata.Title = "Test Release Calendar"
 
 	item1 := model.CalendarItem{
-		URL:         "localhost",
-		Title:       "title1",
-		Description: "description1",
+		URI:            "/releases/title1",
+		Title:          "Title 1",
+		Summary:        "A summary for Title 1",
+		ReleaseDate:    time.Now().AddDate(0, 0, -10),
+		Published:      true,
+		Cancelled:      false,
+		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+		NextRelease:    "To be announced",
 	}
 
 	item2 := model.CalendarItem{
-		URL:         "localhost",
-		Title:       "title2",
-		Description: "description2",
+		URI:            "/releases/title2",
+		Title:          "Title 2",
+		Summary:        "A summary for Title 2",
+		ReleaseDate:    time.Now().AddDate(0, 0, -15),
+		Published:      false,
+		Cancelled:      true,
+		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+	}
+
+	item3 := model.CalendarItem{
+		URI:            "/releases/title3",
+		Title:          "Title 3",
+		Summary:        "A summary for Title 3",
+		ReleaseDate:    time.Now().AddDate(0, 0, 5),
+		Published:      false,
+		Cancelled:      false,
+		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 	}
 
 	calendar.CalendarPagination.CurrentPage = 1
 	calendar.CalendarPagination.TotalPages = 100
 	calendar.CalendarPagination.Limit = 10
-	calendar.CalendarPagination.CalendarItem = make([]model.CalendarItem, 2)
+	calendar.CalendarPagination.CalendarItem = make([]model.CalendarItem, 3)
 	calendar.CalendarPagination.CalendarItem[0] = item1
 	calendar.CalendarPagination.CalendarItem[1] = item2
+	calendar.CalendarPagination.CalendarItem[2] = item3
 
 	return calendar
 }

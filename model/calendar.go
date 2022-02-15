@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
@@ -12,9 +14,14 @@ type CalendarPagination struct {
 }
 
 type CalendarItem struct {
-	URL         string `json:"url"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	URI            string         `json:"uri"`
+	Title          string         `json:"title"`
+	Summary        string         `json:"summary"`
+	ReleaseDate    time.Time      `json:"releaseDate"`
+	Published      bool           `json:"published"`
+	Cancelled      bool           `json:"cancelled"`
+	ContactDetails ContactDetails `json:"contact_details"`
+	NextRelease    string         `json:"nextRelease"`
 }
 
 type Calendar struct {
