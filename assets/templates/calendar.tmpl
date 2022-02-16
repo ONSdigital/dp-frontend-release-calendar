@@ -2,13 +2,13 @@
     <div class="ons-grid ons-u-ml-no">
         <h1 class="ons-u-fs-xxxl ons-u-mt-s">{{ .Page.Metadata.Title }}</h1>
 
+        <!-- Left column -->
         <div class="ons-grid__col ons-col-4@m" style="padding: 0">
-            <!-- <div class="ons-pl-grid-col">Left</div> -->
             {{ template "partial-filters" . }}
         </div>
 
+        <!-- Right column -->
         <div class="ons-grid__col ons-col-8@m">
-            <!-- <div class="ons-pl-grid-col">Right</div> -->
             {{ template "partial-calendar-items" . }}
         </div>
     </div>
