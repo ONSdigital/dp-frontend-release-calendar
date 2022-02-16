@@ -11,7 +11,17 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 )
 
-const SixteensVersion = "77f1d9b"
+func CreatePreviousReleases(_ context.Context, basePage coreModel.Page, _ config.Config) model.PreviousReleases {
+	previousReleases := model.PreviousReleases{
+		Page: basePage,
+	}
+
+	previousReleases.BetaBannerEnabled = true
+	previousReleases.Metadata.Title = "Personal well-being in the UK, quarterly: July 2021 to September 2021"
+	previousReleases.ContactDetails.Name = "Test contact name"
+
+	return previousReleases
+}
 
 func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
 	result := model.Release{
@@ -50,7 +60,6 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 		})
 	}
 
-	result.FeatureFlags.SixteensVersion = SixteensVersion
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
@@ -73,7 +82,6 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	calendar := model.Calendar{
 		Page: basePage,
 	}
-	calendar.FeatureFlags.SixteensVersion = SixteensVersion
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = "Release Calendar"
 
