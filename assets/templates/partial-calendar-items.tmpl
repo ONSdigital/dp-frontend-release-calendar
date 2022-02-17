@@ -1,42 +1,42 @@
 <div class="ons-pl-grid-col">
-    <div>
-        <label class="ons-label" for="select-calendar-item-order">Sort by</label>
-        <select
-            id="select-calendar-item-order"
-            name="select-calendar-item-order"
-            class="ons-input ons-input--select"
+  <div>
+    <label class="ons-label" for="select-calendar-item-order">Sort by</label>
+    <select
+      id="select-calendar-item-order"
+      name="select-calendar-item-order"
+      class="ons-input ons-input--select"
+    >
+      <option value="date-newest">Date (Newest)</option>
+      <option value="date-oldest">Date (Oldest)</option>
+      <option value="alphabetical-az">Alphabetical (A-Z)/option>
+      <option value="alphabetical-za">Alphabetical (Z-A)</option>
+    </select>
+  </div>
+  <ul style="list-style: none; padding: 0">
+    {{range .CalendarPagination.CalendarItem }}
+      <li style="margin-top: 36px">
+        <a
+          href="{{ .URL }}"
+          class="ons-u-fs-l"
+          style="text-decoration: none; display: block"
         >
-            <option value="date-newest">Date (Newest)</option>
-            <option value="date-oldest">Date (Oldest)</option>
-            <option value="alphabetical-az">Alphabetical (A-Z)/option>
-            <option value="alphabetical-za">Alphabetical (Z-A)</option>
-        </select>
-    </div>
-    <ul style="list-style: none; padding: 0">
-        {{range .CalendarPagination.CalendarItem }}
-            <li style="margin-top: 36px">
-                <a
-                    href="{{ .URL }}"
-                    class="ons-u-fs-l"
-                    style="text-decoration: none; display: block"
-                >
-                    {{ .Title }}
-                </a>
-                <div style="margin-top: 18px">
-                    <span class="ons-u-fs-r--b">Release date:</span>
-                    <span>{{ .ReleaseDate }}</span>
-                    <span>|</span>
-                    <span>{{ .ReleaseState }}</span>
-                </div>
-            </li>
-        {{end}}
-    </ul>
-    
-    {{ template "partial-calendar-items-pagination" .}}
+          {{ .Title }}
+        </a>
+        <div style="margin-top: 18px">
+          <span class="ons-u-fs-r--b">Release date:</span>
+          <span>{{ .ReleaseDate }}</span>
+          <span>|</span>
+          <span>{{ .ReleaseState }}</span>
+        </div>
+      </li>
+    {{end}}
+  </ul>
 
-    <ul class="ons-u-fs-s" style="list-style: none; padding: 0; margin-top: 23px; padding-top: 18px; border-top: 1px solid #BCBCBD">
-        <li style="display: inline-block"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C4;</span>RSS feed</a></li>
-        <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x26A0;</span>Email alerts</a></li>
-        <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C5;</span>Add to your calendar (ICS)</a></li>
-    </ul>
+  {{ template "partial-calendar-items-pagination" .}}
+
+  <ul class="ons-u-fs-s" style="list-style: none; padding: 0; margin-top: 23px; padding-top: 18px; border-top: 1px solid #BCBCBD">
+    <li style="display: inline-block"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C4;</span>RSS feed</a></li>
+    <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x26A0;</span>Email alerts</a></li>
+    <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C5;</span>Add to your calendar (ICS)</a></li>
+  </ul>
 </div>
