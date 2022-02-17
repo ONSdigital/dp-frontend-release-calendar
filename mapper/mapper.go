@@ -9,6 +9,8 @@ import (
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
+const SixteensVersion = "77f1d9b"
+
 func CreateRelease(ctx context.Context, basePage coreModel.Page, cfg config.Config) model.Release {
 	release := model.Release{
 		Page:     basePage,
@@ -73,6 +75,7 @@ func CreateRelease(ctx context.Context, basePage coreModel.Page, cfg config.Conf
 		},
 	}
 
+	release.FeatureFlags.SixteensVersion = SixteensVersion
 	release.BetaBannerEnabled = true
 	release.Metadata.Title = "Test Release Page"
 
@@ -83,6 +86,7 @@ func CreateCalendar(ctx context.Context, basePage coreModel.Page, cfg config.Con
 	calendar := model.Calendar{
 		Page: basePage,
 	}
+	calendar.FeatureFlags.SixteensVersion = SixteensVersion
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = "Test Release Calendar"
 
