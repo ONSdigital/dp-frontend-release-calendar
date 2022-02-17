@@ -12,6 +12,7 @@
       <option value="alphabetical-za">Alphabetical (Z-A)</option>
     </select>
   </div>
+
   <ul style="list-style: none; padding: 0">
     {{range .CalendarPagination.CalendarItem }}
       <li style="margin-top: 36px">
@@ -33,10 +34,6 @@
   </ul>
 
   {{ template "partial-calendar-items-pagination" .}}
+  {{ template "partial-calendar-items-consumer-actions" .}}
 
-  <ul class="ons-u-fs-s" style="list-style: none; padding: 0; margin-top: 23px; padding-top: 18px; border-top: 1px solid #BCBCBD">
-    <li style="display: inline-block"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C4;</span>RSS feed</a></li>
-    <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x26A0;</span>Email alerts</a></li>
-    <li style="display: inline-block; margin-left: 30px"><a href="" style="text-decoration: none;"><span style="margin-right: 0.5rem">&#x1F4C5;</span>Add to your calendar (ICS)</a></li>
-  </ul>
 </div>
