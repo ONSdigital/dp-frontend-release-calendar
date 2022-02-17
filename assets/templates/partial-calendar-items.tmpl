@@ -1,39 +1,6 @@
 <div class="ons-pl-grid-col">
-  <div>
-    <label class="ons-label" for="select-calendar-item-order">Sort by</label>
-    <select
-      id="select-calendar-item-order"
-      name="select-calendar-item-order"
-      class="ons-input ons-input--select"
-    >
-      <option value="date-newest">Date (Newest)</option>
-      <option value="date-oldest">Date (Oldest)</option>
-      <option value="alphabetical-az">Alphabetical (A-Z)/option>
-      <option value="alphabetical-za">Alphabetical (Z-A)</option>
-    </select>
-  </div>
-
-  <ul style="list-style: none; padding: 0">
-    {{range .CalendarPagination.CalendarItem }}
-      <li style="margin-top: 36px">
-        <a
-          href="{{ .URL }}"
-          class="ons-u-fs-l"
-          style="text-decoration: none; display: block"
-        >
-          {{ .Title }}
-        </a>
-        <div style="margin-top: 18px">
-          <span class="ons-u-fs-r--b">Release date:</span>
-          <span>{{ .ReleaseDate }}</span>
-          <span>|</span>
-          <span>{{ .ReleaseState }}</span>
-        </div>
-      </li>
-    {{end}}
-  </ul>
-
+  {{ template "partial-calendar-items-sort-by" .}}
+  {{ template "partial-calendar-items-list" .}}
   {{ template "partial-calendar-items-pagination" .}}
   {{ template "partial-calendar-items-consumer-actions" .}}
-
 </div>
