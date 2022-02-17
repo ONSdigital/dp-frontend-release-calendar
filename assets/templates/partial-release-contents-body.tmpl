@@ -1,21 +1,33 @@
 <div class="ons-pl-grid-col">
-  <h2>Summary</h2>
-  <p>...summary...</p>
+  <section id="summary">
+    <h2>Summary</h2>
+    <p>...summary...</p>
+  </section>
 
-  <h2>Publications</h2>
-  {{ template "partial-release-contents-publications" . }}
+  <section id="publications">
+    <h2>Publications</h2>
+    {{ template "partial-release-contents-publications" . }}
+  </section>
 
-  <h2>Data</h2>
-  {{ template "partial-release-contents-data" . }}
+  <section id="data">
+    <h2>Data</h2>
+    {{ template "partial-release-contents-data" . }}
+  </section>
 
-  <h2>Contact details</h2>
-  {{ template "partial-release-contents-contact-details" . }}
+  <section id="contactdetails">
+    <h2>Contact details</h2>
+    {{ template "partial-release-contents-contact-details" . }}
+  </section>
 
-  <h2>Changes to this release date</h2>
-  {{ template "partial-release-contents-date-changes" . }}
+  <section id="changestothisreleasedate">
+    <h2>Changes to this release date</h2>
+    {{ template "partial-release-contents-date-changes" . }}
+  </section>
 
-  <h2>Release history</h2>
-  {{ template "partial-release-contents-release-history" . }}
+  <section id="releasehistory">
+    <h2>Release history</h2>
+    {{ template "partial-release-contents-release-history" . }}
+  </section>
 
   {{ template "partial-release-contents-code-of-practice" . }}
 </div>
