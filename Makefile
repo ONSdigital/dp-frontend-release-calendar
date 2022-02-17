@@ -30,16 +30,16 @@ debug: generate-debug
 	HUMAN_LOG=1 DEBUG=1 $(BINPATH)/dp-frontend-release-calendar
 
 .PHONY: test
-test:
-	go test -race -cover ./...
+test: generate-prod
+	go test -race -cover -tags 'production' ./...
 
 .PHONY: convey
 convey:
 	goconvey ./...
 
 .PHONY: test-component
-test-component:
-	go test -cover -coverpkg=github.com/ONSdigital/dp-frontend-release-calendar/... -component
+test-component: generate-prod
+	go test -cover -tags 'production' -coverpkg=github.com/ONSdigital/dp-frontend-release-calendar/... -component
 
 .PHONY: generate-debug
 generate-debug: fetch-renderer-lib
