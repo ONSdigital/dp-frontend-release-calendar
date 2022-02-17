@@ -11,12 +11,70 @@ import (
 
 func CreateRelease(ctx context.Context, basePage coreModel.Page, cfg config.Config) model.Release {
 	release := model.Release{
-		Page: basePage,
+		Page:     basePage,
+		Markdown: []string{"markdown 1", "markdown 2"},
+		RelatedDocuments: []model.Link{
+			{
+				Title:   "Document 1",
+				Summary: "This is document 1",
+				URI:     "/doc/1",
+			},
+		},
+		RelatedDatasets: []model.Link{
+			{
+				Title:   "Dataset 1",
+				Summary: "This is dataset 1",
+				URI:     "/dataset/1",
+			},
+		},
+		RelatedMethodology: []model.Link{
+			{
+				Title:   "Methodology",
+				Summary: "This is methodology 1",
+				URI:     "/methodology/1",
+			},
+		},
+		RelatedMethodologyArticle: []model.Link{
+			{
+				Title:   "Methodology Article",
+				Summary: "This is methodology article 1",
+				URI:     "/methodology/article/1",
+			},
+		},
+		Links: []model.Link{
+			{
+				Title:   "Link 1",
+				Summary: "This is link 1",
+				URI:     "/link/1",
+			},
+		},
+		DateChanges: []model.DateChange{
+			{
+				Date:         "2022-02-15T11:12:05.592Z",
+				ChangeNotice: "This release has changed",
+			},
+		},
+		Description: model.ReleaseDescription{
+			Title:   "Release title",
+			Summary: "Release summary",
+			Contact: model.ContactDetails{
+				Email:     "contact@ons.gov.uk",
+				Name:      "Contact name",
+				Telephone: "029",
+			},
+			NationalStatistic:  true,
+			ReleaseDate:        "2020-07-08T23:00:00.000Z",
+			NextRelease:        "January 2021",
+			Published:          true,
+			Finalised:          true,
+			Cancelled:          true,
+			CancellationNotice: []string{"cancelled for a reason"},
+			ProvisionalDate:    "July 2020",
+		},
 	}
 
 	release.BetaBannerEnabled = true
 	release.Metadata.Title = "Test Release Page"
-	release.ContactDetails.Name = "Test contact name"
 
 	return release
 }

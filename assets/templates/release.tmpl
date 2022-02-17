@@ -3,4 +3,11 @@
         {{ template "partials/breadcrumb" . }}
         <h1 class="ons-u-fs-xxxl ons-u-mt-s">{{ .Page.Metadata.Title }}</h1>
     </div>
+
+    <h2>
+        {{ .Description.Title }}
+    </h2>
+    <h3>
+        {{ .Description.Summary }}
+    </h3>
 </div>
