@@ -33,6 +33,7 @@ type Release struct {
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
 	// ContactDetails            ContactDetails `json:"contact_details"`
+	// ReleaseHistory            []Link         `json:"release_history"`
 }
 
 type DateChange struct {
