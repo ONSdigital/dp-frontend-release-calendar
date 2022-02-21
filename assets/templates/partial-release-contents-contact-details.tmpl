@@ -1,14 +1,10 @@
-<ul>
-  <li>
-    <h3>Name</h3>
-    <p>...name...</p>
-  </li>
-  <li>
-    <h3>Email</h3>
-    <p><a href="">...email...</a></p>
-  </li>
-  <li>
-    <h3>Phone</h3>
-    <p><a>...phone...</a></p>
-  </li>
-</ul>
+<div>
+  <h3>Name</h3>
+  <p>{{ .ContactDetails.Name }}</p>
+
+  <h3>Email</h3>
+  <p><a href="mailto:{{ .ContactDetails.Email }}">{{ .ContactDetails.Email }}</a></p>
+
+  <h3>Phone</h3>
+  <p><a href="tel:{{ .ContactDetails.Telephone }}">{{ .ContactDetails.Telephone }}</a></p>
+</div>
