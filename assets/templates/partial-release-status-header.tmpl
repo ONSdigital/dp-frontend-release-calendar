@@ -1,48 +1,81 @@
-<div><span class="ons-u-fs-r--b">Provisional release date:</span> May 2022</div>
-<div><span class="ons-u-fs-r--b">Release date:</span> May 2022</div>
-<div><span class="ons-u-fs-r--b">Release date:</span> Cancelled</div>
+{{ if .StatusDates.Provisional }}
+  <div>
+    <span class="ons-u-fs-r--b">Provisional release date:</span> {{ .StatusDates.ReleaseDate }}
+  </div>
+{{ else if .StatusDates.Cancelled }}
+  <div>
+    <span class="ons-u-fs-r--b">Release date:</span> Cancelled
+  </div>
+{{ else if .StatusDates.NextDate }}
+  <div class="ons-grid ons-u-ml-no">
+    <!-- Left column -->
+    <div class="ons-grid__col ons-col-4@m" style="padding: 0">
+      <div class="ons-pl-grid-col">
+        <span class="ons-u-fs-r--b">Released:</span> {{ .StatusDates.ReleaseDate }}
+      </div>
+    </div>
 
-<div class="ons-grid ons-u-ml-no">
-  <!-- Left column -->
-  <div class="ons-grid__col ons-col-4@m" style="padding: 0">
-    <div class="ons-pl-grid-col">
-      <span class="ons-u-fs-r--b">Released:</span> 8 December 2021 09:30
+    <!-- Right column -->
+    <div class="ons-grid__col ons-col-8@m">
+      <div class="ons-pl-grid-col">
+        <span class="ons-u-fs-r--b">Next release:</span> {{ .StatusDates.NextDate }}
+      </div>
     </div>
   </div>
+{{ else }}
+  <div>
+    <span class="ons-u-fs-r--b">Release date:</span> {{ .StatusDates.ReleaseDate }}
+  </div>
+{{ end }}
 
-  <!-- Right column -->
-  <div class="ons-grid__col ons-col-8@m">
-    <div class="ons-pl-grid-col">
-      <span class="ons-u-fs-r--b">Next release:</span> To be announced
+{{ if .StatusFlags.NotYetPublished }}
+  <div class="ons-panel ons-panel--info ons-panel--no-title">
+    <span class="ons-u-vh">Important information: </span>
+    <div class="ons-panel__body">
+      <p>
+        This release is not yet published
+      </p>
     </div>
   </div>
-</div>
+{{ end }}
 
-<div class="ons-panel ons-panel--info ons-panel--no-title">
-  <span class="ons-u-vh">Important information: </span>
-  <div class="ons-panel__body">
-    <p>
-      This release is not yet published
-    </p>
-
-    <!-- options
-    <p>
-      This release has been cancelled as there is not enough
-      personal well-being data collected to provide robust
-      quarterly estimates.
-    </p>
-
-    <p>
-      This release has been postponed as there is not enough
-      personal well-being data collected to provide robust
-      quarterly estimates.
-    </p>
-
-    <p>
-      This release has been cancelled as the publication is
-      being merged into one headline release titled <a href="">Business
-      investment in the UK: provisional results</a>.
-    </p>
-    -->
+{{ if .StatusFlags.InsufficientDataCancelled }}
+  <div class="ons-panel ons-panel--info ons-panel--no-title">
+    <span class="ons-u-vh">Important information: </span>
+    <div class="ons-panel__body">
+      <p>
+        This release has been cancelled as there is not enough
+        personal well-being data collected to provide robust
+        quarterly estimates.
+      </p>
+    </div>
   </div>
-</div>
+{{ end }}
+
+{{ if .StatusFlags.InsufficientDataPostponed }}
+  <div class="ons-panel ons-panel--info ons-panel--no-title">
+    <span class="ons-u-vh">Important information: </span>
+    <div class="ons-panel__body">
+      <p>
+        This release has been postponed as there is not enough
+        personal well-being data collected to provide robust
+        quarterly estimates.
+      </p>
+    </div>
+  </div>
+{{ end }}
+
+{{ if .StatusFlags.MergeCancelled }}
+  <div class="ons-panel ons-panel--info ons-panel--no-title">
+    <span class="ons-u-vh">Important information: </span>
+    <div class="ons-panel__body">
+      <p>
+        This release has been cancelled as the publication is
+        being merged into one headline release titled
+        <a href="{{ .StatusFlags.MergeCancelled.URI }}">
+          {{ .StatusFlags.MergeCancelled.Title }}
+        </a>.
+      </p>
+    </div>
+  </div>
+{{ end }}

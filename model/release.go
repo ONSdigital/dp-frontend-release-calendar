@@ -22,6 +22,20 @@ type ContactDetails struct {
 // 	ReasonForChange string `json:"reason_for_change"`
 // }
 
+// type StatusFlags struct {
+// 	NotYetPublished           bool `json:"not_yet_published"`
+// 	InsufficientDataCancelled bool `json:"insufficient_data_cancelled"`
+// 	InsufficientDataPostponed bool `json:"insufficient_data_postponed"`
+// 	MergeCancelled            Link `json:"merge_cancelled"`
+// }
+
+// type StatusDates struct {
+// 	Provisional bool   `json:"provisional"`
+// 	Cancelled   bool   `json:"cancelled"`
+// 	ReleaseDate string `json:"release_date"`
+// 	NextDate    string `json:"next_date"`
+// }
+
 type Release struct {
 	coreModel.Page
 	Markdown                  []string           `json:"markdown"`
@@ -34,6 +48,8 @@ type Release struct {
 	Description               ReleaseDescription `json:"description"`
 	// ContactDetails            ContactDetails `json:"contact_details"`
 	// ReleaseHistory            []Link         `json:"release_history"`
+	// StatusFlags               StatusFlags    `json:"status_flags"`
+	// StatusDates               StatusDates    `json:"status_dates"`
 }
 
 type DateChange struct {
