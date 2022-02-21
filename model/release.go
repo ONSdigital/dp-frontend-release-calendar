@@ -8,6 +8,7 @@ type Link struct {
 	Title   string `json:"title"`
 	URI     string `json:"uri"`
 	Summary string `json:"summary"`
+	// Description string `json:"description"`
 }
 
 type ContactDetails struct {

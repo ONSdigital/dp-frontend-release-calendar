@@ -1,21 +1,13 @@
-<ul>
-  <li>
-    <p>
-      <a href="">...data link...</a>
-    </p>
+<ul class="ons-list ons-list--bare">
+  {{ range .RelatedDatasets }}
+    <li class="ons-list__item">
+      <p>
+        <a href="{{ .URI }}">{{ .Title }}</a>
+      </p>
 
-    <p>
-      ...data description...
-    </p>
-  </li>
-
-  <li>
-    <p>
-      <a href="">...data link...</a>
-    </p>
-
-    <p>
-      ...data description...
-    </p>
-  </li>
+      <p>
+        {{ .Description }}
+      </p>
+    </li>
+  {{ end }}
 </ul>

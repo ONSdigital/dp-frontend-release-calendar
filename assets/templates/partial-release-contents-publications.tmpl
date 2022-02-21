@@ -1,21 +1,13 @@
-<ul>
-  <li>
-    <p>
-      <a href="">...publication link...</a>
-    </p>
+<ul class="ons-list ons-list--bare">
+  {{ range .RelatedDocuments }}
+    <li class="ons-list__item">
+      <p>
+        <a href="{{ .URI }}">{{ .Title }}</a>
+      </p>
 
-    <p>
-      ...publication description...
-    </p>
-  </li>
-
-  <li>
-    <p>
-      <a href="">...publication link...</a>
-    </p>
-
-    <p>
-      ...publication description...
-    </p>
-  </li>
+      <p>
+        {{ .Description }}
+      </p>
+    </li>
+  {{ end }}
 </ul>
