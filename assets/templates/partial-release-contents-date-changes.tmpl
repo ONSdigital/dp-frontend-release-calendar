@@ -1,26 +1,11 @@
-<ul>
-  <li>
-    <ul>
-      <li>
+<ol class="ons-list ons-list--bare">
+  {{ range .DateChanges }}
+    <li class="ons-list__item">
         <h3>Previous date</h3>
-        <p>...date...</p>
-      </li>
-      <li>
+        <p>{{ .PreviousDate }}</p>
+
         <h3>Reason for change</h3>
-        <p>...reason...</p>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <ul>
-      <li>
-        <h3>Previous date</h3>
-        <p>...date...</p>
-      </li>
-      <li>
-        <h3>Reason for change</h3>
-        <p>...reason...</p>
-      </li>
-    </ul>
-  </li>
-</ul>
+        <p>{{ .ReasonForChange }}</p>
+    </li>
+  {{ end }}
+</ol>

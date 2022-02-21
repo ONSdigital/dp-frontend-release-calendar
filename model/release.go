@@ -17,6 +17,11 @@ type ContactDetails struct {
 	Telephone string `json:"telephone"`
 }
 
+// type DateChange struct {
+// 	PreviousDate    string `json:"date"`
+// 	ReasonForChange string `json:"reason_for_change"`
+// }
+
 type Release struct {
 	coreModel.Page
 	Markdown                  []string           `json:"markdown"`
@@ -27,6 +32,7 @@ type Release struct {
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
+	// ContactDetails            ContactDetails `json:"contact_details"`
 }
 
 type DateChange struct {
