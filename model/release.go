@@ -73,11 +73,6 @@ type ReleaseDescription struct {
 
 type PreviousReleases struct {
 	coreModel.Page
-	Markdown                  string         `json:"markdown"`
-	RelatedDocuments          []Link         `json:"related_documents"`
-	RelatedDatasets           []Link         `json:"related_datasets"`
-	RelatedMethodology        []Link         `json:"related_methodology"`
-	RelatedMethodologyArticle []Link         `json:"related_methodology_article"`
-	Links                     []Link         `json:"links"`
-	ContactDetails            ContactDetails `json:"contact_details"`
+	Markdown       string `json:"markdown"`
+	ReleaseHistory []Link `json:"release_history"`
 }

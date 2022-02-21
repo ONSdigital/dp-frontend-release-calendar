@@ -12,94 +12,32 @@
       </tr>
     </thead>
     <tbody class="ons-table__body">
-      <tr class="ons-table__row">
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem" name="cell-name">
-          8 December 2021 <span class="ons-u-fs-s--b" style="background-color: #E2E2E3; padding: 5px 9px 6px 9px; margin: 0px 20px;">LATEST</span>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">26 July 2021</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">22 April 2021</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">21 January 2021</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">17 October 2020</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">17 October 2020</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">21 July 2020</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">23 April 2020</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">28 January 2020</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          <a href="">18 October 2019</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem">
-          Updated with latest data
-        </td>
-      </tr>
-      <tr>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem; border-bottom: none">
-          <a href="">17 July 2019</a>
-        </td>
-        <td class="ons-table__cell" style="padding-top: 1rem; padding-bottom: 1rem; border-bottom: none">
-          Updated with latest data
-        </td>
-      </tr>
+      {{ range $index, $element := .ReleaseHistory }}
+        <tr class="ons-table__row">
+          <td
+            class="ons-table__cell"
+            style="padding-top: 1rem; padding-bottom: 1rem"
+          >
+            {{ if eq $index 0 }}
+              {{ $element.Title }}
+              <span
+                class="ons-u-fs-s--b"
+                style="background-color: #E2E2E3; padding: 5px 9px 6px 9px; margin: 0px 20px;"
+              >
+                LATEST
+              </span>
+            {{ else }}
+              <a href="{{ $element.URI }}">{{ $element.Title }}</a>
+            {{ end }}
+          </td>
+          <td
+            class="ons-table__cell"
+            style="padding-top: 1rem; padding-bottom: 1rem"
+          >
+            {{ $element.Description }}
+          </td>
+        </tr>
+      {{ end }}
     </tbody>
   </table>
 
