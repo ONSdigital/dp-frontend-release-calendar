@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	"github.com/ONSdigital/dp-frontend-release-calendar/assets"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/routes"
@@ -41,9 +42,13 @@ func (svc *Service) Init(ctx context.Context, cfg *config.Config, serviceList *E
 	svc.Config = cfg
 	svc.ServiceList = serviceList
 
+	// Get health client for api router
+	routerHealthClient := serviceList.GetHealthClient("api-router", cfg.APIRouterURL)
+
 	// Initialise clients
 	clients := routes.Clients{
-		Render: render.NewWithDefaultClient(assets.Asset, assets.AssetNames, cfg.PatternLibraryAssetsPath, cfg.SiteDomain),
+		Render:             render.NewWithDefaultClient(assets.Asset, assets.AssetNames, cfg.PatternLibraryAssetsPath, cfg.SiteDomain),
+		ReleaseCalendarAPI: releasecalendar.NewWithHealthClient(routerHealthClient),
 	}
 
 	// Get healthcheck with checkers
@@ -128,7 +133,10 @@ func (svc *Service) Close(ctx context.Context) error {
 func (svc *Service) registerCheckers(ctx context.Context, c routes.Clients) (err error) {
 	hasErrors := false
 
-	// TODO: Add health checks here
+	if err = svc.HealthCheck.AddCheck("Release Calendar API", c.ReleaseCalendarAPI.Checker); err != nil {
+		hasErrors = true
+		log.Error(ctx, "failed to add release calendar API checker", err)
+	}
 
 	if hasErrors {
 		return errors.New("Error(s) registering checkers for healthcheck")

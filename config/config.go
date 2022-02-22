@@ -15,6 +15,7 @@ type Config struct {
 	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
+	APIRouterURL               string        `envconfig:"API_ROUTER_URL"`
 }
 
 var cfg *Config
@@ -51,6 +52,7 @@ func get() (*Config, error) {
 		GracefulShutdownTimeout:    5 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
+		APIRouterURL:               "http://localhost:23200/v1",
 	}
 
 	return cfg, envconfig.Process("", cfg)

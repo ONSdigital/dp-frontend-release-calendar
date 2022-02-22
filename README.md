@@ -15,6 +15,7 @@ Release Calendar frontend controller
 | ---------------------------- | ----------------------- | -----------
 | BIND_ADDR                    | :27700                  | The host and port to bind to
 | DEBUG                        | false                   | Enable debug mode
+| API_ROUTER_URL               | http://localhost:23200/v1 | The URL of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)
 | SITE_DOMAIN                  | localhost               |
 | PATTERN_LIBRARY_ASSETS_PATH  | ""                      | Pattern library location
 | SUPPORTED_LANGUAGES          | [2]string{"en", "cy"}   | Supported languages

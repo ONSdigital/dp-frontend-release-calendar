@@ -7,79 +7,66 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
+
+	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 )
 
 const SixteensVersion = "77f1d9b"
 
-func CreateRelease(_ context.Context, basePage coreModel.Page, _ config.Config) model.Release {
-	release := model.Release{
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
+	result := model.Release{
 		Page:     basePage,
-		Markdown: []string{"markdown 1", "markdown 2"},
-		RelatedDocuments: []model.Link{
-			{
-				Title:   "Document 1",
-				Summary: "This is document 1",
-				URI:     "/doc/1",
-			},
-		},
-		RelatedDatasets: []model.Link{
-			{
-				Title:   "Dataset 1",
-				Summary: "This is dataset 1",
-				URI:     "/dataset/1",
-			},
-		},
-		RelatedMethodology: []model.Link{
-			{
-				Title:   "Methodology",
-				Summary: "This is methodology 1",
-				URI:     "/methodology/1",
-			},
-		},
-		RelatedMethodologyArticle: []model.Link{
-			{
-				Title:   "Methodology Article",
-				Summary: "This is methodology article 1",
-				URI:     "/methodology/article/1",
-			},
-		},
-		Links: []model.Link{
-			{
-				Title:   "Link 1",
-				Summary: "This is link 1",
-				URI:     "/link/1",
-			},
-		},
-		DateChanges: []model.DateChange{
-			{
-				Date:         "2022-02-15T11:12:05.592Z",
-				ChangeNotice: "This release has changed",
-			},
-		},
+		Markdown: release.Markdown,
 		Description: model.ReleaseDescription{
-			Title:   "Release title",
-			Summary: "Release summary",
+			Title:   release.Description.Title,
+			Summary: release.Description.Summary,
 			Contact: model.ContactDetails{
-				Email:     "contact@ons.gov.uk",
-				Name:      "Contact name",
-				Telephone: "029",
+				Email:     release.Description.Contact.Email,
+				Name:      release.Description.Contact.Name,
+				Telephone: release.Description.Contact.Telephone,
 			},
-			NationalStatistic:  true,
-			ReleaseDate:        "2020-07-08T23:00:00.000Z",
-			NextRelease:        "January 2021",
-			Published:          true,
-			Finalised:          true,
-			Cancelled:          true,
-			CancellationNotice: []string{"cancelled for a reason"},
-			ProvisionalDate:    "July 2020",
+			NationalStatistic:  release.Description.NationalStatistic,
+			ReleaseDate:        release.Description.ReleaseDate,
+			NextRelease:        release.Description.NextRelease,
+			Published:          release.Description.Published,
+			Finalised:          release.Description.Finalised,
+			Cancelled:          release.Description.Cancelled,
+			CancellationNotice: release.Description.CancellationNotice,
+			ProvisionalDate:    release.Description.ProvisionalDate,
 		},
 	}
 
-	release.FeatureFlags.SixteensVersion = SixteensVersion
-	release.BetaBannerEnabled = true
-	release.Metadata.Title = "Test Release Page"
+	result.RelatedDatasets = mapLink(release.RelatedDatasets)
+	result.RelatedDocuments = mapLink(release.RelatedDocuments)
+	result.RelatedMethodology = mapLink(release.RelatedMethodology)
+	result.RelatedMethodologyArticle = mapLink(release.RelatedMethodologyArticle)
+	result.Links = mapLink(release.Links)
 
-	return release
+	result.DateChanges = []model.DateChange{}
+	for _, dc := range release.DateChanges {
+		result.DateChanges = append(result.DateChanges, model.DateChange{
+			Date:         dc.Date,
+			ChangeNotice: dc.ChangeNotice,
+		})
+	}
+
+	result.FeatureFlags.SixteensVersion = SixteensVersion
+	result.BetaBannerEnabled = true
+	result.Metadata.Title = release.Description.Title
+	result.URI = release.URI
+	return result
+}
+
+func mapLink(links []releasecalendar.Link) []model.Link {
+	res := []model.Link{}
+	for _, l := range links {
+		res = append(res, model.Link{
+			Title:   l.Title,
+			Summary: l.Summary,
+			URI:     l.URI,
+		})
+	}
+	return res
 }
 
 func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config) model.Calendar {
