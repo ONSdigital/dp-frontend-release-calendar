@@ -1,9 +1,22 @@
 # dp-frontend-release-calendar
-Release Calendar frontend controller
+
+## Release Calendar frontend controller
+
+Provides server side rendering of the Release Calendar and Release pages.
+
+A Release Calender page is constructed from metadata drawn from the Search API.
+
+A Release page is constructed from the data drawn from the Release API.
 
 ### Getting started
 
+* Run the Digital Publishing Design System (`dp-design-system`) in a
+  separate shell with `./run.sh`
 * Run `make debug`
+* In your browser, visit one of:
+  - `http://localhost:27700/calendarsample`
+  - `http://localhost:27700/releasesample`
+  - `http://localhost:27700/previousreleasessample`
 
 ### Dependencies
 
