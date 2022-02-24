@@ -14,11 +14,6 @@ type CalendarPagination struct {
 type CalendarItem struct {
 	URI         string             `json:"uri"`
 	Description ReleaseDescription `json:"description"`
-	// URL          string `json:"url"`
-	// Title        string `json:"title"`
-	// Description  string `json:"description"`
-	// ReleaseDate  string `json:"release_date"`
-	// ReleaseState string `json:"release_state"`
 }
 
 type Calendar struct {

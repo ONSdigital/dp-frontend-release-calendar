@@ -1,10 +1,10 @@
 <div>
   <h3>Name</h3>
-  <p>{{ .ContactDetails.Name }}</p>
+  <p>{{ .Description.Contact.Name }}</p>
 
   <h3>Email</h3>
-  <p><a href="mailto:{{ .ContactDetails.Email }}">{{ .ContactDetails.Email }}</a></p>
+  <p><a href="mailto:{{ .Description.Contact.Email }}">{{ .Description.Contact.Email }}</a></p>
 
   <h3>Phone</h3>
-  <p><a href="tel:{{ .ContactDetails.Telephone }}">{{ .ContactDetails.Telephone }}</a></p>
+  <p><a href="tel:{{ .Description.Contact.Telephone }}">{{ .Description.Contact.Telephone }}</a></p>
 </div>

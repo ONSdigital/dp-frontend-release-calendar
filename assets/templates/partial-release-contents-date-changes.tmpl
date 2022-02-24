@@ -2,10 +2,10 @@
   {{ range .DateChanges }}
     <li class="ons-list__item">
         <h3>Previous date</h3>
-        <p>{{ .PreviousDate }}</p>
+        <p>{{ .Date }}</p>
 
         <h3>Reason for change</h3>
-        <p>{{ .ReasonForChange }}</p>
+        <p>{{ .ChangeNotice }}</p>
     </li>
   {{ end }}
 </ol>

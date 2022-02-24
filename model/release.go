@@ -8,7 +8,6 @@ type Link struct {
 	Title   string `json:"title"`
 	URI     string `json:"uri"`
 	Summary string `json:"summary"`
-	// Description string `json:"description"`
 }
 
 type ContactDetails struct {
@@ -16,25 +15,6 @@ type ContactDetails struct {
 	Email     string `json:"email"`
 	Telephone string `json:"telephone"`
 }
-
-// type DateChange struct {
-// 	PreviousDate    string `json:"date"`
-// 	ReasonForChange string `json:"reason_for_change"`
-// }
-
-// type StatusFlags struct {
-// 	NotYetPublished           bool `json:"not_yet_published"`
-// 	InsufficientDataCancelled bool `json:"insufficient_data_cancelled"`
-// 	InsufficientDataPostponed bool `json:"insufficient_data_postponed"`
-// 	MergeCancelled            Link `json:"merge_cancelled"`
-// }
-
-// type StatusDates struct {
-// 	Provisional bool   `json:"provisional"`
-// 	Cancelled   bool   `json:"cancelled"`
-// 	ReleaseDate string `json:"release_date"`
-// 	NextDate    string `json:"next_date"`
-// }
 
 type Release struct {
 	coreModel.Page
@@ -46,10 +26,8 @@ type Release struct {
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
-	// ContactDetails            ContactDetails `json:"contact_details"`
+	// TODO Provisional entry for modelling history
 	// ReleaseHistory            []Link         `json:"release_history"`
-	// StatusFlags               StatusFlags    `json:"status_flags"`
-	// StatusDates               StatusDates    `json:"status_dates"`
 }
 
 type DateChange struct {
@@ -71,8 +49,9 @@ type ReleaseDescription struct {
 	Title              string         `json:"title"`
 }
 
+// TODO Provisional model for previous releases
 type PreviousReleases struct {
 	coreModel.Page
-	Markdown       string `json:"markdown"`
-	ReleaseHistory []Link `json:"release_history"`
+	Description    ReleaseDescription `json:"description"`
+	ReleaseHistory []Link             `json:"release_history"`
 }

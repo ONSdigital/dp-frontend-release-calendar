@@ -3,7 +3,7 @@
   <nav class="ons-toc" aria-label="Pages in this guide">
     <h2 class="ons-toc__title ons-u-fs-r--b ons-u-mb-s">Contents</h2>
     <ol class="ons-list ons-u-mb-m ons-list--dashed">
-      {{ if .Markdown }}
+      {{ if .Description.Summary }}
         <li class="ons-list__item" aria-current="true">
           <a href="#summary" class="ons-list__link">Summary</a>
         </li>
@@ -21,7 +21,7 @@
         </li>
       {{ end }}
 
-      {{ if .ContactDetails }}
+      {{ if .Description.Contact }}
         <li class="ons-list__item" aria-current="true">
           <a href="#contactdetails" class="ons-list__link">Contact details</a>
         </li>
@@ -33,11 +33,13 @@
         </li>
       {{ end }}
 
-      {{ if .ReleaseHistory }}
-        <li class="ons-list__item">
-          <a href="#releasehistory" class="ons-list__link">Release history</a>
-        </li>
-      {{ end }}
+      {{/* TODO How to support Release History
+        {{ if .ReleaseHistory }}
+          <li class="ons-list__item">
+            <a href="#releasehistory" class="ons-list__link">Release history</a>
+          </li>
+        {{ end }}
+      */}}
     </ol>
   </nav>
 </aside>

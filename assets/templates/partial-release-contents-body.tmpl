@@ -1,8 +1,8 @@
 <div class="ons-pl-grid-col">
-  {{ if .Markdown }}
+  {{ if .Description.Summary }}
     <section id="summary">
       <h2>Summary</h2>
-      <p>{{ .Markdown }}</p>
+      <p>{{ .Description.Summary }}</p>
     </section>
   {{ end }}
 
@@ -20,7 +20,7 @@
     </section>
   {{ end }}
 
-  {{ if .ContactDetails }}
+  {{ if .Description.Contact }}
     <section id="contactdetails">
       <h2>Contact details</h2>
       {{ template "partial-release-contents-contact-details" . }}
@@ -34,12 +34,14 @@
     </section>
   {{ end }}
 
-  {{ if .ReleaseHistory }}
-    <section id="releasehistory">
-      <h2>Release history</h2>
-      {{ template "partial-release-contents-release-history" . }}
-    </section>
-  {{ end }}
+  {{/* TODO How to support Release History
+    {{ if .ReleaseHistory }}
+      <section id="releasehistory">
+        <h2>Release history</h2>
+        {{ template "partial-release-contents-release-history" . }}
+      </section>
+    {{ end }}
+  */}}
 
   {{ template "partial-release-contents-code-of-practice" . }}
 </div>

@@ -1,34 +1,34 @@
-{{ if .StatusDates.Provisional }}
+{{ if .Description.ProvisionalDate }}
   <div>
-    <span class="ons-u-fs-r--b">Provisional release date:</span> {{ .StatusDates.ReleaseDate }}
+    <span class="ons-u-fs-r--b">Provisional release date:</span> {{ .Description.ProvisionalDate }}
   </div>
-{{ else if .StatusDates.Cancelled }}
+{{ else if .Description.Cancelled }}
   <div>
     <span class="ons-u-fs-r--b">Release date:</span> Cancelled
   </div>
-{{ else if .StatusDates.NextDate }}
+{{ else if .Description.NextRelease }}
   <div class="ons-grid ons-u-ml-no">
     <!-- Left column -->
     <div class="ons-grid__col ons-col-4@m" style="padding: 0">
       <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Released:</span> {{ .StatusDates.ReleaseDate }}
+        <span class="ons-u-fs-r--b">Released:</span> {{ .Description.ReleaseDate }}
       </div>
     </div>
 
     <!-- Right column -->
     <div class="ons-grid__col ons-col-8@m">
       <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Next release:</span> {{ .StatusDates.NextDate }}
+        <span class="ons-u-fs-r--b">Next release:</span> {{ .Description.NextRelease }}
       </div>
     </div>
   </div>
 {{ else }}
   <div>
-    <span class="ons-u-fs-r--b">Release date:</span> {{ .StatusDates.ReleaseDate }}
+    <span class="ons-u-fs-r--b">Release date:</span> {{ .Description.ReleaseDate }}
   </div>
 {{ end }}
 
-{{ if .StatusFlags.NotYetPublished }}
+{{ if not .Description.Published }}
   <div class="ons-panel ons-panel--info ons-panel--no-title">
     <span class="ons-u-vh">Important information: </span>
     <div class="ons-panel__body">
@@ -39,43 +39,45 @@
   </div>
 {{ end }}
 
-{{ if .StatusFlags.InsufficientDataCancelled }}
+{{ if and .Description.Cancelled .Description.CancellationNotice }}
   <div class="ons-panel ons-panel--info ons-panel--no-title">
     <span class="ons-u-vh">Important information: </span>
     <div class="ons-panel__body">
-      <p>
-        This release has been cancelled as there is not enough
-        personal well-being data collected to provide robust
-        quarterly estimates.
-      </p>
+      {{ range .Description.CancellationNotice }}
+        <p>{{ . }}</p>
+      {{ end }}
     </div>
   </div>
 {{ end }}
 
-{{ if .StatusFlags.InsufficientDataPostponed }}
-  <div class="ons-panel ons-panel--info ons-panel--no-title">
-    <span class="ons-u-vh">Important information: </span>
-    <div class="ons-panel__body">
-      <p>
-        This release has been postponed as there is not enough
-        personal well-being data collected to provide robust
-        quarterly estimates.
-      </p>
+{{/* TODO How is 'postponed' represented in the Release model?
+  {{ if .StatusFlags.InsufficientDataPostponed }}
+    <div class="ons-panel ons-panel--info ons-panel--no-title">
+      <span class="ons-u-vh">Important information: </span>
+      <div class="ons-panel__body">
+        <p>
+          This release has been postponed as there is not enough
+          personal well-being data collected to provide robust
+          quarterly estimates.
+        </p>
+      </div>
     </div>
-  </div>
-{{ end }}
+  {{ end }}
+*/}}
 
-{{ if .StatusFlags.MergeCancelled }}
-  <div class="ons-panel ons-panel--info ons-panel--no-title">
-    <span class="ons-u-vh">Important information: </span>
-    <div class="ons-panel__body">
-      <p>
-        This release has been cancelled as the publication is
-        being merged into one headline release titled
-        <a href="{{ .StatusFlags.MergeCancelled.URI }}">
-          {{ .StatusFlags.MergeCancelled.Title }}
-        </a>.
-      </p>
+{{/* TODO How can a cancellation notice containing a link be supported?
+  {{ if .StatusFlags.MergeCancelled }}
+    <div class="ons-panel ons-panel--info ons-panel--no-title">
+      <span class="ons-u-vh">Important information: </span>
+      <div class="ons-panel__body">
+        <p>
+          This release has been cancelled as the publication is
+          being merged into one headline release titled
+          <a href="{{ .StatusFlags.MergeCancelled.URI }}">
+            {{ .StatusFlags.MergeCancelled.Title }}
+          </a>.
+        </p>
+      </div>
     </div>
-  </div>
-{{ end }}
+  {{ end }}
+*/}}

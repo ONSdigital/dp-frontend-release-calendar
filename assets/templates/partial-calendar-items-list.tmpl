@@ -2,16 +2,22 @@
   {{range .CalendarPagination.CalendarItem }}
     <li style="margin-top: 2rem" class="ons-list__item">
       <a
-        href="{{ .URL }}"
+        href="{{ .URI }}"
         class="ons-u-fs-l ons-u-td-no ons-u-d-b"
       >
-        {{ .Title }}
+        {{ .Description.Title }}
       </a>
       <div style="margin-top: 1rem">
         <span class="ons-u-fs-r--b">Release date:</span>
-        <span>{{ .ReleaseDate }}</span>
+        <span>{{ .Description.ReleaseDate }}</span>
         <span>|</span>
-        <span>{{ .ReleaseState }}</span>
+        <span>
+          {{ if .Description.Published }}
+            Published
+          {{ else }}
+            Not Published
+          {{ end }}
+        </span>
       </div>
     </li>
   {{end}}
