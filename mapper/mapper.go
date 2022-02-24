@@ -11,7 +11,7 @@ import (
 
 const SixteensVersion = "77f1d9b"
 
-func CreateRelease(ctx context.Context, basePage coreModel.Page, cfg config.Config) model.Release {
+func CreateRelease(_ context.Context, basePage coreModel.Page, _ config.Config) model.Release {
 	release := model.Release{
 		Page:     basePage,
 		Markdown: []string{"markdown 1", "markdown 2"},
@@ -82,7 +82,7 @@ func CreateRelease(ctx context.Context, basePage coreModel.Page, cfg config.Conf
 	return release
 }
 
-func CreateCalendar(ctx context.Context, basePage coreModel.Page, cfg config.Config) model.Calendar {
+func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
@@ -91,34 +91,40 @@ func CreateCalendar(ctx context.Context, basePage coreModel.Page, cfg config.Con
 	calendar.Metadata.Title = "Test Release Calendar"
 
 	item1 := model.CalendarItem{
-		URI:            "/releases/title1",
-		Title:          "Title 1",
-		Summary:        "A summary for Title 1",
-		ReleaseDate:    time.Now().AddDate(0, 0, -10),
-		Published:      true,
-		Cancelled:      false,
-		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
-		NextRelease:    "To be announced",
+		URI: "/releases/title1",
+		Description: model.ReleaseDescription{
+			Title:       "Title 1",
+			Summary:     "A summary for Title 1",
+			ReleaseDate: time.Now().AddDate(0, 0, -10).UTC().Format(time.RFC3339),
+			Published:   true,
+			Cancelled:   false,
+			Contact:     model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+			NextRelease: "To be announced",
+		},
 	}
 
 	item2 := model.CalendarItem{
-		URI:            "/releases/title2",
-		Title:          "Title 2",
-		Summary:        "A summary for Title 2",
-		ReleaseDate:    time.Now().AddDate(0, 0, -15),
-		Published:      false,
-		Cancelled:      true,
-		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+		URI: "/releases/title2",
+		Description: model.ReleaseDescription{
+			Title:       "Title 2",
+			Summary:     "A summary for Title 2",
+			ReleaseDate: time.Now().AddDate(0, 0, -15).UTC().Format(time.RFC3339),
+			Published:   false,
+			Cancelled:   true,
+			Contact:     model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+		},
 	}
 
 	item3 := model.CalendarItem{
-		URI:            "/releases/title3",
-		Title:          "Title 3",
-		Summary:        "A summary for Title 3",
-		ReleaseDate:    time.Now().AddDate(0, 0, 5),
-		Published:      false,
-		Cancelled:      false,
-		ContactDetails: model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+		URI: "/releases/title3",
+		Description: model.ReleaseDescription{
+			Title:       "Title 3",
+			Summary:     "A summary for Title 3",
+			ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
+			Published:   false,
+			Cancelled:   false,
+			Contact:     model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+		},
 	}
 
 	calendar.CalendarPagination.CurrentPage = 1
