@@ -5,7 +5,7 @@ import (
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
-	dphandlers "github.com/ONSdigital/dp-net/handlers"
+	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
