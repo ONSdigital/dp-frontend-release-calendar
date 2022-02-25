@@ -117,6 +117,25 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
+
+	result.Breadcrumb = []coreModel.TaxonomyNode{
+		{
+			Title: "Home",
+			URI:   "/",
+		},
+		{
+			Title: "Release calendar",
+			URI:   "/calendar",
+		},
+		{
+			Title: "Published", // TODO Set this from data
+			URI:   "/calendar", // TODO Integrate with Search API
+		},
+		{
+			Title: release.Description.Title,
+		},
+	}
+
 	return result
 }
 
