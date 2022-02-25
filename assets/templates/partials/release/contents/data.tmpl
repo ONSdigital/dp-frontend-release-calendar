@@ -2,12 +2,22 @@
   {{ range .RelatedDatasets }}
     <li class="ons-list__item">
       <p>
-        <a href="{{ .URI }}">{{ .Title }}</a>
+        {{/*
+          The Title is not always available for a link so re-use
+          the URI as the link text as a fallback.
+        */}}
+        {{ if and .URI .Title }}
+          <a href="{{ .URI }}">{{ .Title }}</a>
+        {{ else }}
+          <a href="{{ .URI }}">{{ .URI }}</a>
+        {{ end }}
       </p>
 
-      <p>
-        {{ .Summary }}
-      </p>
+      {{ if .Summary }}
+        <p>
+          {{ .Summary }}
+        </p>
+      {{ end }}
     </li>
   {{ end }}
 </ul>
