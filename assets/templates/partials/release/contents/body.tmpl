@@ -9,28 +9,28 @@
   {{ if .RelatedDocuments }}
     <section id="publications">
       <h2>Publications</h2>
-      {{ template "partial-release-contents-publications" . }}
+      {{ template "partials/release/contents/publications" . }}
     </section>
   {{ end }}
 
   {{ if .RelatedDatasets }}
     <section id="data">
       <h2>Data</h2>
-      {{ template "partial-release-contents-data" . }}
+      {{ template "partials/release/contents/data" . }}
     </section>
   {{ end }}
 
   {{ if .Description.Contact }}
     <section id="contactdetails">
       <h2>Contact details</h2>
-      {{ template "partial-release-contents-contact-details" . }}
+      {{ template "partials/release/contents/contact-details" . }}
     </section>
   {{ end }}
 
   {{ if .DateChanges }}
     <section id="changestothisreleasedate">
       <h2>Changes to this release date</h2>
-      {{ template "partial-release-contents-date-changes" . }}
+      {{ template "partials/release/contents/date-changes" . }}
     </section>
   {{ end }}
 
@@ -38,10 +38,10 @@
     {{ if .ReleaseHistory }}
       <section id="releasehistory">
         <h2>Release history</h2>
-        {{ template "partial-release-contents-release-history" . }}
+        {{ template "partials/release/contents/release-history" . }}
       </section>
     {{ end }}
   */}}
 
-  {{ template "partial-release-contents-code-of-practice" . }}
+  {{ template "partials/release/contents/code-of-practice" . }}
 </div>

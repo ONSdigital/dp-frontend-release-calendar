@@ -1,9 +1,9 @@
 <div class="ons-page__container ons-container">
-  {{ template "partial-breadcrumbs" . }}
+  {{ template "partials/special-breadcrumbs" . }}
 
   <div class="ons-u-fs-m ons-u-mt-s">Release</div>
   <h1 class="ons-u-fs-xxxl ons-u-mt-s">{{ .Page.Metadata.Title }}</h1>
 
-  {{ template "partial-release-status-header" . }}
-  {{ template "partial-release-contents" . }}
+  {{ template "partials/release/status-header" . }}
+  {{ template "partials/release/contents" . }}
 </div>
