@@ -20,20 +20,7 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 }
 
-func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		calendarSample(w, req, rc, cfg)
-	}
-}
-
-func calendarSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
-	ctx := req.Context()
-	basePage := rc.NewBasePageModel()
-	m := mapper.CreateCalendar(ctx, basePage, cfg)
-
-	rc.BuildPage(w, m, "calendar")
-}
-
+// Release will load a release page
 func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		release(w, r, accessToken, collectionID, lang, rc, api, cfg)
@@ -53,4 +40,18 @@ func release(w http.ResponseWriter, req *http.Request, userAccessToken, collecti
 	m := mapper.CreateRelease(basePage, *release)
 
 	rc.BuildPage(w, m, "release")
+}
+
+func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		calendarSample(w, req, rc, cfg)
+	}
+}
+
+func calendarSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
+	ctx := req.Context()
+	basePage := rc.NewBasePageModel()
+	m := mapper.CreateCalendar(ctx, basePage, cfg)
+
+	rc.BuildPage(w, m, "calendar")
 }
