@@ -34,5 +34,6 @@ type Calendar struct {
 	coreModel.Page
 	Filters            []Filter           `json:"filters"`
 	Sort               Sort               `json:"sort"`
+	Keywords           string             `json:"keywords"`
 	CalendarPagination CalendarPagination `json:"calendar_pagination"`
 }

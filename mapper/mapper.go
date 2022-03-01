@@ -327,5 +327,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
+	calendar.Keywords = "foo bar baz"
+
 	return calendar
 }
