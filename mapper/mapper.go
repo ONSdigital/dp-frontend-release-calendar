@@ -294,5 +294,38 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	calendar.CalendarPagination.CalendarItem[8] = item9
 	calendar.CalendarPagination.CalendarItem[9] = item10
 
+	calendar.Filters = []model.Filter{
+		{
+			Name:  "who",
+			Value: "bob",
+		},
+		{
+			Name:  "where",
+			Value: "living room",
+		},
+	}
+
+	calendar.Sort = model.Sort{
+		Mode: "alphabetical-az",
+		Options: []model.SortOption{
+			{
+				Label: "Date (Newest)",
+				Value: "date-newest",
+			},
+			{
+				Label: "Date (Oldest)",
+				Value: "date-oldest",
+			},
+			{
+				Label: "Alphabetical (A-Z)",
+				Value: "alphabetical-az",
+			},
+			{
+				Label: "Alphabetical (Z-A)",
+				Value: "alphabetical-za",
+			},
+		},
+	}
+
 	return calendar
 }

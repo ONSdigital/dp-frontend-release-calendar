@@ -16,7 +16,23 @@ type CalendarItem struct {
 	Description ReleaseDescription `json:"description"`
 }
 
+type Filter struct {
+	Name  string
+	Value string
+}
+
+type SortOption struct {
+	Label string
+	Value string
+}
+type Sort struct {
+	Mode    string
+	Options []SortOption
+}
+
 type Calendar struct {
 	coreModel.Page
+	Filters            []Filter           `json:"filters"`
+	Sort               Sort               `json:"sort"`
 	CalendarPagination CalendarPagination `json:"calendar_pagination"`
 }
