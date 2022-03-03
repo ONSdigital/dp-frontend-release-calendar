@@ -17,17 +17,23 @@ type CalendarItem struct {
 }
 
 type Filter struct {
-	Name  string
-	Value string
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 type SortOption struct {
-	Label string
-	Value string
+	Label string `json:"label"`
+	Value string `json:"value"`
 }
 type Sort struct {
-	Mode    string
-	Options []SortOption
+	Mode    string       `json:"mode"`
+	Options []SortOption `json:"options"`
+}
+
+type Date struct {
+	Day   string `json:"day"`
+	Month string `json:"month"`
+	Year  string `json:"year"`
 }
 
 type Calendar struct {
@@ -35,5 +41,7 @@ type Calendar struct {
 	Filters            []Filter           `json:"filters"`
 	Sort               Sort               `json:"sort"`
 	Keywords           string             `json:"keywords"`
+	BeforeDate         Date               `json:"before_date"`
+	AfterDate          Date               `json:"after_date"`
 	CalendarPagination CalendarPagination `json:"calendar_pagination"`
 }

@@ -329,5 +329,17 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 
 	calendar.Keywords = "foo bar baz"
 
+	calendar.BeforeDate = model.Date{
+		Day:   "1",
+		Month: "2",
+		Year:  "2000",
+	}
+
+	calendar.AfterDate = model.Date{
+		Day:   "5",
+		Month: "6",
+		Year:  "30000",
+	}
+
 	return calendar
 }

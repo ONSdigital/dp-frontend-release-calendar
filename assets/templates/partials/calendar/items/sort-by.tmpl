@@ -10,10 +10,13 @@
 */}}
 
 <form>
+  {{/* Include all other page settings in the form submission */}}
+  {{ template "partials/calendar/hidden-inputs/filters" . }}
+  {{ template "partials/calendar/hidden-inputs/keywords" . }}
+  {{ template "partials/calendar/hidden-inputs/before-date" . }}
+  {{ template "partials/calendar/hidden-inputs/after-date" . }}
+
   <div class="ons-field ons-field--inline">
-    {{ range .Filters }}
-      <input type="hidden" name="{{ .Name }}" value="{{ .Value }}" />
-    {{ end }}
     <label class="ons-label" for="select-calendar-item-order">Sort by</label>
     <select
       id="select-calendar-item-order"
