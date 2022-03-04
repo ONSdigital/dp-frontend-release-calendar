@@ -1,13 +1,13 @@
 <ol class="ons-list ons-list--bare">
   {{range .CalendarPagination.CalendarItem }}
-    <li style="margin-top: 2rem" class="ons-list__item">
+    <li class="ons-list__item ons-u-mt-l">
       <a
         href="{{ .URI }}"
         class="ons-u-fs-l ons-u-td-no ons-u-d-b"
       >
         {{ .Description.Title }}
       </a>
-      <div style="margin-top: 1rem">
+      <div class="ons-u-mt-s">
         <span class="ons-u-fs-r--b">Release date:</span>
         <span>{{ .Description.ReleaseDate }}</span>
         <span>|</span>
