@@ -77,6 +77,84 @@ func CreatePreviousReleases(_ context.Context, basePage coreModel.Page, _ config
 	return previousReleases
 }
 
+func createTableOfContents(
+	description model.ReleaseDescription,
+	relatedDocuments []model.Link,
+	relatedDatasets []model.Link,
+	dateChanges []model.DateChange,
+	releaseHistory []model.Link,
+	codeOfPractice bool,
+) coreModel.TableOfContents {
+	toc := coreModel.TableOfContents{
+		AriaLabelLocaliseKey: "TableOfContents",
+		TitleLocaliseKey:     "Contents",
+	}
+
+	sections := make(map[string]coreModel.ContentSection)
+	displayOrder := make([]string, 0)
+
+	if description.Summary != "" {
+		sections["summary"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Summary",
+		}
+		displayOrder = append(displayOrder, "summary")
+	}
+
+	if len(relatedDocuments) > 0 {
+		sections["publications"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Publications",
+		}
+		displayOrder = append(displayOrder, "publications")
+	}
+
+	if len(relatedDatasets) > 0 {
+		sections["data"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Data",
+		}
+		displayOrder = append(displayOrder, "data")
+	}
+
+	if (model.ContactDetails{} != description.Contact) {
+		sections["contactdetails"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Contact details",
+		}
+		displayOrder = append(displayOrder, "contactdetails")
+	}
+
+	if len(dateChanges) > 0 {
+		sections["changestothisreleasedate"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Changes to this release date",
+		}
+		displayOrder = append(displayOrder, "changestothisreleasedate")
+	}
+
+	if len(releaseHistory) > 0 {
+		sections["releasehistory"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Release history",
+		}
+		displayOrder = append(displayOrder, "releasehistory")
+	}
+
+	if codeOfPractice {
+		sections["codeofpractice"] = coreModel.ContentSection{
+			Current: false,
+			Title:   "Code of Practice",
+		}
+		displayOrder = append(displayOrder, "codeofpractice")
+	}
+
+	toc.Sections = sections
+	toc.DisplayOrder = displayOrder
+
+	return toc
+}
+
 func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
 	result := model.Release{
 		Page:     basePage,
@@ -117,6 +195,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
+	result.CodeOfPractice = true
 
 	result.Breadcrumb = []coreModel.TaxonomyNode{
 		{
@@ -135,6 +214,15 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 			Title: release.Description.Title,
 		},
 	}
+
+	result.TableOfContents = createTableOfContents(
+		result.Description,
+		result.RelatedDocuments,
+		result.RelatedDatasets,
+		result.DateChanges,
+		result.ReleaseHistory,
+		result.CodeOfPractice,
+	)
 
 	return result
 }
