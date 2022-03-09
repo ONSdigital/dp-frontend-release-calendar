@@ -26,6 +26,8 @@ type Release struct {
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
+	// TODO Provisional entry for modelling history
+	// ReleaseHistory            []Link         `json:"release_history"`
 }
 
 type DateChange struct {
@@ -45,4 +47,11 @@ type ReleaseDescription struct {
 	ReleaseDate        string         `json:"release_date"`
 	Summary            string         `json:"summary"`
 	Title              string         `json:"title"`
+}
+
+// TODO Provisional model for previous releases
+type PreviousReleases struct {
+	coreModel.Page
+	Description    ReleaseDescription `json:"description"`
+	ReleaseHistory []Link             `json:"release_history"`
 }

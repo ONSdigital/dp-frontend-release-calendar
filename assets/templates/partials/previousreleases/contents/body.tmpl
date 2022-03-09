@@ -1,0 +1,11 @@
+<div class="ons-pl-grid-col">
+  <section id="summary">
+    <h2>Summary</h2>
+    <p>{{ .Description.Summary }}</p>
+  </section>
+
+  <section id="releasehistory">
+    <h2>Release history</h2>
+    {{ template "partials/previousreleases/contents/release-history" . }}
+  </section>
+</div>

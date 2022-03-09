@@ -1,0 +1,44 @@
+<aside class="ons-toc-container" role="complementary">
+  <nav class="ons-toc" aria-label="Pages in this guide">
+    <h2 class="ons-toc__title ons-u-fs-r--b ons-u-mb-s">Contents</h2>
+    <ol class="ons-list ons-u-mb-m ons-list--dashed">
+      {{ if .Description.Summary }}
+        <li class="ons-list__item" aria-current="true">
+          <a href="#summary" class="ons-list__link">Summary</a>
+        </li>
+      {{ end }}
+
+      {{ if .RelatedDocuments }}
+      <li class="ons-list__item" aria-current="true">
+        <a href="#publications" class="ons-list__link">Publications</a>
+      </li>
+      {{ end }}
+
+      {{ if .RelatedDatasets }}
+        <li class="ons-list__item" aria-current="true">
+          <a href="#data" class="ons-list__link">Data</a>
+        </li>
+      {{ end }}
+
+      {{ if .Description.Contact }}
+        <li class="ons-list__item" aria-current="true">
+          <a href="#contactdetails" class="ons-list__link">Contact details</a>
+        </li>
+      {{ end }}
+
+      {{ if .DateChanges }}
+        <li class="ons-list__item" aria-current="true">
+          <a href="#changestothisreleasedate" class="ons-list__link">Changes to this release date</a>
+        </li>
+      {{ end }}
+
+      {{/* TODO How to support Release History
+        {{ if .ReleaseHistory }}
+          <li class="ons-list__item">
+            <a href="#releasehistory" class="ons-list__link">Release history</a>
+          </li>
+        {{ end }}
+      */}}
+    </ol>
+  </nav>
+</aside>

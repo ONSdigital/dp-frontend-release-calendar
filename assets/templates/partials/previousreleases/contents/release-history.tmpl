@@ -1,0 +1,62 @@
+<div>
+  <table id="basic-table" class="ons-table">
+    <!-- TODO accessility requirement? <caption class="ons-table__caption">A basic table with a caption</caption> -->
+    <thead class="ons-table__head">
+      <tr class="ons-table__row">
+        <th scope="col" class="ons-table__header">
+          <span>Release date</span>
+        </th>
+        <th scope="col" class="ons-table__header">
+          <span>Reason for update</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="ons-table__body">
+      {{ range $index, $element := .ReleaseHistory }}
+        <tr class="ons-table__row">
+          <td class="ons-table__cell ons-u-pt-s ons-u-pb-s">
+            {{ if eq $index 0 }}
+              {{ $element.Title }}
+              <span class="sticker ons-u-fs-s--b">
+                LATEST
+              </span>
+            {{ else }}
+              <a href="{{ $element.URI }}">{{ $element.Title }}</a>
+            {{ end }}
+          </td>
+          <td class="ons-table__cell ons-u-pt-s ons-u-pb-s">
+            {{ $element.Summary }}
+          </td>
+        </tr>
+      {{ end }}
+    </tbody>
+  </table>
+
+  <nav class="ons-pagination " arial-label="Pagination (Page 1 of 35)">
+    <div class="ons-pagination__position ons-u-mb-xs">Page 1 of 35</div>
+    <ul class="ons-pagination__items">
+      <li class="ons-pagination__item ons-pagination__item--previous">
+        <a href="#0" class="ons-pagination__link" rel="prev" aria-label="Go to the previous page (Page 4)">Previous</a>
+      </li>
+      <li class="ons-pagination__item ons-pagination__item--current">
+        <a href="#0" class="ons-pagination__link" aria-current="true" aria-label="Current page (Page 1 of 35)">1</a>
+      </li>
+      <li class="ons-pagination__item">
+        <a href="#0" class="ons-pagination__link" aria-label="Go to page 3">2</a>
+      </li>
+      <li class="ons-pagination__item">
+        <a href="#0" class="ons-pagination__link" aria-label="Go to page 3">3</a>
+      </li>
+      <li class="ons-pagination__item">
+        <a href="#0" class="ons-pagination__link" aria-label="Go to page 4">4</a>
+      </li>
+      <li class="ons-pagination__item ons-pagination__item--gap">&hellip;</li>
+      <li class="ons-pagination__item">
+        <a href="#0" class="ons-pagination__link" aria-label="Go to the last page (Page 35)">35</a>
+      </li>
+      <li class="ons-pagination__item ons-pagination__item--next">
+        <a href="#0" class="ons-pagination__link" rel="next" aria-label="Go to the next page (Page 6)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>

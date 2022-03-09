@@ -42,6 +42,20 @@ func release(w http.ResponseWriter, req *http.Request, userAccessToken, collecti
 	rc.BuildPage(w, m, "release")
 }
 
+func PreviousReleasesSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		previousReleasesSample(w, req, rc, cfg)
+	}
+}
+
+func previousReleasesSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
+	ctx := req.Context()
+	basePage := rc.NewBasePageModel()
+	m := mapper.CreatePreviousReleases(ctx, basePage, cfg)
+
+	rc.BuildPage(w, m, "previousreleases")
+}
+
 func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		calendarSample(w, req, rc, cfg)

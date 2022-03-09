@@ -110,7 +110,6 @@ func TestUnitMapper(t *testing.T) {
 
 			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
-			So(model.FeatureFlags.SixteensVersion, ShouldEqual, "77f1d9b")
 			So(model.BetaBannerEnabled, ShouldBeTrue)
 			So(model.Metadata.Title, ShouldEqual, release.Description.Title)
 			So(model.URI, ShouldEqual, release.URI)
