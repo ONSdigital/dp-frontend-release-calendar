@@ -16,9 +16,11 @@ type CalendarItem struct {
 	Description ReleaseDescription `json:"description"`
 }
 
-type Filter struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+type ReleaseType struct {
+	Label    string                 `json:"label"`
+	Checked  bool                   `json:"value"`
+	Count    int                    `json:"count"`
+	SubTypes map[string]ReleaseType `json:"sub_types"`
 }
 
 type SortOption struct {
@@ -38,10 +40,10 @@ type Date struct {
 
 type Calendar struct {
 	coreModel.Page
-	Filters            []Filter           `json:"filters"`
-	Sort               Sort               `json:"sort"`
-	Keywords           string             `json:"keywords"`
-	BeforeDate         Date               `json:"before_date"`
-	AfterDate          Date               `json:"after_date"`
-	CalendarPagination CalendarPagination `json:"calendar_pagination"`
+	ReleaseTypes       map[string]ReleaseType `json:"release_types"`
+	Sort               Sort                   `json:"sort"`
+	Keywords           string                 `json:"keywords"`
+	BeforeDate         Date                   `json:"before_date"`
+	AfterDate          Date                   `json:"after_date"`
+	CalendarPagination CalendarPagination     `json:"calendar_pagination"`
 }

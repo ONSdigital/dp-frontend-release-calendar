@@ -294,14 +294,38 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	calendar.CalendarPagination.CalendarItem[8] = item9
 	calendar.CalendarPagination.CalendarItem[9] = item10
 
-	calendar.Filters = []model.Filter{
-		{
-			Name:  "who",
-			Value: "bob",
+	calendar.ReleaseTypes = map[string]model.ReleaseType{
+		"type-published": {
+			Label:   "Published",
+			Checked: true,
+			Count:   450,
 		},
-		{
-			Name:  "where",
-			Value: "living room",
+		"type-upcoming": {
+			Label:   "Upcoming",
+			Checked: true,
+			Count:   234,
+			SubTypes: map[string]model.ReleaseType{
+				"subtype-confirmed": {
+					Label:   "Confirmed",
+					Checked: true,
+					Count:   500,
+				},
+				"subtype-provisional": {
+					Label:   "Provisional",
+					Checked: false,
+					Count:   789,
+				},
+				"subtype-postponed": {
+					Label:   "Postponed",
+					Checked: true,
+					Count:   890,
+				},
+			},
+		},
+		"type-cancelled": {
+			Label:   "Cancelled",
+			Checked: true,
+			Count:   0,
 		},
 	}
 

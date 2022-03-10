@@ -1,54 +1,154 @@
-<fieldset class="ons-fieldset">
-  <!-- TODO accessibility requirement? <legend class="ons-fieldset__legend">Content type</legend> -->
-  <p class="ons-checkboxes__label">Show only:</p>
+<form>
+<!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
   <div class="ons-checkboxes__items">
     <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
       <span class="ons-checkbox ons-checkbox--no-border">
-        <input type="checkbox" id="data" class="ons-checkbox__input ons-js-checkbox " value="data">
-        <label class=" ons-checkbox__label " for="data" id="data-label">Published (309)</label>
+        {{ with index .ReleaseTypes "type-published" }}
+          <input
+            type="checkbox"
+            id="release-type-published"
+            class="ons-checkbox__input ons-js-checkbox"
+            name="type-published"
+            value="true"
+            {{ if .Checked }}
+              checked
+            {{ end }}
+          >
+          <label
+            class="ons-checkbox__label"
+            for="release-type-published"
+          >
+            {{ .Label }} ({{ .Count }})
+          </label>
+        {{ end }}
       </span>
     </span>
     <br>
     <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
       <span class="ons-checkbox ons-checkbox--no-border">
-        <input type="checkbox" id="publications" class="ons-checkbox__input ons-js-checkbox  ons-js-other ons-js-select-all-children" value="publications" aria-controls="publications-other-wrap" aria-haspopup="true">
-        <label class=" ons-checkbox__label " for="publications" id="publications-label">Upcoming (137)</label>
-        <span class="ons-checkbox__other" id="publications-other-wrap">
-          <fieldset class="ons-fieldset ons-js-other-fieldset">
-            <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">Publication type</legend>
-            <p class="ons-checkboxes__label"></p>
-            <div class="ons-checkboxes__items">
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="datasets" class="ons-checkbox__input ons-js-checkbox " value="datasets">
-                  <label class=" ons-checkbox__label " for="datasets" id="datasets-label">Confirmed (100)</label>
+        {{ with index .ReleaseTypes "type-upcoming" }}
+          <input
+            type="checkbox"
+            id="release-type-upcoming"
+            class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children"
+            name="type-upcoming"
+            value="true"
+            aria-controls="publications-other-wrap"
+            aria-haspopup="true"
+            {{ if .Checked }}
+              checked
+            {{ end }}
+          >
+          <label
+            class="ons-checkbox__label"
+            for="release-type-upcoming"
+          >
+            {{ .Label }} ({{ .Count }})
+          </label>
+          <span class="ons-checkbox__other">
+            <fieldset class="ons-fieldset ons-js-other-fieldset">
+              <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">{{ .Label }} type</legend>
+              <p class="ons-checkboxes__label"></p>
+              <div class="ons-checkboxes__items">
+                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                  <span class="ons-checkbox ons-checkbox--no-border">
+                    {{ with index .SubTypes "subtype-confirmed" }}
+                      <input
+                        type="checkbox"
+                        id="release-subtype-confirmed"
+                        class="ons-checkbox__input ons-js-checkbox"
+                        name="subtype-confirmed"
+                        value="true"
+                        {{ if .Checked }}
+                          checked
+                        {{ end }}
+                      >
+                      <label
+                        class="ons-checkbox__label"
+                        for="release-subtype-confirmed"
+                      >
+                        {{ .Label }} ({{ .Count }})
+                      </label>
+                    {{ end }}
+                  </span>
                 </span>
-              </span>
-              <br>
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="timeseries" class="ons-checkbox__input ons-js-checkbox " value="timeseries">
-                  <label class=" ons-checkbox__label " for="timeseries" id="timeseries-label">Provisional (20)</label>
+                <br>
+                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                  <span class="ons-checkbox ons-checkbox--no-border">
+                    {{ with index .SubTypes "subtype-provisional" }}
+                      <input
+                        type="checkbox"
+                        id="release-subtype-provisional"
+                        class="ons-checkbox__input ons-js-checkbox"
+                        name="subtype-provisional"
+                        value="true"
+                        {{ if .Checked }}
+                          checked
+                        {{ end }}
+                      >
+                      <label
+                        class="ons-checkbox__label"
+                        for="release-subtype-provisional"
+                      >
+                        {{ .Label }} ({{ .Count }})
+                      </label>
+                    {{ end }}
+                  </span>
                 </span>
-              </span>
-              <br>
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="requested" class="ons-checkbox__input ons-js-checkbox " value="requested">
-                  <label class=" ons-checkbox__label " for="requested" id="requested-label">Postponed (17)</label>
+                <br>
+                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                  <span class="ons-checkbox ons-checkbox--no-border">
+                    {{ with index .SubTypes "subtype-postponed" }}
+                      <input
+                        type="checkbox"
+                        id="release-subtype-postponed"
+                        class="ons-checkbox__input ons-js-checkbox"
+                        name="subtype-postponed"
+                        value="true"
+                        {{ if .Checked }}
+                          checked
+                        {{ end }}
+                      >
+                      <label
+                        class="ons-checkbox__label"
+                        for="release-subtype-postponed"
+                      >
+                        {{ .Label }} ({{ .Count }})
+                      </label>
+                    {{ end }}
+                  </span>
                 </span>
-              </span>
-            </div>
-          </fieldset>
-        </span>
+              </div>
+            </fieldset>
+          </span>
+        {{ end }}
       </span>
     </span>
     <br>
     <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
       <span class="ons-checkbox ons-checkbox--no-border">
-        <input type="checkbox" id="areas" class="ons-checkbox__input ons-js-checkbox  ons-js-other ons-js-select-all-children" value="areas">
-        <label class=" ons-checkbox__label " for="areas" id="areas-label">Cancelled (0)</label>
+        {{ with index .ReleaseTypes "type-cancelled" }}
+          <input
+            type="checkbox"
+            id="release-type-cancelled"
+            class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children"
+            name="type-cancelled"
+            value="true"
+            {{ if .Checked }}
+              checked
+            {{ end }}
+          >
+          <label
+            class="ons-checkbox__label"
+            for="release-type-cancelled"
+          >
+            {{ .Label }} ({{ .Count }})
+          </label>
+        {{ end }}
       </span>
     </span>
   </div>
-</fieldset>
+  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
+    <span class="ons-btn__inner">Apply release type filters</span>
+  </button>
+</form>
