@@ -1,4 +1,10 @@
 <form>
+  {{/* Include all other page settings in the form submission */}}
+  {{ template "partials/calendar/hidden-inputs/keywords" . }}
+  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
+  {{ template "partials/calendar/hidden-inputs/before-date" . }}
+  {{ template "partials/calendar/hidden-inputs/after-date" . }}
+
 <!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
   <div class="ons-checkboxes__items">
     <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
