@@ -1,8 +1,13 @@
-<div>
+<form>
+  {{/* Include all other page settings in the form submission */}}
+  {{ template "partials/calendar/hidden-inputs/release-types" . }}
+  {{ template "partials/calendar/hidden-inputs/keywords" . }}
+  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
+
   {{ template "partials/calendar/filter/date-released-after"  . }}
   {{ template "partials/calendar/filter/date-released-before"  . }}
 
-  <button type="button" class="ons-btn ons-btn--secondary">
+  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
     <span class="ons-btn__inner">Apply date filters</span>
   </button>
-</div>
+</form>

@@ -294,5 +294,76 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	calendar.CalendarPagination.CalendarItem[8] = item9
 	calendar.CalendarPagination.CalendarItem[9] = item10
 
+	calendar.ReleaseTypes = map[string]model.ReleaseType{
+		"type-published": {
+			Label:   "Published",
+			Checked: true,
+			Count:   450,
+		},
+		"type-upcoming": {
+			Label:   "Upcoming",
+			Checked: true,
+			Count:   234,
+			SubTypes: map[string]model.ReleaseType{
+				"subtype-confirmed": {
+					Label:   "Confirmed",
+					Checked: true,
+					Count:   500,
+				},
+				"subtype-provisional": {
+					Label:   "Provisional",
+					Checked: false,
+					Count:   789,
+				},
+				"subtype-postponed": {
+					Label:   "Postponed",
+					Checked: true,
+					Count:   890,
+				},
+			},
+		},
+		"type-cancelled": {
+			Label:   "Cancelled",
+			Checked: true,
+			Count:   0,
+		},
+	}
+
+	calendar.Sort = model.Sort{
+		Mode: "alphabetical-az",
+		Options: []model.SortOption{
+			{
+				Label: "Date (Newest)",
+				Value: "date-newest",
+			},
+			{
+				Label: "Date (Oldest)",
+				Value: "date-oldest",
+			},
+			{
+				Label: "Alphabetical (A-Z)",
+				Value: "alphabetical-az",
+			},
+			{
+				Label: "Alphabetical (Z-A)",
+				Value: "alphabetical-za",
+			},
+		},
+	}
+
+	calendar.Keywords = "foo bar baz"
+
+	calendar.BeforeDate = model.Date{
+		Day:   "1",
+		Month: "2",
+		Year:  "2000",
+	}
+
+	calendar.AfterDate = model.Date{
+		Day:   "5",
+		Month: "6",
+		Year:  "30000",
+	}
+
 	return calendar
 }
