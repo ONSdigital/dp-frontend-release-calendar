@@ -11,72 +11,6 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 )
 
-func CreatePreviousReleases(_ context.Context, basePage coreModel.Page, _ config.Config) model.PreviousReleases {
-	previousReleases := model.PreviousReleases{
-		Page: basePage,
-	}
-
-	previousReleases.BetaBannerEnabled = true
-	previousReleases.Metadata.Title = "Personal well-being in the UK, quarterly: July 2021 to September 2021"
-
-	previousReleases.Description.Title = "Personal well-being in the UK, quarterly: July 2021 to September 2021"
-	previousReleases.Description.Summary = "Quarterly estimates of life satisfaction, feeling that the things done in life are worthwhile, happiness and anxiety at the UK level, created using the Annual Population Survey (APS)."
-
-	previousReleases.ReleaseHistory = make([]model.Link, 10)
-	previousReleases.ReleaseHistory[0] = model.Link{
-		Title:   "8 December 2021",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[1] = model.Link{
-		Title:   "26 July 2021",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[2] = model.Link{
-		Title:   "22 April 2021",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[3] = model.Link{
-		Title:   "21 January 2021",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[4] = model.Link{
-		Title:   "17 October 2020",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[5] = model.Link{
-		Title:   "21 July 2020",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[6] = model.Link{
-		Title:   "23 April 2020",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[7] = model.Link{
-		Title:   "28 January 2020",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[8] = model.Link{
-		Title:   "18 October 2019",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-	previousReleases.ReleaseHistory[9] = model.Link{
-		Title:   "17 July 2019",
-		URI:     "localhost",
-		Summary: "Updated with latest data",
-	}
-
-	return previousReleases
-}
-
 func createTableOfContents(
 	description model.ReleaseDescription,
 	relatedDocuments []model.Link,
@@ -153,6 +87,81 @@ func createTableOfContents(
 	toc.DisplayOrder = displayOrder
 
 	return toc
+}
+
+func CreatePreviousReleases(_ context.Context, basePage coreModel.Page, _ config.Config) model.PreviousReleases {
+	previousReleases := model.PreviousReleases{
+		Page: basePage,
+	}
+
+	previousReleases.BetaBannerEnabled = true
+	previousReleases.Metadata.Title = "Personal well-being in the UK, quarterly: July 2021 to September 2021"
+
+	previousReleases.Description.Title = "Personal well-being in the UK, quarterly: July 2021 to September 2021"
+	previousReleases.Description.Summary = "Quarterly estimates of life satisfaction, feeling that the things done in life are worthwhile, happiness and anxiety at the UK level, created using the Annual Population Survey (APS)."
+
+	previousReleases.ReleaseHistory = make([]model.Link, 10)
+	previousReleases.ReleaseHistory[0] = model.Link{
+		Title:   "8 December 2021",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[1] = model.Link{
+		Title:   "26 July 2021",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[2] = model.Link{
+		Title:   "22 April 2021",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[3] = model.Link{
+		Title:   "21 January 2021",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[4] = model.Link{
+		Title:   "17 October 2020",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[5] = model.Link{
+		Title:   "21 July 2020",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[6] = model.Link{
+		Title:   "23 April 2020",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[7] = model.Link{
+		Title:   "28 January 2020",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[8] = model.Link{
+		Title:   "18 October 2019",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+	previousReleases.ReleaseHistory[9] = model.Link{
+		Title:   "17 July 2019",
+		URI:     "localhost",
+		Summary: "Updated with latest data",
+	}
+
+	previousReleases.TableOfContents = createTableOfContents(
+		previousReleases.Description,
+		nil,
+		nil,
+		nil,
+		previousReleases.ReleaseHistory,
+		false,
+	)
+
+	return previousReleases
 }
 
 func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
