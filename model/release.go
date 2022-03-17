@@ -26,8 +26,8 @@ type Release struct {
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
-	// TODO Provisional entry for modelling history
-	// ReleaseHistory            []Link         `json:"release_history"`
+	ReleaseHistory            []Link             `json:"release_history"` // TODO Provisional entry for modelling history
+	CodeOfPractice            bool               `json:"code_of_practice"`
 }
 
 type DateChange struct {
