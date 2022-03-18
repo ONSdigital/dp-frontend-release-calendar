@@ -1,33 +1,13 @@
-<form>
+<form
+  role="search"
+  aria-label="Keywords"
+  class="ons-u-pr-s ons-u-pr-no@xxs@l"
+>
   {{/* Include all other page settings in the form submission */}}
   {{ template "partials/calendar/hidden-inputs/release-types" . }}
   {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
   {{ template "partials/calendar/hidden-inputs/before-date" . }}
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
 
-  <div class="ons-field">
-    <label
-      class="ons-label ons-u-pb-xs ons-u-fw-n"
-      for="search-field"
-    >
-      Search keywords:
-    </label>
-    <span class="ons-grid--flex ons-search">
-      <input
-        type="search"
-        id="search-field"
-        name="keywords"
-        class="ons-input ons-input--text ons-input-type__input ons-search__input"
-        value="{{ .Keywords }}"
-      >
-      <button
-        type="submit"
-        class="ons-btn ons-search__btn ons-u-mt-xs@xxs@s ons-btn--small"
-      >
-        <span class="ons-btn__inner">
-          {{ template "icons/search" . }}
-        </span>
-      </button>
-    </span>
-  </div>
+  {{ template "partials/compact-search" .KeywordSearch }}
 </form>

@@ -40,10 +40,11 @@ type Date struct {
 
 type Calendar struct {
 	coreModel.Page
-	ReleaseTypes       map[string]ReleaseType `json:"release_types"`
-	Sort               Sort                   `json:"sort"`
-	Keywords           string                 `json:"keywords"`
-	BeforeDate         Date                   `json:"before_date"`
-	AfterDate          Date                   `json:"after_date"`
-	CalendarPagination CalendarPagination     `json:"calendar_pagination"`
+	ReleaseTypes       map[string]ReleaseType  `json:"release_types"`
+	Sort               Sort                    `json:"sort"`
+	Keywords           string                  `json:"keywords"`
+	BeforeDate         Date                    `json:"before_date"`
+	AfterDate          Date                    `json:"after_date"`
+	CalendarPagination CalendarPagination      `json:"calendar_pagination"`
+	KeywordSearch      coreModel.CompactSearch `json:"keyword_search"`
 }
