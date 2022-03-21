@@ -1,18 +1,20 @@
 package model
 
 import (
+	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
 type CalendarPagination struct {
-	CurrentPage  int            `json:"current_page"`
-	CalendarItem []CalendarItem `json:"calendar_item"`
 	TotalPages   int            `json:"total_pages"`
+	CurrentPage  int            `json:"current_page"`
 	Limit        int            `json:"limit"`
+	CalendarItem []CalendarItem `json:"calendar_item"`
 }
 
 type CalendarItem struct {
 	URI         string             `json:"uri"`
+	DateChanges []DateChange       `json:"date_changes"`
 	Description ReleaseDescription `json:"description"`
 }
 
@@ -23,10 +25,8 @@ type ReleaseType struct {
 	SubTypes map[string]ReleaseType `json:"sub_types"`
 }
 
-type SortOption struct {
-	Label string `json:"label"`
-	Value string `json:"value"`
-}
+type SortOption = queryparams.SortOption
+
 type Sort struct {
 	Mode    string       `json:"mode"`
 	Options []SortOption `json:"options"`
@@ -40,6 +40,7 @@ type Date struct {
 
 type Calendar struct {
 	coreModel.Page
+
 	ReleaseTypes       map[string]ReleaseType `json:"release_types"`
 	Sort               Sort                   `json:"sort"`
 	Keywords           string                 `json:"keywords"`

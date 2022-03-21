@@ -1,16 +1,21 @@
 package mapper
 
 import (
+	"net/url"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
+	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
+
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestUnitMapper(t *testing.T) {
-	Convey("Given a reelase and a base page", t, func() {
+	Convey("Given a release and a base page", t, func() {
 		basePage := coreModel.NewPage("path/to/assets", "site-domain")
 
 		release := releasecalendar.Release{
@@ -136,6 +141,134 @@ func TestUnitMapper(t *testing.T) {
 	})
 }
 
+func TestReleaseCalendarMapper(t *testing.T) {
+	Convey("Given a Release Calendar and a base page", t, func() {
+		basePage := coreModel.NewPage("path/to/assets", "site-domain")
+
+		releaseResponse := sitesearch.ReleaseResponse{
+			Took: 100,
+			Breakdown: sitesearch.Breakdown{
+				Total: 11,
+			},
+			Releases: []sitesearch.Release{
+				{
+					URI: "/releases/title1",
+					DateChanges: []sitesearch.ReleaseDateChange{
+						{
+							Date:         "2015-09-22T12:30:23.221Z",
+							ChangeNotice: "Something happened to change the date",
+						},
+					},
+					Description: sitesearch.ReleaseDescription{
+						Title:       "Public Sector Employment, UK: September 2021",
+						Summary:     "A summary for Title 1",
+						ReleaseDate: time.Now().AddDate(0, 0, -10).UTC().Format(time.RFC3339),
+						Published:   true,
+						Finalised:   true,
+						Postponed:   true,
+						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+						NextRelease: "To be announced",
+					},
+				},
+				{
+					URI: "/releases/title2",
+					Description: sitesearch.ReleaseDescription{
+						Title:       "Labour market in the regions of the UK: December 2021",
+						Summary:     "A summary for Title 2",
+						ReleaseDate: time.Now().AddDate(0, 0, -15).UTC().Format(time.RFC3339),
+						Published:   false,
+						Cancelled:   true,
+						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+					},
+				},
+				{
+					URI: "/releases/title3",
+					Description: sitesearch.ReleaseDescription{
+						Title:       "Personal well-being in the UK, quarterly: July 2021 to September 2021",
+						Summary:     "A summary for Title 3",
+						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
+						Published:   false,
+						Cancelled:   false,
+					},
+				},
+				{
+					URI: "/releases/title4",
+					Description: sitesearch.ReleaseDescription{
+						Title:       "Labour market statistics time series: December 2021",
+						Summary:     "A summary for Title 3",
+						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
+						Published:   false,
+						Cancelled:   false,
+						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+					},
+				},
+				{
+					URI: "/releases/title5",
+					Description: sitesearch.ReleaseDescription{
+						Title:       "UK labour market: December 2021",
+						Summary:     "A summary for Title 3",
+						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
+						Published:   false,
+						Cancelled:   false,
+						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
+					},
+				},
+			},
+		}
+
+		params := url.Values{}
+		params.Set(queryparams.Limit, "5")
+		params.Set(queryparams.Page, "1")
+		params.Set(queryparams.Offset, "0")
+		params.Set(queryparams.YearAfter, "")
+		params.Set(queryparams.MonthAfter, "")
+		params.Set(queryparams.DayAfter, "")
+		params.Set(queryparams.YearBefore, "")
+		params.Set(queryparams.MonthBefore, "")
+		params.Set(queryparams.DayBefore, "")
+		params.Set(queryparams.SortName, "release_date_desc")
+		params.Set(queryparams.Keywords, "everything")
+		params.Set(queryparams.Upcoming, "true")
+
+		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse)
+
+			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
+			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
+			So(calendar.BetaBannerEnabled, ShouldBeTrue)
+			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
+			So(calendar.Keywords, ShouldEqual, params.Get(queryparams.Keywords))
+			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Get(queryparams.SortName), Options: queryparams.SortOptions})
+			So(calendar.BeforeDate, ShouldResemble, model.Date{Day: params.Get(queryparams.DayBefore), Month: params.Get(queryparams.MonthBefore), Year: params.Get(queryparams.YearBefore)})
+			So(calendar.AfterDate, ShouldResemble, model.Date{Day: params.Get(queryparams.DayAfter), Month: params.Get(queryparams.MonthAfter), Year: params.Get(queryparams.YearAfter)})
+			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse))
+			So(calendar.CalendarPagination.TotalPages, ShouldEqual, 3)
+			So(calendar.CalendarPagination.CurrentPage, ShouldEqual, 1)
+			So(calendar.CalendarPagination.Limit, ShouldEqual, 5)
+			for i, r := range calendar.CalendarPagination.CalendarItem {
+				So(r.URI, ShouldEqual, releaseResponse.Releases[i].URI)
+				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
+				So(r.Description.Title, ShouldEqual, releaseResponse.Releases[i].Description.Title)
+				So(r.Description.Summary, ShouldEqual, releaseResponse.Releases[i].Description.Summary)
+				So(r.Description.NationalStatistic, ShouldEqual, releaseResponse.Releases[i].Description.NationalStatistic)
+				So(r.Description.ReleaseDate, ShouldEqual, releaseResponse.Releases[i].Description.ReleaseDate)
+				So(r.Description.Published, ShouldEqual, releaseResponse.Releases[i].Description.Published)
+				So(r.Description.Finalised, ShouldEqual, releaseResponse.Releases[i].Description.Finalised)
+				So(r.Description.Cancelled, ShouldEqual, releaseResponse.Releases[i].Description.Cancelled)
+				So(r.Description.CancellationNotice, ShouldResemble, releaseResponse.Releases[i].Description.CancellationNotice)
+				So(r.Description.ProvisionalDate, ShouldEqual, releaseResponse.Releases[i].Description.ProvisionalDate)
+				if releaseResponse.Releases[i].Description.Contact != nil {
+					So(r.Description.Contact.Name, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Name)
+					So(r.Description.Contact.Email, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Email)
+					So(r.Description.Contact.Telephone, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Telephone)
+				} else {
+					So(r.Description.Contact, ShouldBeZeroValue)
+				}
+			}
+		})
+	})
+}
+
 // assertLinks checks that the actual model Link content is equal to the expected release Link
 func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 	So(len(actual), ShouldEqual, len(expected))
@@ -148,6 +281,14 @@ func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 
 // assertDateChanges checks that the actual model DateChanges content is equal to the expected release ReleaseDateChanges
 func assertDateChanges(expected []releasecalendar.ReleaseDateChange, actual []model.DateChange) {
+	So(len(actual), ShouldEqual, len(expected))
+	for i := range expected {
+		So(actual[i].Date, ShouldEqual, expected[i].Date)
+		So(actual[i].ChangeNotice, ShouldEqual, expected[i].ChangeNotice)
+	}
+}
+
+func assertSiteSearchDateChanges(expected []sitesearch.ReleaseDateChange, actual []model.DateChange) {
 	So(len(actual), ShouldEqual, len(expected))
 	for i := range expected {
 		So(actual[i].Date, ShouldEqual, expected[i].Date)

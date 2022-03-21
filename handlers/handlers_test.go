@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
-	gomock "github.com/golang/mock/gomock"
+
+	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -54,63 +57,135 @@ func TestUnitHandlers(t *testing.T) {
 		})
 	})
 
-	Convey("test Release", t, func() {
-		url := "/releases/test"
-		r := releasecalendar.Release{
-			URI: url,
-			Description: releasecalendar.ReleaseDescription{
-				Title: "Test release",
-			},
-		}
-
-		mockApiClient := NewMockReleaseCalendarAPI(mockCtrl)
+	Convey("test API (Release and ReleaseCalendar)", t, func() {
 		mockRenderClient := NewMockRenderClient(mockCtrl)
-		mockConfig := config.Config{}
-
-		router := mux.NewRouter()
-		router.HandleFunc(url, Release(mockConfig, mockRenderClient, mockApiClient))
+		mockConfig, _ := config.Get()
 
 		w := httptest.NewRecorder()
+		router := mux.NewRouter()
 
-		Convey("it returns 200 when rendered succesfully", func() {
-			mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(&r, nil)
-			mockRenderClient.EXPECT().NewBasePageModel()
-			mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
+		Convey("test Release", func() {
+			mockApiClient := NewMockReleaseCalendarAPI(mockCtrl)
+			url := "/releases/test"
+			router.HandleFunc(url, Release(*mockConfig, mockRenderClient, mockApiClient))
 
-			req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-			setRequestHeaders(req)
+			r := releasecalendar.Release{
+				URI: url,
+				Description: releasecalendar.ReleaseDescription{
+					Title: "Test release",
+				},
+			}
 
-			router.ServeHTTP(w, req)
+			Convey("it returns 200 when rendered successfully", func() {
+				mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(&r, nil)
+				mockRenderClient.EXPECT().NewBasePageModel()
+				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
 
-			So(w.Code, ShouldEqual, http.StatusOK)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+				setRequestHeaders(req)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusOK)
+			})
+
+			Convey("it returns 200 when rendered successfully without headers or cookies", func() {
+				mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, url).Return(&r, nil)
+				mockRenderClient.EXPECT().NewBasePageModel()
+				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
+
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusOK)
+			})
+
+			Convey("it returns 500 when there is an error getting the release from the api", func() {
+				mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(nil, errors.New("error reading data"))
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+				setRequestHeaders(req)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusInternalServerError)
+			})
 		})
 
-		Convey("it returns 200 when rendered succesfully without headers or cookies", func() {
-			mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, url).Return(&r, nil)
-			mockRenderClient.EXPECT().NewBasePageModel()
-			mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
+		Convey("test ReleaseCalendar", func() {
+			mockSearchClient := NewMockSearchAPI(mockCtrl)
+			url := "/releasecalendar/test"
+			router.HandleFunc(url, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient))
+			r := sitesearch.ReleaseResponse{
+				Releases: []sitesearch.Release{
+					{URI: url,
+						Description: sitesearch.ReleaseDescription{Title: "Release Calendar Entry Test"},
+					},
+				},
+			}
 
-			req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+			Convey("it returns 200 when rendered successfully", func() {
+				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
+				mockRenderClient.EXPECT().NewBasePageModel()
+				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 
-			router.ServeHTTP(w, req)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+				setRequestHeaders(req)
 
-			So(w.Code, ShouldEqual, http.StatusOK)
-		})
+				router.ServeHTTP(w, req)
 
-		Convey("it returns 500 when there is an error getting the release from the api", func() {
-			mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(nil, errors.New(("error reading data")))
-			req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-			setRequestHeaders(req)
+				So(w.Code, ShouldEqual, http.StatusOK)
+			})
 
-			router.ServeHTTP(w, req)
+			Convey("it returns 200 when rendered successfully without headers or cookies", func() {
+				mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
+				mockRenderClient.EXPECT().NewBasePageModel()
+				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 
-			So(w.Code, ShouldEqual, http.StatusInternalServerError)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusOK)
+			})
+
+			Convey("it returns 400 when there is an error in one of the parameters", func() {
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", url), nil)
+				setRequestHeaders(req)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusBadRequest)
+			})
+
+			Convey("it returns 500 when there is an error getting the releases from the search api", func() {
+				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, errors.New("error reading data"))
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+				setRequestHeaders(req)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusInternalServerError)
+			})
 		})
 	})
-
 }
 
 func setRequestHeaders(req *http.Request) {
 	headers.SetAuthToken(req, accessToken)
 	headers.SetCollectionID(req, collectionID)
+}
+
+func defaultParams() url.Values {
+	values := url.Values{}
+	values.Set("limit", "10")
+	values.Set("page", "1")
+	values.Set("offset", "0")
+	values.Set("fromDate", "")
+	values.Set("toDate", "")
+	values.Set("sort", "release_date_desc")
+	values.Set("q", "")
+	values.Set("upcoming", "")
+
+	return values
 }

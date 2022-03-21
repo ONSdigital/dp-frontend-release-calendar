@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
+	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
+
 	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
 )
@@ -27,7 +31,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 	})
 }
 
-func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, cfg config.Config) {
+func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, _ config.Config) {
 	ctx := req.Context()
 
 	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, req.URL.EscapedPath())
@@ -54,6 +58,55 @@ func previousReleasesSample(w http.ResponseWriter, req *http.Request, rc RenderC
 	m := mapper.CreatePreviousReleases(ctx, basePage, cfg)
 
 	rc.BuildPage(w, m, "previousreleases")
+}
+
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.HandlerFunc {
+	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		releaseCalendar(w, r, accessToken, collectionID, lang, rc, api, cfg)
+	})
+}
+
+func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api SearchAPI, cfg config.Config) {
+	ctx := req.Context()
+	params := req.URL.Query()
+
+	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Invalid %s parameter", queryparams.Limit), http.StatusBadRequest)
+		return
+	}
+	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
+
+	pageNumber, err := queryparams.GetPage(ctx, params, 1, queryparams.GetIntValidator(1, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Invalid %s parameter", queryparams.Page), http.StatusBadRequest)
+		return
+	}
+	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
+	params.Set(queryparams.Offset, strconv.Itoa(queryparams.CalculateOffset(pageNumber, pageSize)))
+
+	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	params.Set(queryparams.DateFrom, fromDate)
+	params.Set(queryparams.DateTo, toDate)
+
+	params.Set(queryparams.SortName, queryparams.ParamGet(params, queryparams.SortName, queryparams.RelDateDesc.String()))
+	params.Set("q", queryparams.ParamGet(params, queryparams.Keywords, ""))
+	params.Set("upcoming", queryparams.ParamGet(params, queryparams.Upcoming, ""))
+
+	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
+	if err != nil {
+		setStatusCode(req, w, err)
+		return
+	}
+
+	basePage := rc.NewBasePageModel()
+	calendar := mapper.CreateReleaseCalendar(basePage, params, releases)
+
+	rc.BuildPage(w, calendar, "calendar")
 }
 
 func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {

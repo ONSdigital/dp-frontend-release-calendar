@@ -7,9 +7,11 @@ package handlers
 import (
 	context "context"
 	io "io"
+	url "net/url"
 	reflect "reflect"
 
 	releasecalendar "github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	model "github.com/ONSdigital/dp-renderer/model"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -150,4 +152,42 @@ func (m *MockReleaseCalendarAPI) GetLegacyRelease(ctx context.Context, userAcces
 func (mr *MockReleaseCalendarAPIMockRecorder) GetLegacyRelease(ctx, userAccessToken, collectionID, lang, uri interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLegacyRelease", reflect.TypeOf((*MockReleaseCalendarAPI)(nil).GetLegacyRelease), ctx, userAccessToken, collectionID, lang, uri)
+}
+
+// MockSearchAPI is a mock of SearchAPI interface.
+type MockSearchAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockSearchAPIMockRecorder
+}
+
+// MockSearchAPIMockRecorder is the mock recorder for MockSearchAPI.
+type MockSearchAPIMockRecorder struct {
+	mock *MockSearchAPI
+}
+
+// NewMockSearchAPI creates a new mock instance.
+func NewMockSearchAPI(ctrl *gomock.Controller) *MockSearchAPI {
+	mock := &MockSearchAPI{ctrl: ctrl}
+	mock.recorder = &MockSearchAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSearchAPI) EXPECT() *MockSearchAPIMockRecorder {
+	return m.recorder
+}
+
+// GetReleases mocks base method.
+func (m *MockSearchAPI) GetReleases(ctx context.Context, userAccessToken, collectionID, lang string, query url.Values) (search.ReleaseResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetReleases", ctx, userAccessToken, collectionID, lang, query)
+	ret0, _ := ret[0].(search.ReleaseResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetReleases indicates an expected call of GetReleases.
+func (mr *MockSearchAPIMockRecorder) GetReleases(ctx, userAccessToken, collectionID, lang, query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReleases", reflect.TypeOf((*MockSearchAPI)(nil).GetReleases), ctx, userAccessToken, collectionID, lang, query)
 }
