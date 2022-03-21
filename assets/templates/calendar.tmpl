@@ -1,6 +1,6 @@
-<div class="ons-page__container ons-container">
+<div class="ons-page__container ons-container release-calendar">
   <div class="ons-grid ons-u-ml-no">
-    <h1 class="ons-u-fs-xxxl ons-u-mt-s">{{ .Page.Metadata.Title }}</h1>
+    <h1 class="ons-u-fs-xxxl ons-u-mt-m ons-u-mb-xl">{{ .Page.Metadata.Title }}</h1>
 
     <!-- Left column -->
     <div class="ons-grid__col ons-col-4@m ons-u-p-no">
@@ -8,7 +8,7 @@
     </div>
 
     <!-- Right column -->
-    <div class="ons-grid__col ons-col-8@m">
+    <div class="ons-grid__col ons-col-8@m ons-u-p-no@xxs@m">
       {{ template "partials/calendar/items" . }}
     </div>
   </div>
