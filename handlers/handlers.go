@@ -69,6 +69,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.Han
 func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api SearchAPI, cfg config.Config) {
 	ctx := req.Context()
 	params := req.URL.Query()
+	validatedParams := queryparams.ValidatedParams{}
 
 	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
 	if err != nil {
@@ -76,6 +77,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		return
 	}
 	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
+	validatedParams.Limit = pageSize
 
 	pageNumber, err := queryparams.GetPage(ctx, params, 1, queryparams.GetIntValidator(1, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit))
 	if err != nil {
@@ -83,19 +85,47 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		return
 	}
 	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
-	params.Set(queryparams.Offset, strconv.Itoa(queryparams.CalculateOffset(pageNumber, pageSize)))
+	offset := queryparams.CalculateOffset(pageNumber, pageSize)
+	params.Set(queryparams.Offset, strconv.Itoa(offset))
+	validatedParams.Offset = offset
 
 	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	params.Set(queryparams.DateFrom, fromDate)
-	params.Set(queryparams.DateTo, toDate)
+	params.Set(queryparams.DateFrom, fromDate.String())
+	validatedParams.AfterDate = fromDate
+	params.Set(queryparams.DateTo, toDate.String())
+	validatedParams.BeforeDate = toDate
 
-	params.Set(queryparams.SortName, queryparams.ParamGet(params, queryparams.SortName, queryparams.RelDateDesc.String()))
-	params.Set("q", queryparams.ParamGet(params, queryparams.Keywords, ""))
-	params.Set("upcoming", queryparams.ParamGet(params, queryparams.Upcoming, ""))
+	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	params.Set(queryparams.SortName, sort.String())
+	validatedParams.Sort = sort
+
+	keywords, err := queryparams.GetKeywords(ctx, params, "")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	params.Set(queryparams.Keywords, keywords)
+	validatedParams.Keywords = keywords
+	params.Set(queryparams.Query, keywords)
+
+	// TODO Upcoming is the only Release Type to be parsed as present until the extended calendar query is added
+	upcoming, set, err := queryparams.GetBoolean(ctx, params, queryparams.Upcoming, false)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	validatedParams.Upcoming = upcoming
+	if upcoming || set {
+		params.Set(queryparams.Upcoming, strconv.FormatBool(upcoming))
+	}
 
 	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
 	if err != nil {
@@ -104,7 +134,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	}
 
 	basePage := rc.NewBasePageModel()
-	calendar := mapper.CreateReleaseCalendar(basePage, params, releases)
+	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases)
 
 	rc.BuildPage(w, calendar, "calendar")
 }

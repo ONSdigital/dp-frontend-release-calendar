@@ -57,7 +57,7 @@ func get() (*Config, error) {
 		DefaultLimit:                10,
 		DefaultMaximumLimit:         100,
 		DefaultSort:                 queryparams.RelDateDesc.String(),
-		DefaultMaximumSearchResults: 500,
+		DefaultMaximumSearchResults: 1000,
 		GracefulShutdownTimeout:     5 * time.Second,
 		HealthCheckInterval:         30 * time.Second,
 		HealthCheckCriticalTimeout:  90 * time.Second,

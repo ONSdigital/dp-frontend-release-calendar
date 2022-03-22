@@ -24,6 +24,7 @@ const (
 	YearBefore  = "before-year"
 	YearAfter   = "after-year"
 	Keywords    = "keywords"
+	Query       = "query"
 	DateFrom    = "fromDate"
 	DateTo      = "toDate"
 	Published   = "type-published"
@@ -70,39 +71,87 @@ var (
 )
 
 func GetLimit(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
-	limit := defaultValue
+	var (
+		limit = defaultValue
+		err   error
+	)
 	asString := params.Get(Limit)
 	if asString != "" {
-		pi, err := validator(Limit, asString)
+		limit, err = validator(Limit, asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Limit, "value": asString})
 			return 0, err
 		}
-		limit = pi
 	}
 
 	return limit, nil
 }
 
 func GetPage(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
-	limit := defaultValue
+	var (
+		limit = defaultValue
+		err   error
+	)
 	asString := params.Get(Page)
 	if asString != "" {
-		pi, err := validator(Page, asString)
+		limit, err = validator(Page, asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
 			return 0, err
 		}
-		limit = pi
 	}
 
 	return limit, nil
 }
 
-func DatesFromParams(ctx context.Context, params url.Values) (string, string, error) {
+func GetSortOrder(ctx context.Context, params url.Values, defaultValue Sort) (Sort, error) {
+	var (
+		sort = defaultValue
+		err  error
+	)
+	asString := params.Get(SortName)
+	if asString != "" {
+		sort, err = ParseSort(asString)
+		if err != nil {
+			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
+			return Invalid, err
+		}
+	}
+
+	return sort, nil
+}
+
+func GetKeywords(_ context.Context, params url.Values, defaultValue string) (string, error) {
+	keywords := defaultValue
+
+	value := params.Get(Keywords)
+	if value != "" {
+		// Define any validation rules here. At present there are none, so we pass the given value directly
+		keywords = value
+	}
+
+	return keywords, nil
+}
+
+func GetBoolean(ctx context.Context, params url.Values, name string, defaultValue bool) (bool, bool, error) {
+	asString := params.Get(name)
+	if asString == "" {
+		return defaultValue, false, nil
+	}
+
+	upcoming, err := strconv.ParseBool(asString)
+	if err != nil {
+		log.Warn(ctx, fmt.Sprintf("invalid boolean value for %q", name), log.Data{"param": name, "value": asString})
+		return false, false, fmt.Errorf("invalid boolean value for %q", name)
+	}
+
+	return upcoming, true, nil
+}
+
+func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error) {
 	var (
 		from, to         time.Time
-		fromDate, toDate string
+		fromDate, toDate Date
 	)
 
 	yearString, monthString, dayString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
@@ -110,28 +159,25 @@ func DatesFromParams(ctx context.Context, params url.Values) (string, string, er
 		year, err := yearValidator(YearAfter, yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
 		month, err := monthValidator(MonthAfter, monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
 		day, err := dayValidator(DayAfter, dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
 		from = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := from.Date()
 		if m != time.Month(month) {
-			log.Warn(ctx, "invalid day of month", log.Data{DayAfter: dayString, MonthAfter: monthString})
-			return "", "", fmt.Errorf("invalid day (%s) of month (%s)", dayString, monthString)
+			log.Warn(ctx, "invalid day of month", log.Data{DayAfter: dayString, MonthAfter: monthString, YearAfter: yearString})
+			return Date{}, Date{}, fmt.Errorf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)
 		}
-		params.Set(YearAfter, strconv.Itoa(from.Year()))
-		params.Set(MonthAfter, strconv.Itoa(int(from.Month())))
-		params.Set(DayAfter, strconv.Itoa(from.Day()))
-		fromDate = from.Format(dateFormat)
+		fromDate = DateFromTime(from)
 	}
 
 	yearString, monthString, dayString = params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
@@ -139,35 +185,31 @@ func DatesFromParams(ctx context.Context, params url.Values) (string, string, er
 		year, err := yearValidator(YearBefore, yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
 		month, err := monthValidator(MonthBefore, monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
 		day, err := dayValidator(DayBefore, dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
-			return "", "", err
+			return Date{}, Date{}, err
 		}
-
 		to = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := to.Date()
 		if m != time.Month(month) {
-			log.Warn(ctx, "invalid day of month", log.Data{DayBefore: dayString, MonthBefore: monthString})
-			return "", "", fmt.Errorf("invalid day (%s) of month (%s)", dayString, monthString)
+			log.Warn(ctx, "invalid day of month", log.Data{DayBefore: dayString, MonthBefore: monthString, YearBefore: yearString})
+			return Date{}, Date{}, fmt.Errorf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)
 		}
-		params.Set(YearBefore, strconv.Itoa(to.Year()))
-		params.Set(MonthBefore, strconv.Itoa(int(to.Month())))
-		params.Set(DayBefore, strconv.Itoa(to.Day()))
-		toDate = to.Format(dateFormat)
+		toDate = DateFromTime(to)
 	}
 
 	if !from.IsZero() && !to.IsZero() {
 		if from.After(to) {
 			log.Warn(ctx, "invalid dates - from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
-			return "", "", errors.New("invalid dates - 'after' after 'before'")
+			return Date{}, Date{}, errors.New("invalid dates - 'after' after 'before'")
 		}
 	}
 
@@ -220,6 +262,15 @@ func ParseSort(sort string) (Sort, error) {
 	return Invalid, errors.New("invalid sort option string")
 }
 
+func MustParseSort(sort string) Sort {
+	s, err := ParseSort(sort)
+	if err != nil {
+		panic("invalid sort string: " + sort)
+	}
+
+	return s
+}
+
 func (s Sort) String() string {
 	return sortNames[s]
 }
@@ -236,4 +287,70 @@ var SortOptions = []SortOption{
 	{Label: "TitleZA", Value: "title_asc"},
 }
 
-const dateFormat = "2006-01-02"
+type Date struct {
+	date       time.Time
+	y, m, d    int
+	ys, ms, ds string
+}
+
+const DateFormat = "2006-01-02"
+
+func DateFromString(dateAsString string) (Date, error) {
+	if dateAsString == "" {
+		return Date{}, nil
+	}
+	t, err := time.Parse(DateFormat, dateAsString)
+	if err != nil {
+		return Date{}, err
+	}
+
+	return DateFromTime(t), nil
+}
+
+func DateFromTime(t time.Time) Date {
+	if t.IsZero() {
+		return Date{}
+	}
+	date := Date{date: t}
+	y, m, d := t.Date()
+	date.y, date.m, date.d = y, int(m), d
+	date.ys, date.ms, date.ds = strconv.Itoa(y), strconv.Itoa(int(m)), strconv.Itoa(d)
+
+	return date
+}
+
+func (d Date) String() string {
+	if d.date.IsZero() {
+		return ""
+	}
+
+	return d.date.UTC().Format(DateFormat)
+}
+
+func (d Date) YearString() string {
+	return d.ys
+}
+
+func (d Date) MonthString() string {
+	return d.ms
+}
+
+func (d Date) DayString() string {
+	return d.ds
+}
+
+type ValidatedParams struct {
+	Limit       int
+	Offset      int
+	AfterDate   Date
+	BeforeDate  Date
+	Keywords    string
+	Sort        Sort
+	Published   bool
+	Cancelled   bool
+	Upcoming    bool
+	Provisional bool
+	Confirmed   bool
+	Postponed   bool
+	Census      bool
+}

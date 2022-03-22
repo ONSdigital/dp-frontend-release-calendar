@@ -184,8 +184,8 @@ func defaultParams() url.Values {
 	values.Set("fromDate", "")
 	values.Set("toDate", "")
 	values.Set("sort", "release_date_desc")
-	values.Set("q", "")
-	values.Set("upcoming", "")
+	values.Set("keywords", "")
+	values.Set("query", "")
 
 	return values
 }

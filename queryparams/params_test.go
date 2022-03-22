@@ -147,6 +147,15 @@ func TestSort(t *testing.T) {
 			}
 		})
 
+		Convey("and calling GetSortOrder() returns the same error and sort option", func() {
+			for _, bso := range badSortOptions {
+				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc)
+
+				So(v, ShouldEqual, Invalid)
+				So(e, ShouldNotBeNil)
+			}
+		})
+
 		Convey("but a good sort option string is parsed without error, and the appropriate Sort option returned", func() {
 			goodSortOptions := []struct {
 				given   string
@@ -163,7 +172,69 @@ func TestSort(t *testing.T) {
 
 				So(v, ShouldEqual, gso.exValue)
 				So(e, ShouldBeNil)
+
+				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc)
+				So(v, ShouldEqual, gso.exValue)
+				So(e, ShouldBeNil)
+
 			}
+		})
+	})
+}
+
+func TestGetKeywords(t *testing.T) {
+	Convey("given a keyword string", t, func() {
+		var keywords string
+		Convey("if the string is empty, the default value is passed back as being verified", func() {
+			def := "default keywords"
+			v, e := GetKeywords(context.Background(), url.Values{}, def)
+
+			So(v, ShouldEqual, def)
+			So(e, ShouldBeNil)
+		})
+		Convey("if the string is not empty, the unaltered string is passed back as being verified", func() {
+			keywords = "a b cd"
+			v, e := GetKeywords(context.Background(), url.Values{Keywords: []string{keywords}}, "default")
+
+			So(v, ShouldEqual, keywords)
+			So(e, ShouldBeNil)
+		})
+	})
+}
+
+func TestGetBoolean(t *testing.T) {
+	Convey("given a set of strings to be parsed as a boolean value", t, func() {
+		var bvs []string
+		Convey("if the strings are not valid representations of a boolean value", func() {
+			bvs = []string{"not right", "correct", "right", "wrong", "maybe"}
+			Convey("the correct error is returned", func() {
+				for _, bb := range bvs {
+					v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{bb}}, "bool-attr", true)
+					So(v, ShouldBeFalse)
+					So(s, ShouldBeFalse)
+					So(err, ShouldResemble, errors.New(`invalid boolean value for "bool-attr"`))
+				}
+			})
+			Convey("if the strings are valid representations of a boolean value", func() {
+				bvs = []string{"false", "T", "TRUE", "0", "1"}
+				Convey("the correct boolean value is returned without error", func() {
+					for _, gb := range bvs {
+						v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{gb}}, "bool-attr", true)
+						So(v, ShouldBeIn, true, false)
+						So(s, ShouldBeTrue)
+						So(err, ShouldBeNil)
+					}
+				})
+			})
+			Convey("if the strings are empty strings", func() {
+				Convey("the correct boolean value corresponding to the default value is returned without error", func() {
+					v, s, err := GetBoolean(context.Background(), url.Values{}, "bool-attr", true)
+					So(v, ShouldBeTrue)
+					So(s, ShouldBeFalse)
+					So(err, ShouldBeNil)
+				})
+			})
+
 		})
 	})
 }
@@ -186,7 +257,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "29", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid day (29) of month (2)"),
+				exError: errors.New("invalid day (29) of month (2) in year (2021)"),
 			},
 			{
 				afterDay: "28", afterMonth: "2", afterYear: "2021",
@@ -212,11 +283,11 @@ func TestDatesFromParams(t *testing.T) {
 				params.Set("before-month", tc.beforeMonth)
 				params.Set("before-day", tc.beforeDay)
 
-				from, to, e := DatesFromParams(context.Background(), params)
+				from, to, err := DatesFromParams(context.Background(), params)
 
-				So(e, ShouldResemble, tc.exError)
-				So(from, ShouldEqual, tc.exFromDate)
-				So(to, ShouldEqual, tc.exToDate)
+				So(err, ShouldResemble, tc.exError)
+				So(from.String(), ShouldEqual, tc.exFromDate)
+				So(to.String(), ShouldEqual, tc.exToDate)
 			}
 		})
 	})

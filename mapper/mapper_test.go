@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"net/url"
 	"testing"
 	"time"
 
@@ -216,19 +215,15 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			},
 		}
 
-		params := url.Values{}
-		params.Set(queryparams.Limit, "5")
-		params.Set(queryparams.Page, "1")
-		params.Set(queryparams.Offset, "0")
-		params.Set(queryparams.YearAfter, "")
-		params.Set(queryparams.MonthAfter, "")
-		params.Set(queryparams.DayAfter, "")
-		params.Set(queryparams.YearBefore, "")
-		params.Set(queryparams.MonthBefore, "")
-		params.Set(queryparams.DayBefore, "")
-		params.Set(queryparams.SortName, "release_date_desc")
-		params.Set(queryparams.Keywords, "everything")
-		params.Set(queryparams.Upcoming, "true")
+		params := queryparams.ValidatedParams{
+			Limit:      5,
+			Offset:     0,
+			AfterDate:  queryparams.Date{},
+			BeforeDate: queryparams.Date{},
+			Keywords:   "everything",
+			Sort:       queryparams.RelDateAsc,
+			Upcoming:   true,
+		}
 
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
 			calendar := CreateReleaseCalendar(basePage, params, releaseResponse)
@@ -237,10 +232,10 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
 			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
-			So(calendar.Keywords, ShouldEqual, params.Get(queryparams.Keywords))
-			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Get(queryparams.SortName), Options: queryparams.SortOptions})
-			So(calendar.BeforeDate, ShouldResemble, model.Date{Day: params.Get(queryparams.DayBefore), Month: params.Get(queryparams.MonthBefore), Year: params.Get(queryparams.YearBefore)})
-			So(calendar.AfterDate, ShouldResemble, model.Date{Day: params.Get(queryparams.DayAfter), Month: params.Get(queryparams.MonthAfter), Year: params.Get(queryparams.YearAfter)})
+			So(calendar.Keywords, ShouldEqual, params.Keywords)
+			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
+			So(calendar.BeforeDate, ShouldResemble, model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()})
+			So(calendar.AfterDate, ShouldResemble, model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse))
 			So(calendar.CalendarPagination.TotalPages, ShouldEqual, 3)
 			So(calendar.CalendarPagination.CurrentPage, ShouldEqual, 1)

@@ -2,8 +2,6 @@ package mapper
 
 import (
 	"context"
-	"net/url"
-	"strconv"
 	"time"
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
@@ -252,24 +250,21 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params url.Values, response search.ReleaseResponse) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = "Release Calendar"
-	calendar.Keywords = params.Get(queryparams.Keywords)
-	calendar.Sort = model.Sort{Mode: params.Get(queryparams.SortName), Options: queryparams.SortOptions}
-	calendar.BeforeDate = model.Date{Day: params.Get(queryparams.DayBefore), Month: params.Get(queryparams.MonthBefore), Year: params.Get(queryparams.YearBefore)}
-	calendar.AfterDate = model.Date{Day: params.Get(queryparams.DayAfter), Month: params.Get(queryparams.MonthAfter), Year: params.Get(queryparams.YearAfter)}
+	calendar.Keywords = params.Keywords
+	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
+	calendar.AfterDate = model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()}
+	calendar.BeforeDate = model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()}
 	calendar.ReleaseTypes = mapReleases(params, response)
 
-	// limit and offset are assumed to have been set to valid values; otherwise they default to 0
-	limit, _ := strconv.Atoi(params.Get(queryparams.Limit))
-	offset, _ := strconv.Atoi(params.Get(queryparams.Offset))
-	calendar.CalendarPagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, limit)
-	calendar.CalendarPagination.CurrentPage = queryparams.CalculatePageNumber(offset, limit)
-	calendar.CalendarPagination.Limit = limit
+	calendar.CalendarPagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
+	calendar.CalendarPagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
+	calendar.CalendarPagination.Limit = params.Limit
 	for _, release := range response.Releases {
 		calendar.CalendarPagination.CalendarItem = append(calendar.CalendarPagination.CalendarItem, calendarItemFromRelease(release))
 	}
@@ -532,7 +527,7 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 	return modelChanges
 }
 
-func mapReleases(_ url.Values, response search.ReleaseResponse) map[string]model.ReleaseType {
+func mapReleases(_ queryparams.ValidatedParams, response search.ReleaseResponse) map[string]model.ReleaseType {
 	return map[string]model.ReleaseType{
 		"type-published": {
 			Label:   "Published",
