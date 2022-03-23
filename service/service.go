@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/assets"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/routes"
@@ -49,6 +50,7 @@ func (svc *Service) Init(ctx context.Context, cfg *config.Config, serviceList *E
 	clients := routes.Clients{
 		Render:             render.NewWithDefaultClient(assets.Asset, assets.AssetNames, cfg.PatternLibraryAssetsPath, cfg.SiteDomain),
 		ReleaseCalendarAPI: releasecalendar.NewWithHealthClient(routerHealthClient),
+		SearchAPI:          sitesearch.NewWithHealthClient(routerHealthClient),
 	}
 
 	// Get healthcheck with checkers

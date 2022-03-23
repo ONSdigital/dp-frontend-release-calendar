@@ -3,8 +3,10 @@ package handlers
 import (
 	"context"
 	"io"
+	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-renderer/model"
 )
 
@@ -26,4 +28,9 @@ type RenderClient interface {
 // ReleaseCalendarAPI is an interface for the Release Calendar API
 type ReleaseCalendarAPI interface {
 	GetLegacyRelease(ctx context.Context, userAccessToken, collectionID, lang, uri string) (*releasecalendar.Release, error)
+}
+
+// SearchAPI is an interface to the Search API for searching the Release (Calendars)
+type SearchAPI interface {
+	GetReleases(ctx context.Context, userAccessToken, collectionID, lang string, query url.Values) (search.ReleaseResponse, error)
 }
