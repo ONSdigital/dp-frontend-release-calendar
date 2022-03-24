@@ -15,3 +15,15 @@
 [ReleaseCalendarPageTitle]
 description = "Release Calendar Title"
 one = "Calendr datganiadau"
+
+[SubscriptionLinkRSS]
+description = "RSS feed"
+one = "Ffrwd RSS"
+
+[SubscriptionLinkEmail]
+description = "Email alerts"
+one = "Hysbysiadau e-bost"
+
+[SubscriptionLinkICS]
+description = "Add to your calendar (ICS)"
+one = "Ychwanegu at eich calendr (ICS) Amserlennu Calendr ar y Rhyngrwyd"
