@@ -7,7 +7,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
-
+    "github.com/ONSdigital/dp-renderer/helper"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 )
 
@@ -253,7 +253,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		Page: basePage,
 	}
 	calendar.BetaBannerEnabled = true
-	calendar.Metadata.Title = "Release Calendar"
+    calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 
 	item1 := model.CalendarItem{
 		URI: "/releases/title1",

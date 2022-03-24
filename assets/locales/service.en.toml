@@ -12,3 +12,6 @@
 # count - 4 = other; 4,5 & >6
 # Plural rules can be found here: http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[ReleaseCalendarPageTitle]
+description = "Release Calendar Title"
+one = "Release Calendar"
