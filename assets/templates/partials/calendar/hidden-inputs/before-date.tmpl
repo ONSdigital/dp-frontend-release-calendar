@@ -1,11 +1,11 @@
 {{ if .BeforeDate }}
-  {{ if .BeforeDate.Day }}
-    <input type="hidden" name="before-day" value="{{ .BeforeDate.Day }}">
+  {{ if .BeforeDate.InputValueDay }}
+    <input type="hidden" name="before-day" value="{{ .BeforeDate.InputValueDay }}">
   {{ end }}
-  {{ if .BeforeDate.Month }}
-    <input type="hidden" name="before-month" value="{{ .BeforeDate.Month }}">
+  {{ if .BeforeDate.InputValueMonth }}
+    <input type="hidden" name="before-month" value="{{ .BeforeDate.InputValueMonth }}">
   {{ end }}
-  {{ if .BeforeDate.Year }}
-    <input type="hidden" name="before-year" value="{{ .BeforeDate.Year }}">
+  {{ if .BeforeDate.InputValueYear }}
+    <input type="hidden" name="before-year" value="{{ .BeforeDate.InputValueYear }}">
   {{ end }}
 {{ end }}

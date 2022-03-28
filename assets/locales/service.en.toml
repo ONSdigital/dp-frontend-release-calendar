@@ -27,3 +27,19 @@ one = "Email alerts"
 [SubscriptionLinkICS]
 description = "Add to your calendar (ICS)"
 one = "Add to your calendar (ICS)"
+
+[ApplyDateFilters]
+description = "Apply date filters"
+one = "Apply date filters"
+
+[ReleasedBefore]
+description = "Released before"
+one = "Released before"
+
+[ReleasedAfter]
+description = "Released after"
+one = "Released after"
+
+[DateFilterDescription]
+description = "For example: 2006 or 19/07/2010"
+one = "For example: 2006 or 19/07/2010"

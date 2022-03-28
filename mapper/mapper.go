@@ -272,8 +272,33 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Metadata.Title = "Release Calendar"
 	calendar.Keywords = params.Keywords
 	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
-	calendar.AfterDate = model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()}
-	calendar.BeforeDate = model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()}
+
+	calendar.AfterDate = coreModel.InputDate{
+		Language:        calendar.Language,
+		Id:              "after-date",
+		InputNameDay:    "after-day",
+		InputNameMonth:  "after-month",
+		InputNameYear:   "after-year",
+		InputValueDay:   params.AfterDate.DayString(),
+		InputValueMonth: params.AfterDate.MonthString(),
+		InputValueYear:  params.AfterDate.YearString(),
+		Title:           helper.Localise("ReleasedAfter", calendar.Language, 1),
+		Description:     "For example: 2006 or 19/07/2010",
+	}
+
+	calendar.BeforeDate = coreModel.InputDate{
+		Language:        calendar.Language,
+		Id:              "before-date",
+		InputNameDay:    "before-day",
+		InputNameMonth:  "before-month",
+		InputNameYear:   "before-year",
+		InputValueDay:   params.BeforeDate.DayString(),
+		InputValueMonth: params.BeforeDate.MonthString(),
+		InputValueYear:  params.BeforeDate.YearString(),
+		Title:           "Released before",
+		Description:     "For example: 2006 or 19/07/2010",
+	}
+
 	calendar.ReleaseTypes = mapReleases(params, response)
 
 	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
@@ -525,18 +550,30 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	calendar.Keywords = "foo bar baz"
-
-	calendar.BeforeDate = model.Date{
-		Day:   "1",
-		Month: "2",
-		Year:  "2000",
+	calendar.BeforeDate = coreModel.InputDate{
+		Language:        calendar.Language,
+		Id:              "before-date",
+		InputNameDay:    "before-day",
+		InputNameMonth:  "before-month",
+		InputNameYear:   "before-year",
+		InputValueDay:   "1",
+		InputValueMonth: "2",
+		InputValueYear:  "2050",
+		Title:           helper.Localise("ReleasedBefore", calendar.Language, 1),
+		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
 	}
 
-	calendar.AfterDate = model.Date{
-		Day:   "5",
-		Month: "6",
-		Year:  "30000",
+	calendar.AfterDate = coreModel.InputDate{
+		Language:        calendar.Language,
+		Id:              "after-date",
+		InputNameDay:    "after-day",
+		InputNameMonth:  "after-month",
+		InputNameYear:   "after-year",
+		InputValueDay:   "5",
+		InputValueMonth: "6",
+		InputValueYear:  "1950",
+		Title:           helper.Localise("ReleasedAfter", calendar.Language, 1),
+		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
 	}
 
 	calendar.KeywordSearch = coreModel.CompactSearch{

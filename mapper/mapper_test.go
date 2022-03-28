@@ -234,8 +234,30 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
 			So(calendar.Keywords, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
-			So(calendar.BeforeDate, ShouldResemble, model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()})
-			So(calendar.AfterDate, ShouldResemble, model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()})
+			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
+				Language:        basePage.Language,
+				Id:              "before-date",
+				InputNameDay:    "before-day",
+				InputNameMonth:  "before-month",
+				InputNameYear:   "before-year",
+				InputValueDay:   params.BeforeDate.DayString(),
+				InputValueMonth: params.BeforeDate.MonthString(),
+				InputValueYear:  params.BeforeDate.YearString(),
+				Title:           "Released before",
+				Description:     "For example: 2006 or 19/07/2010",
+			})
+			So(calendar.AfterDate, ShouldResemble, coreModel.InputDate{
+				Language:        basePage.Language,
+				Id:              "after-date",
+				InputNameDay:    "after-day",
+				InputNameMonth:  "after-month",
+				InputNameYear:   "after-year",
+				InputValueDay:   params.AfterDate.DayString(),
+				InputValueMonth: params.AfterDate.MonthString(),
+				InputValueYear:  params.AfterDate.YearString(),
+				Title:           "Released after",
+				Description:     "For example: 2006 or 19/07/2010",
+			})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
