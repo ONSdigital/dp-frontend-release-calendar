@@ -6,14 +6,17 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
+	"github.com/ONSdigital/dp-renderer/helper"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestUnitMapper(t *testing.T) {
+	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
 	Convey("Given a release and a base page", t, func() {
 		basePage := coreModel.NewPage("path/to/assets", "site-domain")
 

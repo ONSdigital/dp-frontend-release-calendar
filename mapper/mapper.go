@@ -283,7 +283,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		InputValueMonth: params.AfterDate.MonthString(),
 		InputValueYear:  params.AfterDate.YearString(),
 		Title:           helper.Localise("ReleasedAfter", calendar.Language, 1),
-		Description:     "For example: 2006 or 19/07/2010",
+		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
 	}
 
 	calendar.BeforeDate = coreModel.InputDate{
@@ -295,8 +295,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		InputValueDay:   params.BeforeDate.DayString(),
 		InputValueMonth: params.BeforeDate.MonthString(),
 		InputValueYear:  params.BeforeDate.YearString(),
-		Title:           "Released before",
-		Description:     "For example: 2006 or 19/07/2010",
+		Title:           helper.Localise("ReleasedBefore", calendar.Language, 1),
+		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
 	}
 
 	calendar.ReleaseTypes = mapReleases(params, response)
