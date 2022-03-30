@@ -248,6 +248,56 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse) model.Calendar {
+	calendar := model.Calendar{
+		Page: basePage,
+	}
+	calendar.BetaBannerEnabled = true
+	calendar.Metadata.Title = "Release Calendar"
+	calendar.Keywords = params.Keywords
+	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
+	calendar.AfterDate = model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()}
+	calendar.BeforeDate = model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()}
+	calendar.ReleaseTypes = mapReleases(params, response)
+
+	calendar.CalendarPagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
+	calendar.CalendarPagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
+	calendar.CalendarPagination.Limit = params.Limit
+	for _, release := range response.Releases {
+		calendar.CalendarPagination.CalendarItem = append(calendar.CalendarPagination.CalendarItem, calendarItemFromRelease(release))
+	}
+
+	return calendar
+}
+
+func calendarItemFromRelease(release search.Release) model.CalendarItem {
+	result := model.CalendarItem{
+		URI:         release.URI,
+		DateChanges: dateChanges(release.DateChanges),
+		Description: model.ReleaseDescription{
+			Title:              release.Description.Title,
+			Summary:            release.Description.Summary,
+			ReleaseDate:        release.Description.ReleaseDate,
+			ProvisionalDate:    release.Description.ProvisionalDate,
+			NextRelease:        release.Description.NextRelease,
+			CancellationNotice: release.Description.CancellationNotice,
+			Published:          release.Description.Published,
+			Cancelled:          release.Description.Cancelled,
+			Finalised:          release.Description.Finalised,
+			NationalStatistic:  release.Description.NationalStatistic,
+		},
+	}
+	if release.Description.Contact != nil {
+		result.Description.Contact = model.ContactDetails{
+			Name:      release.Description.Contact.Name,
+			Email:     release.Description.Contact.Email,
+			Telephone: release.Description.Contact.Telephone,
+		}
+	}
+
+	return result
+}
+
 func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
@@ -462,5 +512,60 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		Year:  "30000",
 	}
 
+	calendar.KeywordSearch = coreModel.CompactSearch{
+		ElementId:  "keyword-search",
+		InputName:  "keywords",
+		Language:   calendar.Language,
+		Label:      "Search keywords",
+		SearchTerm: "zip zap zoo",
+	}
+
 	return calendar
+}
+
+func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
+	var modelChanges = make([]model.DateChange, len(changes))
+	for i, c := range changes {
+		modelChanges[i].Date = c.Date
+		modelChanges[i].ChangeNotice = c.ChangeNotice
+	}
+
+	return modelChanges
+}
+
+func mapReleases(_ queryparams.ValidatedParams, response search.ReleaseResponse) map[string]model.ReleaseType {
+	return map[string]model.ReleaseType{
+		"type-published": {
+			Label:   "Published",
+			Checked: true,
+			Count:   response.Breakdown.Published,
+		},
+		"type-upcoming": {
+			Label:   "Upcoming",
+			Checked: true,
+			Count:   response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
+			SubTypes: map[string]model.ReleaseType{
+				"subtype-confirmed": {
+					Label:   "Confirmed",
+					Checked: true,
+					Count:   response.Breakdown.Confirmed,
+				},
+				"subtype-provisional": {
+					Label:   "Provisional",
+					Checked: false,
+					Count:   response.Breakdown.Provisional,
+				},
+				"subtype-postponed": {
+					Label:   "Postponed",
+					Checked: true,
+					Count:   response.Breakdown.Postponed,
+				},
+			},
+		},
+		"type-cancelled": {
+			Label:   "Cancelled",
+			Checked: true,
+			Count:   response.Breakdown.Cancelled,
+		},
+	}
 }

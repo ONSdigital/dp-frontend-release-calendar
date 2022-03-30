@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
 
@@ -19,6 +20,7 @@ type Clients struct {
 	HealthCheckHandler func(w http.ResponseWriter, req *http.Request)
 	Render             *render.Render
 	ReleaseCalendarAPI *releasecalendar.Client
+	SearchAPI          *search.Client
 }
 
 // Setup registers routes for the service
@@ -28,5 +30,6 @@ func Setup(ctx context.Context, r *mux.Router, cfg *config.Config, c Clients) {
 
 	r.StrictSlash(true).Path("/releases/{uri:.*}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI))
 	r.StrictSlash(true).Path("/previousreleasessample").Methods("GET").HandlerFunc(handlers.PreviousReleasesSample(*cfg, c.Render))
+	r.StrictSlash(true).Path("/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI))
 	r.StrictSlash(true).Path("/calendarsample").Methods("GET").HandlerFunc(handlers.CalendarSample(*cfg, c.Render))
 }
