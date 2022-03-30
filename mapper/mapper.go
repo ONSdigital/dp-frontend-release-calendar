@@ -4,13 +4,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
+	"github.com/ONSdigital/dp-renderer/helper"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
-
-	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
-	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 )
 
 func createTableOfContents(
@@ -319,7 +319,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		Page: basePage,
 	}
 	calendar.BetaBannerEnabled = true
-	calendar.Metadata.Title = "Release Calendar"
+	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 
 	item1 := model.CalendarEntry{
 		URI: "/releases/title1",
@@ -524,6 +524,8 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			},
 		},
 	}
+
+	calendar.Keywords = "foo bar baz"
 
 	calendar.BeforeDate = model.Date{
 		Day:   "1",
