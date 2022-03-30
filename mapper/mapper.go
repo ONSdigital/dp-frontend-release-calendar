@@ -342,7 +342,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			ReleaseDate: time.Now().AddDate(0, 0, -15).UTC().Format(time.RFC3339),
 			Published:   false,
 			Cancelled:   true,
-			Contact:     model.ContactDetails{Name: "another test publisher", Email: "testpublisher@ons.gov.uk"},
+			Contact:     model.ContactDetails{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 		},
 	}
 
