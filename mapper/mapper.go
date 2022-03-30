@@ -163,6 +163,20 @@ func CreatePreviousReleases(_ context.Context, basePage coreModel.Page, _ config
 		false,
 	)
 
+	previousReleases.Pagination.CurrentPage = 6
+	previousReleases.Pagination.TotalPages = 10
+	previousReleases.Pagination.Limit = 10
+	previousReleases.Pagination.PagesToDisplay = []coreModel.PageToDisplay{
+		{PageNumber: 5, URL: "previousreleasessample/5"},
+		{PageNumber: 6, URL: "previousreleasessample/6"},
+		{PageNumber: 7, URL: "previousreleasessample/7"},
+	}
+	previousReleases.Pagination.FirstAndLastPages = []coreModel.PageToDisplay{
+		{PageNumber: 1, URL: "previousreleasessample/1"},
+		{PageNumber: 100, URL: "previousreleasessample/100"},
+	}
+	previousReleases.Pagination.LimitOptions = []int{10, 25}
+
 	return previousReleases
 }
 
@@ -262,18 +276,18 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.BeforeDate = model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()}
 	calendar.ReleaseTypes = mapReleases(params, response)
 
-	calendar.CalendarPagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
-	calendar.CalendarPagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
-	calendar.CalendarPagination.Limit = params.Limit
+	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
+	calendar.Pagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
+	calendar.Pagination.Limit = params.Limit
 	for _, release := range response.Releases {
-		calendar.CalendarPagination.CalendarItem = append(calendar.CalendarPagination.CalendarItem, calendarItemFromRelease(release))
+		calendar.Entries = append(calendar.Entries, calendarItemFromRelease(release))
 	}
 
 	return calendar
 }
 
-func calendarItemFromRelease(release search.Release) model.CalendarItem {
-	result := model.CalendarItem{
+func calendarItemFromRelease(release search.Release) model.CalendarEntry {
+	result := model.CalendarEntry{
 		URI:         release.URI,
 		DateChanges: dateChanges(release.DateChanges),
 		Description: model.ReleaseDescription{
@@ -307,7 +321,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 
-	item1 := model.CalendarItem{
+	item1 := model.CalendarEntry{
 		URI: "/releases/title1",
 		Description: model.ReleaseDescription{
 			Title:       "Public Sector Employment, UK: September 2021",
@@ -320,7 +334,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item2 := model.CalendarItem{
+	item2 := model.CalendarEntry{
 		URI: "/releases/title2",
 		Description: model.ReleaseDescription{
 			Title:       "Labour market in the regions of the UK: December 2021",
@@ -332,7 +346,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item3 := model.CalendarItem{
+	item3 := model.CalendarEntry{
 		URI: "/releases/title3",
 		Description: model.ReleaseDescription{
 			Title:       "Personal well-being in the UK, quarterly: July 2021 to September 2021",
@@ -344,7 +358,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item4 := model.CalendarItem{
+	item4 := model.CalendarEntry{
 		URI: "/releases/title4",
 		Description: model.ReleaseDescription{
 			Title:       "Labour market statistics time series: December 2021",
@@ -356,7 +370,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item5 := model.CalendarItem{
+	item5 := model.CalendarEntry{
 		URI: "/releases/title5",
 		Description: model.ReleaseDescription{
 			Title:       "UK labour market: December 2021",
@@ -368,7 +382,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item6 := model.CalendarItem{
+	item6 := model.CalendarEntry{
 		URI: "/releases/title6",
 		Description: model.ReleaseDescription{
 			Title:       "Earnings and employment from Pay As You Earn Real Time Information, UK: December 2021",
@@ -380,7 +394,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item7 := model.CalendarItem{
+	item7 := model.CalendarEntry{
 		URI: "/releases/title7",
 		Description: model.ReleaseDescription{
 			Title:       "Civil partnerships in England and Wales: 2020",
@@ -392,7 +406,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item8 := model.CalendarItem{
+	item8 := model.CalendarEntry{
 		URI: "/releases/title8",
 		Description: model.ReleaseDescription{
 			Title:       "Understanding towns: industry analysis",
@@ -404,7 +418,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item9 := model.CalendarItem{
+	item9 := model.CalendarEntry{
 		URI: "/releases/title9",
 		Description: model.ReleaseDescription{
 			Title:       "Disaggregating annual subnational gross value added (GVA) to lower levels of geography",
@@ -416,7 +430,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	item10 := model.CalendarItem{
+	item10 := model.CalendarEntry{
 		URI: "/releases/title10",
 		Description: model.ReleaseDescription{
 			Title:       "Coronavirus (COVID-19) Infection Survey, UK: 8 December 2021",
@@ -428,20 +442,31 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 	}
 
-	calendar.CalendarPagination.CurrentPage = 1
-	calendar.CalendarPagination.TotalPages = 100
-	calendar.CalendarPagination.Limit = 10
-	calendar.CalendarPagination.CalendarItem = make([]model.CalendarItem, 10)
-	calendar.CalendarPagination.CalendarItem[0] = item1
-	calendar.CalendarPagination.CalendarItem[1] = item2
-	calendar.CalendarPagination.CalendarItem[2] = item3
-	calendar.CalendarPagination.CalendarItem[3] = item4
-	calendar.CalendarPagination.CalendarItem[4] = item5
-	calendar.CalendarPagination.CalendarItem[5] = item6
-	calendar.CalendarPagination.CalendarItem[6] = item7
-	calendar.CalendarPagination.CalendarItem[7] = item8
-	calendar.CalendarPagination.CalendarItem[8] = item9
-	calendar.CalendarPagination.CalendarItem[9] = item10
+	calendar.Pagination.CurrentPage = 6
+	calendar.Pagination.TotalPages = 10
+	calendar.Pagination.Limit = 10
+	calendar.Pagination.PagesToDisplay = []coreModel.PageToDisplay{
+		{PageNumber: 5, URL: "calendarsample/5"},
+		{PageNumber: 6, URL: "calendarsample/6"},
+		{PageNumber: 7, URL: "calendarsample/7"},
+	}
+	calendar.Pagination.FirstAndLastPages = []coreModel.PageToDisplay{
+		{PageNumber: 1, URL: "calendarsample/1"},
+		{PageNumber: 100, URL: "calendarsample/100"},
+	}
+	calendar.Pagination.LimitOptions = []int{10, 25}
+
+	calendar.Entries = make([]model.CalendarEntry, 10)
+	calendar.Entries[0] = item1
+	calendar.Entries[1] = item2
+	calendar.Entries[2] = item3
+	calendar.Entries[3] = item4
+	calendar.Entries[4] = item5
+	calendar.Entries[5] = item6
+	calendar.Entries[6] = item7
+	calendar.Entries[7] = item8
+	calendar.Entries[8] = item9
+	calendar.Entries[9] = item10
 
 	calendar.ReleaseTypes = map[string]model.ReleaseType{
 		"type-published": {

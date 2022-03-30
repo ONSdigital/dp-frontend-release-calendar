@@ -5,14 +5,7 @@ import (
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
-type CalendarPagination struct {
-	TotalPages   int            `json:"total_pages"`
-	CurrentPage  int            `json:"current_page"`
-	Limit        int            `json:"limit"`
-	CalendarItem []CalendarItem `json:"calendar_item"`
-}
-
-type CalendarItem struct {
+type CalendarEntry struct {
 	URI         string             `json:"uri"`
 	DateChanges []DateChange       `json:"date_changes"`
 	Description ReleaseDescription `json:"description"`
@@ -40,12 +33,11 @@ type Date struct {
 
 type Calendar struct {
 	coreModel.Page
-
-	ReleaseTypes       map[string]ReleaseType  `json:"release_types"`
-	Sort               Sort                    `json:"sort"`
-	Keywords           string                  `json:"keywords"`
-	BeforeDate         Date                    `json:"before_date"`
-	AfterDate          Date                    `json:"after_date"`
-	CalendarPagination CalendarPagination      `json:"calendar_pagination"`
-	KeywordSearch      coreModel.CompactSearch `json:"keyword_search"`
+	ReleaseTypes  map[string]ReleaseType  `json:"release_types"`
+	Sort          Sort                    `json:"sort"`
+	Keywords      string                  `json:"keywords"`
+	BeforeDate    Date                    `json:"before_date"`
+	AfterDate     Date                    `json:"after_date"`
+	Entries       []CalendarEntry         `json:"entries"`
+	KeywordSearch coreModel.CompactSearch `json:"keyword_search"`
 }
