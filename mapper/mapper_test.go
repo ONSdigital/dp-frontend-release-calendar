@@ -237,10 +237,10 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.BeforeDate, ShouldResemble, model.Date{Day: params.BeforeDate.DayString(), Month: params.BeforeDate.MonthString(), Year: params.BeforeDate.YearString()})
 			So(calendar.AfterDate, ShouldResemble, model.Date{Day: params.AfterDate.DayString(), Month: params.AfterDate.MonthString(), Year: params.AfterDate.YearString()})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse))
-			So(calendar.CalendarPagination.TotalPages, ShouldEqual, 3)
-			So(calendar.CalendarPagination.CurrentPage, ShouldEqual, 1)
-			So(calendar.CalendarPagination.Limit, ShouldEqual, 5)
-			for i, r := range calendar.CalendarPagination.CalendarItem {
+			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
+			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
+			So(calendar.Pagination.Limit, ShouldEqual, 5)
+			for i, r := range calendar.Entries {
 				So(r.URI, ShouldEqual, releaseResponse.Releases[i].URI)
 				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
 				So(r.Description.Title, ShouldEqual, releaseResponse.Releases[i].Description.Title)
