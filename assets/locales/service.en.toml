@@ -16,6 +16,6 @@
 description = "Release Calendar Title"
 one = "Release Calendar"
 
- [ReleaseCalendarPageSearchKeywords]
- description = "Release Calendar Page Search Keywords"
- one = "Search keywords"
+[ReleaseCalendarPageSearchKeywords]
+description = "Release Calendar Page Search Keywords"
+one = "Search keywords"
