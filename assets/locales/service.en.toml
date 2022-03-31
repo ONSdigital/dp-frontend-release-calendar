@@ -15,3 +15,15 @@
 [ReleaseCalendarPageTitle]
 description = "Release Calendar Title"
 one = "Release Calendar"
+
+[SubscriptionLinkRSS]
+description = "RSS feed"
+one = "RSS feed"
+
+[SubscriptionLinkEmail]
+description = "Email alerts"
+one = "Email alerts"
+
+[SubscriptionLinkICS]
+description = "Add to your calendar (ICS)"
+one = "Add to your calendar (ICS)"
