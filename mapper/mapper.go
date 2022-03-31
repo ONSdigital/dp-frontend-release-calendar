@@ -543,7 +543,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		ElementId:  "keyword-search",
 		InputName:  "keywords",
 		Language:   calendar.Language,
-		Label:      "Search keywords",
+		Label:      helper.Localise("ReleaseCalendarPageSearchKeywords", calendar.Language, 1),
 		SearchTerm: "zip zap zoo",
 	}
 

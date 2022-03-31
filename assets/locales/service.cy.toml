@@ -15,3 +15,7 @@
 [ReleaseCalendarPageTitle]
 description = "Release Calendar Title"
 one = "Calendr datganiadau"
+
+[ReleaseCalendarPageSearchKeywords]
+description = "Release Calendar Page Search Keywords"
+one = "Chwilio am eiriau allweddol"
