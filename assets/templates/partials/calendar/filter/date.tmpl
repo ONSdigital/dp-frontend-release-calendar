@@ -4,10 +4,10 @@
   {{ template "partials/calendar/hidden-inputs/keywords" . }}
   {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
 
-  {{ template "partials/calendar/filter/date-released-after"  . }}
-  {{ template "partials/calendar/filter/date-released-before"  . }}
+  {{ template "partials/input-date" .AfterDate }}
+  {{ template "partials/input-date" .BeforeDate }}
 
-  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
-    <span class="ons-btn__inner">Apply date filters</span>
+  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s text-wrap">
+    <span class="ons-btn__inner">{{ localise "ApplyDateFilters" .Language 1 }}</span>
   </button>
 </form>

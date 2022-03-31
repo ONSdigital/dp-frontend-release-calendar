@@ -27,3 +27,19 @@ one = "Hysbysiadau e-bost"
 [SubscriptionLinkICS]
 description = "Add to your calendar (ICS)"
 one = "Ychwanegu at eich calendr (ICS) Amserlennu<br>Calendr ar y Rhyngrwyd"
+
+[ApplyDateFilters]
+description = "Apply date filters"
+one = "Rhoi'r hidlyddion dyddiad ar waith"
+
+[ReleasedBefore]
+description = "Released before"
+one = "Cyhoeddwyd cyn"
+
+[ReleasedAfter]
+description = "Released after"
+one = "Cyhoeddwyd ar ôl"
+
+[DateFilterDescription]
+description = "For example: 2006 or 19/07/2010"
+one = "Er enghraifft: 2006 neu 19/07/2010"

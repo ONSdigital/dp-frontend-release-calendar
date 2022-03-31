@@ -25,19 +25,13 @@ type Sort struct {
 	Options []SortOption `json:"options"`
 }
 
-type Date struct {
-	Day   string `json:"day"`
-	Month string `json:"month"`
-	Year  string `json:"year"`
-}
-
 type Calendar struct {
 	coreModel.Page
 	ReleaseTypes  map[string]ReleaseType  `json:"release_types"`
 	Sort          Sort                    `json:"sort"`
 	Keywords      string                  `json:"keywords"`
-	BeforeDate    Date                    `json:"before_date"`
-	AfterDate     Date                    `json:"after_date"`
+	BeforeDate    coreModel.InputDate     `json:"before_date"`
+	AfterDate     coreModel.InputDate     `json:"after_date"`
 	Entries       []CalendarEntry         `json:"entries"`
 	KeywordSearch coreModel.CompactSearch `json:"keyword_search"`
 }

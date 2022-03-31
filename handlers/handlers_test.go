@@ -12,6 +12,8 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
+	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
+	"github.com/ONSdigital/dp-renderer/helper"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
@@ -30,6 +32,7 @@ func (e *testCliError) Error() string { return "client error" }
 func (e *testCliError) Code() int     { return http.StatusNotFound }
 
 func TestUnitHandlers(t *testing.T) {
+	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 	ctx := gomock.Any()

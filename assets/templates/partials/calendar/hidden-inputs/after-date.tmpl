@@ -1,11 +1,11 @@
 {{ if .AfterDate }}
-  {{ if .AfterDate.Day }}
-    <input type="hidden" name="after-day" value="{{ .AfterDate.Day }}">
+  {{ if .AfterDate.InputValueDay }}
+    <input type="hidden" name="after-day" value="{{ .AfterDate.InputValueDay }}">
   {{ end }}
-  {{ if .AfterDate.Month }}
-    <input type="hidden" name="after-month" value="{{ .AfterDate.Month }}">
+  {{ if .AfterDate.InputValueMonth }}
+    <input type="hidden" name="after-month" value="{{ .AfterDate.InputValueMonth }}">
   {{ end }}
-  {{ if .AfterDate.Year }}
-    <input type="hidden" name="after-year" value="{{ .AfterDate.Year }}">
+  {{ if .AfterDate.InputValueYear }}
+    <input type="hidden" name="after-year" value="{{ .AfterDate.InputValueYear }}">
   {{ end }}
 {{ end }}
