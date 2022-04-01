@@ -16,6 +16,11 @@ type ContactDetails struct {
 	Telephone string `json:"telephone"`
 }
 
+type PublicationState struct {
+	Type    string `json:"type"`
+	SubType string `json:"sub_type"`
+}
+
 type Release struct {
 	coreModel.Page
 	Markdown                  []string           `json:"markdown"`
@@ -28,6 +33,7 @@ type Release struct {
 	Description               ReleaseDescription `json:"description"`
 	ReleaseHistory            []Link             `json:"release_history"` // TODO Provisional entry for modelling history
 	AboutTheData              bool               `json:"about_the_data"`
+	PublicationState          PublicationState   `json:"publication_state"`
 }
 
 type DateChange struct {
