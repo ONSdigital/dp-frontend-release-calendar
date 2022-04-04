@@ -273,7 +273,7 @@ func TestDatesFromParams(t *testing.T) {
 			},
 		}
 
-		Convey("check that the validator correctly validates the limit, giving the expected results", func() {
+		Convey("check that the validator correctly validates the dates, giving the expected results", func() {
 			for _, tc := range testcases {
 				params := make(url.Values)
 				params.Set("after-year", tc.afterYear)
@@ -289,6 +289,24 @@ func TestDatesFromParams(t *testing.T) {
 				So(from.String(), ShouldEqual, tc.exFromDate)
 				So(to.String(), ShouldEqual, tc.exToDate)
 			}
+		})
+	})
+}
+
+func TestParamsAsQuery(t *testing.T) {
+	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
+		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), BeforeDate: MustParseDate("2021-12-31"), Keywords: "some keywords", Sort: TitleAZ, Published: true}
+
+		Convey("verify that the validated parameters are correctly returned in a url.Values mapping", func() {
+			uv := vp.AsQuery()
+			So(uv.Get(Limit), ShouldEqual, "10")
+			So(uv.Get(YearAfter), ShouldEqual, "2020")
+			So(uv.Get(MonthBefore), ShouldEqual, "12")
+			So(uv.Get(DayBefore), ShouldEqual, "31")
+			So(uv.Get(Keywords), ShouldEqual, "some keywords")
+			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
+			So(uv.Get(Published), ShouldEqual, "true")
+			So(uv.Get(Upcoming), ShouldEqual, "false")
 		})
 	})
 }

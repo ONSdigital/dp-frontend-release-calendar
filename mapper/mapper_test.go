@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
@@ -144,6 +145,7 @@ func TestUnitMapper(t *testing.T) {
 }
 
 func TestReleaseCalendarMapper(t *testing.T) {
+	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
 	Convey("Given a Release Calendar and a base page", t, func() {
 		basePage := coreModel.NewPage("path/to/assets", "site-domain")
 
@@ -221,6 +223,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		params := queryparams.ValidatedParams{
 			Limit:      5,
 			Offset:     0,
+			Page:       1,
 			AfterDate:  queryparams.Date{},
 			BeforeDate: queryparams.Date{},
 			Keywords:   "everything",
@@ -229,7 +232,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		}
 
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse)
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, config.Config{DefaultMaximumSearchResults: 1000})
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -289,7 +292,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 	})
 }
 
-// assertLinks checks that the actual model Link content is equal to the expected release Link
+// assertLinks checks that the actual model Link content is equal to the exStart release Link
 func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 	So(len(actual), ShouldEqual, len(expected))
 	for i := range expected {
@@ -299,7 +302,7 @@ func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 	}
 }
 
-// assertDateChanges checks that the actual model DateChanges content is equal to the expected release ReleaseDateChanges
+// assertDateChanges checks that the actual model DateChanges content is equal to the exStart release ReleaseDateChanges
 func assertDateChanges(expected []releasecalendar.ReleaseDateChange, actual []model.DateChange) {
 	So(len(actual), ShouldEqual, len(expected))
 	for i := range expected {
@@ -314,4 +317,52 @@ func assertSiteSearchDateChanges(expected []sitesearch.ReleaseDateChange, actual
 		So(actual[i].Date, ShouldEqual, expected[i].Date)
 		So(actual[i].ChangeNotice, ShouldEqual, expected[i].ChangeNotice)
 	}
+}
+
+func TestGetStartEndPage(t *testing.T) {
+	Convey("Given a set of parameters expressing: the 'current page number', out of a 'total number of pages', and the 'window size'", t, func() {
+		testcases := []struct{ current, total, window, exStart, exEnd int }{
+			{current: 1, total: 1, window: 1, exStart: 1, exEnd: 1},
+
+			{current: 1, total: 2, window: 1, exStart: 2, exEnd: 2},
+			{current: 2, total: 2, window: 1, exStart: 1, exEnd: 1},
+
+			{current: 1, total: 3, window: 2, exStart: 1, exEnd: 2},
+			{current: 2, total: 3, window: 2, exStart: 2, exEnd: 3},
+			{current: 3, total: 3, window: 2, exStart: 2, exEnd: 3},
+
+			{current: 1, total: 3, window: 3, exStart: 1, exEnd: 3},
+			{current: 2, total: 3, window: 3, exStart: 1, exEnd: 3},
+			{current: 3, total: 3, window: 3, exStart: 1, exEnd: 3},
+
+			{current: 3, total: 4, window: 3, exStart: 2, exEnd: 4},
+
+			{current: 28, total: 32, window: 5, exStart: 26, exEnd: 30},
+			{current: 31, total: 32, window: 5, exStart: 28, exEnd: 32},
+		}
+		Convey("check the generated start and end page numbers are correct", func() {
+			for _, tc := range testcases {
+				sp, ep := getWindowStartEndPage(tc.current, tc.total, tc.window)
+				So(sp, ShouldEqual, tc.exStart)
+				So(ep, ShouldEqual, tc.exEnd)
+			}
+		})
+	})
+}
+
+func TestGetPageURL(t *testing.T) {
+	Convey("Given a set of Validated parameters", t, func() {
+		params := queryparams.ValidatedParams{
+			Limit:     10,
+			Page:      2,
+			AfterDate: queryparams.MustParseDate("2021-11-30"),
+			Keywords:  "test",
+			Sort:      queryparams.TitleAZ,
+			Published: true,
+		}
+
+		Convey("check the generated page url is correct", func() {
+			So(getPageURL(5, params), ShouldEqual, "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=5&sort=title_asc&type-published=true&type-upcoming=false")
+		})
+	})
 }
