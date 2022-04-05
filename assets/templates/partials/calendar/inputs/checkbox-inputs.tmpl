@@ -1,0 +1,12 @@
+<input type="checkbox"
+        id="{{ .AttrID }}"
+        class="ons-checkbox__input ons-js-checkbox"
+        name="{{ .Name }}"
+        value="true"
+        {{ if .Checked }}
+            checked
+        {{ end }}
+>
+<label class="ons-checkbox__label" for="{{.AttrID}}">
+    {{ .Label }} ({{ .Count }})
+</label>

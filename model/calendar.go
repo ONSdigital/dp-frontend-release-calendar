@@ -12,7 +12,9 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
+	AttrID   string                 `json:"id"`
 	Label    string                 `json:"label"`
+	Name     string                 `json:"name"`
 	Checked  bool                   `json:"value"`
 	Count    int                    `json:"count"`
 	SubTypes map[string]ReleaseType `json:"sub_types"`
