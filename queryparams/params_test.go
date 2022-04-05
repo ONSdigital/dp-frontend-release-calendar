@@ -295,18 +295,27 @@ func TestDatesFromParams(t *testing.T) {
 
 func TestParamsAsQuery(t *testing.T) {
 	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), BeforeDate: MustParseDate("2021-12-31"), Keywords: "some keywords", Sort: TitleAZ, Published: true}
+		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, Published: true}
 
-		Convey("verify that the validated parameters are correctly returned in a url.Values mapping", func() {
+		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
 			uv := vp.AsQuery()
 			So(uv.Get(Limit), ShouldEqual, "10")
+			So(uv.Get(Page), ShouldEqual, "2")
 			So(uv.Get(YearAfter), ShouldEqual, "2020")
-			So(uv.Get(MonthBefore), ShouldEqual, "12")
-			So(uv.Get(DayBefore), ShouldEqual, "31")
+			So(uv.Get(MonthAfter), ShouldEqual, "1")
+			So(uv.Get(DayAfter), ShouldEqual, "1")
+			So(uv.Get(YearBefore), ShouldEqual, "")
+			So(uv.Get(MonthBefore), ShouldEqual, "")
+			So(uv.Get(DayBefore), ShouldEqual, "")
 			So(uv.Get(Keywords), ShouldEqual, "some keywords")
 			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
 			So(uv.Get(Published), ShouldEqual, "true")
 			So(uv.Get(Upcoming), ShouldEqual, "false")
+
+			Convey("and any validated parameters not needed are absent from the url.Values mapping", func() {
+				So(uv.Get(Offset), ShouldEqual, "")
+				So(uv.Get(Census), ShouldEqual, "")
+			})
 		})
 	})
 }

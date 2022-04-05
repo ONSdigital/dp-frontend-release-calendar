@@ -231,8 +231,10 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			Upcoming:   true,
 		}
 
+		cfg := config.Config{DefaultMaximumSearchResults: 1000}
+
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, config.Config{DefaultMaximumSearchResults: 1000})
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg)
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -292,7 +294,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 	})
 }
 
-// assertLinks checks that the actual model Link content is equal to the exStart release Link
+// assertLinks checks that the actual model Link content is equal to the expected release Link
 func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 	So(len(actual), ShouldEqual, len(expected))
 	for i := range expected {
@@ -302,7 +304,7 @@ func assertLinks(expected []releasecalendar.Link, actual []model.Link) {
 	}
 }
 
-// assertDateChanges checks that the actual model DateChanges content is equal to the exStart release ReleaseDateChanges
+// assertDateChanges checks that the actual model DateChanges content is equal to the expected release ReleaseDateChanges
 func assertDateChanges(expected []releasecalendar.ReleaseDateChange, actual []model.DateChange) {
 	So(len(actual), ShouldEqual, len(expected))
 	for i := range expected {
