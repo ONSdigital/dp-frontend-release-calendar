@@ -85,6 +85,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		return
 	}
 	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
+	validatedParams.Page = pageNumber
 	offset := queryparams.CalculateOffset(pageNumber, pageSize)
 	params.Set(queryparams.Offset, strconv.Itoa(offset))
 	validatedParams.Offset = offset
@@ -134,7 +135,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	}
 
 	basePage := rc.NewBasePageModel()
-	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases)
+	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
 
 	rc.BuildPage(w, calendar, "calendar")
 }

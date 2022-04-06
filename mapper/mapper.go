@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
@@ -264,7 +265,7 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
@@ -301,17 +302,97 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 	calendar.ReleaseTypes = mapReleases(params, response)
 
-	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(response.Breakdown.Total-1, params.Limit)
+	totalResults := cfg.DefaultMaximumSearchResults
+	if totalResults > response.Breakdown.Total {
+		totalResults = response.Breakdown.Total
+	}
+	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, params.Limit)
 	calendar.Pagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
 	calendar.Pagination.Limit = params.Limit
+	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, calendar.Pagination.TotalPages, defaultWindowSize)
+	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, calendar.Pagination.TotalPages)
+
 	for _, release := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarItemFromRelease(release))
+		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release))
 	}
 
 	return calendar
 }
 
-func calendarItemFromRelease(release search.Release) model.CalendarEntry {
+const defaultWindowSize = 5
+
+func getPagesToDisplay(params queryparams.ValidatedParams, totalPages, windowSize int) []coreModel.PageToDisplay {
+	start, end := getWindowStartEndPage(params.Page, totalPages, windowSize)
+
+	var pagesToDisplay []coreModel.PageToDisplay
+	for i := start; i <= end; i++ {
+		pagesToDisplay = append(pagesToDisplay, coreModel.PageToDisplay{
+			PageNumber: i,
+			URL:        getPageURL(i, params),
+		})
+	}
+
+	return pagesToDisplay
+}
+
+func getFirstAndLastPages(params queryparams.ValidatedParams, totalPages int) []coreModel.PageToDisplay {
+	return []coreModel.PageToDisplay{
+		{
+			PageNumber: 1,
+			URL:        getPageURL(1, params),
+		},
+		{
+			PageNumber: totalPages,
+			URL:        getPageURL(totalPages, params),
+		},
+	}
+}
+
+// getWindowStartEndPage calculates the start and end page of the moving window of size windowSize, over the set of pages
+// whose current page is currentPage, and whose size is totalPages
+// It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
+func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
+	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
+		panic("invalid parameters for getWindowStartEndPage - see documentation")
+	}
+	if windowSize == 1 {
+		se := (currentPage % totalPages) + 1
+		return se, se
+	}
+
+	windowOffset := getWindowOffset(windowSize)
+	start := currentPage - windowOffset
+	switch {
+	case start <= 0:
+		start = 1
+	case start > totalPages-windowSize+1:
+		start = totalPages - windowSize + 1
+	}
+
+	end := start + windowSize - 1
+	if end > totalPages {
+		end = totalPages
+	}
+
+	return start, end
+}
+
+func getPageURL(page int, params queryparams.ValidatedParams) (pageURL string) {
+	query := params.AsQuery()
+	query.Set("page", strconv.Itoa(page))
+
+	return "/releasecalendar?" + query.Encode()
+}
+
+func getWindowOffset(windowSize int) int {
+	if windowSize%2 == 0 {
+		return (windowSize / 2) - 1
+	}
+
+	return windowSize / 2
+}
+
+func calendarEntryFromRelease(release search.Release) model.CalendarEntry {
 	result := model.CalendarEntry{
 		URI:         release.URI,
 		DateChanges: dateChanges(release.DateChanges),

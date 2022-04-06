@@ -295,7 +295,16 @@ type Date struct {
 
 const DateFormat = "2006-01-02"
 
-func DateFromString(dateAsString string) (Date, error) {
+func MustParseDate(dateAsString string) Date {
+	d, err := ParseDate(dateAsString)
+	if err != nil {
+		panic("invalid date string: " + dateAsString)
+	}
+
+	return d
+}
+
+func ParseDate(dateAsString string) (Date, error) {
 	if dateAsString == "" {
 		return Date{}, nil
 	}
@@ -327,6 +336,10 @@ func (d Date) String() string {
 	return d.date.UTC().Format(DateFormat)
 }
 
+func (d Date) Date() (int, int, int) {
+	return d.y, d.m, d.d
+}
+
 func (d Date) YearString() string {
 	return d.ys
 }
@@ -341,6 +354,7 @@ func (d Date) DayString() string {
 
 type ValidatedParams struct {
 	Limit       int
+	Page        int
 	Offset      int
 	AfterDate   Date
 	BeforeDate  Date
@@ -353,4 +367,25 @@ type ValidatedParams struct {
 	Confirmed   bool
 	Postponed   bool
 	Census      bool
+}
+
+func (vp ValidatedParams) AsQuery() url.Values {
+	var query = make(url.Values)
+	query.Set(Limit, strconv.Itoa(vp.Limit))
+	query.Set(Page, strconv.Itoa(vp.Page))
+
+	query.Set(YearBefore, vp.BeforeDate.YearString())
+	query.Set(MonthBefore, vp.BeforeDate.MonthString())
+	query.Set(DayBefore, vp.BeforeDate.DayString())
+
+	query.Set(YearAfter, vp.AfterDate.YearString())
+	query.Set(MonthAfter, vp.AfterDate.MonthString())
+	query.Set(DayAfter, vp.AfterDate.DayString())
+
+	query.Set(Keywords, vp.Keywords)
+	query.Set(SortName, vp.Sort.String())
+	query.Set(Published, strconv.FormatBool(vp.Published))
+	query.Set(Upcoming, strconv.FormatBool(vp.Upcoming))
+
+	return query
 }

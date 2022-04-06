@@ -27,6 +27,7 @@ type Sort struct {
 
 type Calendar struct {
 	coreModel.Page
+
 	ReleaseTypes  map[string]ReleaseType  `json:"release_types"`
 	Sort          Sort                    `json:"sort"`
 	Keywords      string                  `json:"keywords"`
