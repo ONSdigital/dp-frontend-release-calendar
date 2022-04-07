@@ -125,6 +125,34 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	params.Set(queryparams.Type, releaseType.String())
 	validatedParams.ReleaseType = releaseType
 
+	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional, false)
+	validatedParams.Provisional = provisional
+	if provisional || set {
+		params.Set(queryparams.Provisional, strconv.FormatBool(provisional))
+	}
+	confirmed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Confirmed, false)
+	validatedParams.Confirmed = confirmed
+	if confirmed || set {
+		params.Set(queryparams.Confirmed, strconv.FormatBool(confirmed))
+	}
+	postponed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Postponed, false)
+	validatedParams.Postponed = postponed
+	if postponed || set {
+		params.Set(queryparams.Postponed, strconv.FormatBool(postponed))
+	}
+
+	census, set, err := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
+	validatedParams.Census = census
+	if census || set {
+		params.Set(queryparams.Census, strconv.FormatBool(census))
+	}
+
+	highlight, set, err := queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
+	validatedParams.Highlight = highlight
+	if highlight || set {
+		params.Set(queryparams.Highlight, strconv.FormatBool(highlight))
+	}
+
 	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
 	if err != nil {
 		setStatusCode(req, w, err)

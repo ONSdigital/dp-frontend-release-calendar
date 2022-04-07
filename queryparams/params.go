@@ -31,6 +31,8 @@ const (
 	Provisional = "subtype-provisional"
 	Confirmed   = "subtype-confirmed"
 	Postponed   = "subtype-postponed"
+	Census      = "census"
+	Highlight   = "highlight"
 )
 
 func ParamGet(params url.Values, key string, defaultValue string) string {
@@ -435,6 +437,7 @@ type ValidatedParams struct {
 	Confirmed   bool
 	Postponed   bool
 	Census      bool
+	Highlight   bool
 }
 
 func (vp ValidatedParams) AsQuery() url.Values {
@@ -458,6 +461,8 @@ func (vp ValidatedParams) AsQuery() url.Values {
 		query.Set(Confirmed, strconv.FormatBool(vp.Confirmed))
 		query.Set(Postponed, strconv.FormatBool(vp.Postponed))
 	}
+	query.Set(Census, strconv.FormatBool(vp.Census))
+	query.Set(Highlight, strconv.FormatBool(vp.Highlight))
 
 	return query
 }

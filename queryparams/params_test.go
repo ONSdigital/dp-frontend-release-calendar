@@ -329,7 +329,7 @@ func TestDatesFromParams(t *testing.T) {
 
 func TestParamsAsQuery(t *testing.T) {
 	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true}
+		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true, Census: true}
 
 		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
 			uv := vp.AsQuery()
@@ -347,6 +347,8 @@ func TestParamsAsQuery(t *testing.T) {
 			So(uv.Get(Provisional), ShouldEqual, "true")
 			So(uv.Get(Confirmed), ShouldEqual, "false")
 			So(uv.Get(Postponed), ShouldEqual, "false")
+			So(uv.Get(Census), ShouldEqual, "true")
+			So(uv.Get(Highlight), ShouldEqual, "false")
 
 			Convey("and any validated parameters not needed are absent from the url.Values mapping", func() {
 				So(uv.Get(Offset), ShouldEqual, "")
