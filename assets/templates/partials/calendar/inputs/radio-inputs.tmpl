@@ -1,11 +1,11 @@
 <input type="radio"
-    id="{{ .Id }}"
-    name="{{ .Name }}"
-    class="ons-radio__input ons-js-radio"
-    value="true"
-    {{ if .Checked }}
-       checked
-    {{ end }}/>
+       id="{{ .Id }}"
+       name="{{ .Name }}"
+       class="ons-radio__input ons-js-radio"
+       value="true"
+        {{ if .Checked }}
+            checked
+        {{ end }}/>
 <label class="ons-radio__label" for="{{.AttrID}}" id="{{.AttrID}}-label">
-  {{ .Label }} ({{ .Count }})
+    {{ .Label }} ({{ .Count }})
 </label>
