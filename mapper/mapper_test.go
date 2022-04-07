@@ -152,7 +152,12 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		releaseResponse := sitesearch.ReleaseResponse{
 			Took: 100,
 			Breakdown: sitesearch.Breakdown{
-				Total: 11,
+				Total:       11,
+				Provisional: 1,
+				Confirmed:   4,
+				Published:   5,
+				Cancelled:   1,
+				Census:      3,
 			},
 			Releases: []sitesearch.Release{
 				{
@@ -170,8 +175,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Published:   true,
 						Finalised:   true,
 						Postponed:   true,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
-						NextRelease: "To be announced",
 					},
 				},
 				{
@@ -182,7 +185,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, -15).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   true,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 				{
@@ -193,6 +195,8 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
+						Finalised:   true,
+						Census:      true,
 					},
 				},
 				{
@@ -203,7 +207,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 				{
@@ -214,7 +217,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 			},
@@ -240,7 +242,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
 			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
-			So(calendar.Keywords, ShouldEqual, params.Keywords)
+			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
 			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
 				Language:        basePage.Language,
@@ -275,20 +277,12 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
 				So(r.Description.Title, ShouldEqual, releaseResponse.Releases[i].Description.Title)
 				So(r.Description.Summary, ShouldEqual, releaseResponse.Releases[i].Description.Summary)
-				So(r.Description.NationalStatistic, ShouldEqual, releaseResponse.Releases[i].Description.NationalStatistic)
 				So(r.Description.ReleaseDate, ShouldEqual, releaseResponse.Releases[i].Description.ReleaseDate)
 				So(r.Description.Published, ShouldEqual, releaseResponse.Releases[i].Description.Published)
 				So(r.Description.Finalised, ShouldEqual, releaseResponse.Releases[i].Description.Finalised)
 				So(r.Description.Cancelled, ShouldEqual, releaseResponse.Releases[i].Description.Cancelled)
-				So(r.Description.CancellationNotice, ShouldResemble, releaseResponse.Releases[i].Description.CancellationNotice)
 				So(r.Description.ProvisionalDate, ShouldEqual, releaseResponse.Releases[i].Description.ProvisionalDate)
-				if releaseResponse.Releases[i].Description.Contact != nil {
-					So(r.Description.Contact.Name, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Name)
-					So(r.Description.Contact.Email, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Email)
-					So(r.Description.Contact.Telephone, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Telephone)
-				} else {
-					So(r.Description.Contact, ShouldBeZeroValue)
-				}
+				So(r.Description.Contact, ShouldBeZeroValue)
 			}
 		})
 	})
