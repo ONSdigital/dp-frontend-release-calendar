@@ -105,7 +105,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	params.Set(queryparams.SortName, sort.String())
+	params.Set(queryparams.SortName, sort.OptionString())
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")

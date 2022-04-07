@@ -248,9 +248,11 @@ const (
 	RelDateDesc
 	TitleAZ
 	TitleZA
+	Relevance
 )
 
-var sortNames = map[Sort]string{RelDateAsc: "release_date_asc", RelDateDesc: "release_date_desc", TitleAZ: "title_asc", TitleZA: "title_desc", Invalid: "invalid"}
+var sortNames = map[Sort]string{RelDateAsc: "date-oldest", RelDateDesc: "date-newest", TitleAZ: "alphabetical-az", TitleZA: "alphabetical-za", Relevance: "relevance", Invalid: "invalid"}
+var sortOptions = map[Sort]string{RelDateAsc: "release_date_asc", RelDateDesc: "release_date_desc", TitleAZ: "title_asc", TitleZA: "title_desc", Relevance: "relevance", Invalid: "invalid"}
 
 func ParseSort(sort string) (Sort, error) {
 	for s, sn := range sortNames {
@@ -275,16 +277,21 @@ func (s Sort) String() string {
 	return sortNames[s]
 }
 
+func (s Sort) OptionString() string {
+	return sortOptions[s]
+}
+
 type SortOption struct {
 	Label string `json:"label"`
 	Value string `json:"value"`
 }
 
 var SortOptions = []SortOption{
-	{Label: "Newest", Value: "release_date_desc"},
-	{Label: "Oldest", Value: "release_date_asc"},
-	{Label: "TitleAZ", Value: "title_desc"},
-	{Label: "TitleZA", Value: "title_asc"},
+	{Label: "Date (newest)", Value: sortNames[RelDateDesc]},
+	{Label: "Date (oldest)", Value: sortNames[RelDateAsc]},
+	{Label: "Alphabetical (A to Z)", Value: sortNames[TitleAZ]},
+	{Label: "Alphabetical (Z to A)", Value: sortNames[TitleZA]},
+	{Label: "Relevance", Value: sortNames[Relevance]},
 }
 
 type Date struct {

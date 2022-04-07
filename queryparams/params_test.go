@@ -136,7 +136,7 @@ func TestCalculatePageNumber(t *testing.T) {
 
 func TestSort(t *testing.T) {
 	Convey("given a set of erroneous sort string options", t, func() {
-		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending"}
+		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending", "score"}
 
 		Convey("parsing produces an error and returns the Invalid sort option", func() {
 			for _, bso := range badSortOptions {
@@ -161,10 +161,11 @@ func TestSort(t *testing.T) {
 				given   string
 				exValue Sort
 			}{
-				{given: "release_date_asc", exValue: RelDateAsc},
-				{given: "release_date_desc", exValue: RelDateDesc},
-				{given: "title_asc", exValue: TitleAZ},
-				{given: "title_desc", exValue: TitleZA},
+				{given: "date-oldest", exValue: RelDateAsc},
+				{given: "date-newest", exValue: RelDateDesc},
+				{given: "alphabetical-az", exValue: TitleAZ},
+				{given: "alphabetical-za", exValue: TitleZA},
+				{given: "relevance", exValue: Relevance},
 			}
 
 			for _, gso := range goodSortOptions {

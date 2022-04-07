@@ -364,7 +364,7 @@ func TestGetPageURL(t *testing.T) {
 		}
 
 		Convey("check the generated page url is correct", func() {
-			So(getPageURL(5, params), ShouldEqual, "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=5&sort=title_asc&type-published=true&type-upcoming=false")
+			So(getPageURL(5, params), ShouldEqual, "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=5&sort=alphabetical-az&type-published=true&type-upcoming=false")
 		})
 	})
 }
