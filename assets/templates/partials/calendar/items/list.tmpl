@@ -1,3 +1,9 @@
+{{/*
+  .Description.Title is piped through safeHTML to allow keywords to be
+  highlighted by the search engine, which wraps them in an ONS Design System
+  tag designed for the purpose:
+    <em class="ons-highlight">keyword</em>
+*/}}
 <ol class="ons-list ons-list--bare ons-u-bt">
   {{range .Entries }}
     <li class="ons-list__item ons-u-mt-l">
@@ -5,7 +11,7 @@
         href="{{ .URI }}"
         class="ons-u-fs-l ons-u-td-no ons-u-d-b"
       >
-        {{ .Description.Title }}
+        {{- .Description.Title | safeHTML -}}
       </a>
       <div class="ons-u-mt-s">
         <span class="ons-u-fs-r--b">Release date:</span>
