@@ -338,6 +338,7 @@ func TestGetStartEndPage(t *testing.T) {
 			{current: 3, total: 3, window: 3, exStart: 1, exEnd: 3},
 
 			{current: 3, total: 4, window: 3, exStart: 2, exEnd: 4},
+			{current: 3, total: 4, window: 5, exStart: 1, exEnd: 4},
 
 			{current: 28, total: 32, window: 5, exStart: 26, exEnd: 30},
 			{current: 31, total: 32, window: 5, exStart: 28, exEnd: 32},

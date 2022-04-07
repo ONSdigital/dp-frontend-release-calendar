@@ -355,9 +355,12 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
 		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
-	if windowSize == 1 {
+	switch {
+	case windowSize == 1:
 		se := (currentPage % totalPages) + 1
 		return se, se
+	case windowSize >= totalPages:
+		return 1, totalPages
 	}
 
 	windowOffset := getWindowOffset(windowSize)
