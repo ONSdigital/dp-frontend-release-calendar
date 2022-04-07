@@ -221,14 +221,14 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		}
 
 		params := queryparams.ValidatedParams{
-			Limit:      5,
-			Offset:     0,
-			Page:       1,
-			AfterDate:  queryparams.Date{},
-			BeforeDate: queryparams.Date{},
-			Keywords:   "everything",
-			Sort:       queryparams.RelDateAsc,
-			Upcoming:   true,
+			Limit:       5,
+			Offset:      0,
+			Page:        1,
+			AfterDate:   queryparams.Date{},
+			BeforeDate:  queryparams.Date{},
+			Keywords:    "everything",
+			Sort:        queryparams.RelDateAsc,
+			ReleaseType: queryparams.Upcoming,
 		}
 
 		cfg := config.Config{DefaultMaximumSearchResults: 1000}
@@ -355,17 +355,40 @@ func TestGetStartEndPage(t *testing.T) {
 
 func TestGetPageURL(t *testing.T) {
 	Convey("Given a set of Validated parameters", t, func() {
-		params := queryparams.ValidatedParams{
-			Limit:     10,
-			Page:      2,
-			AfterDate: queryparams.MustParseDate("2021-11-30"),
-			Keywords:  "test",
-			Sort:      queryparams.TitleAZ,
-			Published: true,
+		testcases := []struct {
+			params   queryparams.ValidatedParams
+			expected string
+		}{
+			{
+				params: queryparams.ValidatedParams{
+					Limit:       10,
+					Page:        2,
+					AfterDate:   queryparams.MustParseDate("2021-11-30"),
+					Keywords:    "test",
+					Sort:        queryparams.TitleAZ,
+					ReleaseType: queryparams.Published,
+				},
+				expected: "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
+			},
+			{
+				params: queryparams.ValidatedParams{
+					Limit:       25,
+					Page:        5,
+					BeforeDate:  queryparams.MustParseDate("2022-04-01"),
+					Sort:        queryparams.RelDateDesc,
+					ReleaseType: queryparams.Upcoming,
+					Provisional: true,
+					Postponed:   true,
+					Census:      true,
+				},
+				expected: "/releasecalendar?after-day=&after-month=&after-year=&before-day=1&before-month=4&before-year=2022&keywords=&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-confirmed=false&subtype-postponed=true&subtype-provisional=true",
+			},
 		}
 
 		Convey("check the generated page url is correct", func() {
-			So(getPageURL(5, params), ShouldEqual, "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=5&sort=alphabetical-az&type-published=true&type-upcoming=false")
+			for _, tc := range testcases {
+				So(getPageURL(tc.params.Page, tc.params), ShouldEqual, tc.expected)
+			}
 		})
 	})
 }

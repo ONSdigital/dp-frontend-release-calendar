@@ -117,16 +117,13 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	validatedParams.Keywords = keywords
 	params.Set(queryparams.Query, keywords)
 
-	// TODO Upcoming is the only Release Type to be parsed as present until the extended calendar query is added
-	upcoming, set, err := queryparams.GetBoolean(ctx, params, queryparams.Upcoming, false)
+	releaseType, err := queryparams.GetBackwardsCompatibleReleaseType(ctx, params, queryparams.Upcoming)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	validatedParams.Upcoming = upcoming
-	if upcoming || set {
-		params.Set(queryparams.Upcoming, strconv.FormatBool(upcoming))
-	}
+	params.Set(queryparams.Type, releaseType.String())
+	validatedParams.ReleaseType = releaseType
 
 	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
 	if err != nil {
