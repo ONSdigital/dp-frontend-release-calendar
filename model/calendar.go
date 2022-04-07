@@ -12,7 +12,7 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	AttrID   string                 `json:"id"`
+	Id       string                 `json:"id"`
 	Label    string                 `json:"label"`
 	Name     string                 `json:"name"`
 	Checked  bool                   `json:"value"`
