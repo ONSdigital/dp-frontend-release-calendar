@@ -189,6 +189,8 @@ func defaultParams() url.Values {
 	values.Set("sort", "release_date_desc")
 	values.Set("keywords", "")
 	values.Set("query", "")
+	values.Set("release-type", "type-cancelled")
+	values.Set("highlight", "true")
 
 	return values
 }

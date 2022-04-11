@@ -136,7 +136,7 @@ func TestCalculatePageNumber(t *testing.T) {
 
 func TestSort(t *testing.T) {
 	Convey("given a set of erroneous sort string options", t, func() {
-		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending"}
+		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending", "score"}
 
 		Convey("parsing produces an error and returns the Invalid sort option", func() {
 			for _, bso := range badSortOptions {
@@ -161,10 +161,11 @@ func TestSort(t *testing.T) {
 				given   string
 				exValue Sort
 			}{
-				{given: "release_date_asc", exValue: RelDateAsc},
-				{given: "release_date_desc", exValue: RelDateDesc},
-				{given: "title_asc", exValue: TitleAZ},
-				{given: "title_desc", exValue: TitleZA},
+				{given: "date-oldest", exValue: RelDateAsc},
+				{given: "date-newest", exValue: RelDateDesc},
+				{given: "alphabetical-az", exValue: TitleAZ},
+				{given: "alphabetical-za", exValue: TitleZA},
+				{given: "relevance", exValue: Relevance},
 			}
 
 			for _, gso := range goodSortOptions {
@@ -239,6 +240,39 @@ func TestGetBoolean(t *testing.T) {
 	})
 }
 
+func TestReleaseType(t *testing.T) {
+	Convey("given a set of erroneous release-type option strings", t, func() {
+		badReleaseTypes := []string{"coming-up", "finished", "done"}
+
+		Convey("parsing produces an error and returns the InvalidReleaseType ReleaseType", func() {
+			for _, rt := range badReleaseTypes {
+				v, e := ParseReleaseType(rt)
+
+				So(v, ShouldEqual, InvalidReleaseType)
+				So(e, ShouldNotBeNil)
+			}
+		})
+
+		Convey("but a good release-type option string is parsed without error, and the appropriate ReleaseType returned", func() {
+			goodReleaseTypes := []struct {
+				given   string
+				exValue ReleaseType
+			}{
+				{given: "type-upcoming", exValue: Upcoming},
+				{given: "type-published", exValue: Published},
+				{given: "type-cancelled", exValue: Cancelled},
+			}
+
+			for _, grt := range goodReleaseTypes {
+				v, e := ParseReleaseType(grt.given)
+
+				So(v, ShouldEqual, grt.exValue)
+				So(e, ShouldBeNil)
+			}
+		})
+	})
+}
+
 func TestDatesFromParams(t *testing.T) {
 	Convey("given a set of day month and year numbers as strings", t, func() {
 		testcases := []struct {
@@ -295,7 +329,7 @@ func TestDatesFromParams(t *testing.T) {
 
 func TestParamsAsQuery(t *testing.T) {
 	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, Published: true}
+		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true, Census: true}
 
 		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
 			uv := vp.AsQuery()
@@ -309,12 +343,15 @@ func TestParamsAsQuery(t *testing.T) {
 			So(uv.Get(DayBefore), ShouldEqual, "")
 			So(uv.Get(Keywords), ShouldEqual, "some keywords")
 			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
-			So(uv.Get(Published), ShouldEqual, "true")
-			So(uv.Get(Upcoming), ShouldEqual, "false")
+			So(uv.Get(Type), ShouldEqual, Upcoming.String())
+			So(uv.Get(Provisional), ShouldEqual, "true")
+			So(uv.Get(Confirmed), ShouldEqual, "false")
+			So(uv.Get(Postponed), ShouldEqual, "false")
+			So(uv.Get(Census), ShouldEqual, "true")
+			So(uv.Get(Highlight), ShouldEqual, "false")
 
 			Convey("and any validated parameters not needed are absent from the url.Values mapping", func() {
 				So(uv.Get(Offset), ShouldEqual, "")
-				So(uv.Get(Census), ShouldEqual, "")
 			})
 		})
 	})

@@ -270,8 +270,14 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Page: basePage,
 	}
 	calendar.BetaBannerEnabled = true
-	calendar.Metadata.Title = "Release Calendar"
-	calendar.Keywords = params.Keywords
+	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
+	calendar.KeywordSearch = coreModel.CompactSearch{
+		ElementId:  "keyword-search",
+		InputName:  "keywords",
+		Language:   calendar.Language,
+		Label:      "Search keywords",
+		SearchTerm: params.Keywords,
+	}
 	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
 
 	calendar.AfterDate = coreModel.InputDate{
@@ -311,6 +317,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.Limit = params.Limit
 	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, calendar.Pagination.TotalPages, defaultWindowSize)
 	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, calendar.Pagination.TotalPages)
+	calendar.Pagination.LimitOptions = []int{10, 25}
 
 	for _, release := range response.Releases {
 		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release))
@@ -355,9 +362,12 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
 		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
-	if windowSize == 1 {
+	switch {
+	case windowSize == 1:
 		se := (currentPage % totalPages) + 1
 		return se, se
+	case windowSize >= totalPages:
+		return 1, totalPages
 	}
 
 	windowOffset := getWindowOffset(windowSize)
@@ -397,23 +407,22 @@ func calendarEntryFromRelease(release search.Release) model.CalendarEntry {
 		URI:         release.URI,
 		DateChanges: dateChanges(release.DateChanges),
 		Description: model.ReleaseDescription{
-			Title:              release.Description.Title,
-			Summary:            release.Description.Summary,
-			ReleaseDate:        release.Description.ReleaseDate,
-			ProvisionalDate:    release.Description.ProvisionalDate,
-			NextRelease:        release.Description.NextRelease,
-			CancellationNotice: release.Description.CancellationNotice,
-			Published:          release.Description.Published,
-			Cancelled:          release.Description.Cancelled,
-			Finalised:          release.Description.Finalised,
-			NationalStatistic:  release.Description.NationalStatistic,
+			Title:           release.Description.Title,
+			Summary:         release.Description.Summary,
+			ReleaseDate:     release.Description.ReleaseDate,
+			ProvisionalDate: release.Description.ProvisionalDate,
+			Published:       release.Description.Published,
+			Cancelled:       release.Description.Cancelled,
+			Finalised:       release.Description.Finalised,
 		},
 	}
-	if release.Description.Contact != nil {
-		result.Description.Contact = model.ContactDetails{
-			Name:      release.Description.Contact.Name,
-			Email:     release.Description.Contact.Email,
-			Telephone: release.Description.Contact.Telephone,
+
+	if highlight := release.Highlight; highlight != nil {
+		switch {
+		case highlight.Title != "":
+			result.Description.Title = highlight.Title
+		case highlight.Summary != "":
+			result.Description.Summary = highlight.Summary
 		}
 	}
 
@@ -682,38 +691,40 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 	return modelChanges
 }
 
-func mapReleases(_ queryparams.ValidatedParams, response search.ReleaseResponse) map[string]model.ReleaseType {
+func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse) map[string]model.ReleaseType {
+	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
+	checkFlag := func(flag bool) bool { return flag }
 	return map[string]model.ReleaseType{
 		"type-published": {
 			Label:   "Published",
-			Checked: true,
+			Checked: checkType(params.ReleaseType, queryparams.Published),
 			Count:   response.Breakdown.Published,
 		},
 		"type-upcoming": {
 			Label:   "Upcoming",
-			Checked: true,
+			Checked: checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:   response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
 			SubTypes: map[string]model.ReleaseType{
 				"subtype-confirmed": {
 					Label:   "Confirmed",
-					Checked: true,
+					Checked: checkFlag(params.Confirmed),
 					Count:   response.Breakdown.Confirmed,
 				},
 				"subtype-provisional": {
 					Label:   "Provisional",
-					Checked: false,
+					Checked: checkFlag(params.Provisional),
 					Count:   response.Breakdown.Provisional,
 				},
 				"subtype-postponed": {
 					Label:   "Postponed",
-					Checked: true,
+					Checked: checkFlag(params.Postponed),
 					Count:   response.Breakdown.Postponed,
 				},
 			},
 		},
 		"type-cancelled": {
 			Label:   "Cancelled",
-			Checked: true,
+			Checked: checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:   response.Breakdown.Cancelled,
 		},
 	}

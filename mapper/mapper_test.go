@@ -152,7 +152,12 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		releaseResponse := sitesearch.ReleaseResponse{
 			Took: 100,
 			Breakdown: sitesearch.Breakdown{
-				Total: 11,
+				Total:       11,
+				Provisional: 1,
+				Confirmed:   4,
+				Published:   5,
+				Cancelled:   1,
+				Census:      3,
 			},
 			Releases: []sitesearch.Release{
 				{
@@ -170,8 +175,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Published:   true,
 						Finalised:   true,
 						Postponed:   true,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
-						NextRelease: "To be announced",
 					},
 				},
 				{
@@ -182,7 +185,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, -15).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   true,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 				{
@@ -193,6 +195,8 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
+						Finalised:   true,
+						Census:      true,
 					},
 				},
 				{
@@ -203,7 +207,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 				{
@@ -214,21 +217,20 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						ReleaseDate: time.Now().AddDate(0, 0, 5).UTC().Format(time.RFC3339),
 						Published:   false,
 						Cancelled:   false,
-						Contact:     &sitesearch.Contact{Name: "test publisher", Email: "testpublisher@ons.gov.uk"},
 					},
 				},
 			},
 		}
 
 		params := queryparams.ValidatedParams{
-			Limit:      5,
-			Offset:     0,
-			Page:       1,
-			AfterDate:  queryparams.Date{},
-			BeforeDate: queryparams.Date{},
-			Keywords:   "everything",
-			Sort:       queryparams.RelDateAsc,
-			Upcoming:   true,
+			Limit:       5,
+			Offset:      0,
+			Page:        1,
+			AfterDate:   queryparams.Date{},
+			BeforeDate:  queryparams.Date{},
+			Keywords:    "everything",
+			Sort:        queryparams.RelDateAsc,
+			ReleaseType: queryparams.Upcoming,
 		}
 
 		cfg := config.Config{DefaultMaximumSearchResults: 1000}
@@ -240,7 +242,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
 			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
-			So(calendar.Keywords, ShouldEqual, params.Keywords)
+			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
 			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
 				Language:        basePage.Language,
@@ -275,20 +277,12 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
 				So(r.Description.Title, ShouldEqual, releaseResponse.Releases[i].Description.Title)
 				So(r.Description.Summary, ShouldEqual, releaseResponse.Releases[i].Description.Summary)
-				So(r.Description.NationalStatistic, ShouldEqual, releaseResponse.Releases[i].Description.NationalStatistic)
 				So(r.Description.ReleaseDate, ShouldEqual, releaseResponse.Releases[i].Description.ReleaseDate)
 				So(r.Description.Published, ShouldEqual, releaseResponse.Releases[i].Description.Published)
 				So(r.Description.Finalised, ShouldEqual, releaseResponse.Releases[i].Description.Finalised)
 				So(r.Description.Cancelled, ShouldEqual, releaseResponse.Releases[i].Description.Cancelled)
-				So(r.Description.CancellationNotice, ShouldResemble, releaseResponse.Releases[i].Description.CancellationNotice)
 				So(r.Description.ProvisionalDate, ShouldEqual, releaseResponse.Releases[i].Description.ProvisionalDate)
-				if releaseResponse.Releases[i].Description.Contact != nil {
-					So(r.Description.Contact.Name, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Name)
-					So(r.Description.Contact.Email, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Email)
-					So(r.Description.Contact.Telephone, ShouldEqual, releaseResponse.Releases[i].Description.Contact.Telephone)
-				} else {
-					So(r.Description.Contact, ShouldBeZeroValue)
-				}
+				So(r.Description.Contact, ShouldBeZeroValue)
 			}
 		})
 	})
@@ -338,6 +332,7 @@ func TestGetStartEndPage(t *testing.T) {
 			{current: 3, total: 3, window: 3, exStart: 1, exEnd: 3},
 
 			{current: 3, total: 4, window: 3, exStart: 2, exEnd: 4},
+			{current: 3, total: 4, window: 5, exStart: 1, exEnd: 4},
 
 			{current: 28, total: 32, window: 5, exStart: 26, exEnd: 30},
 			{current: 31, total: 32, window: 5, exStart: 28, exEnd: 32},
@@ -354,17 +349,41 @@ func TestGetStartEndPage(t *testing.T) {
 
 func TestGetPageURL(t *testing.T) {
 	Convey("Given a set of Validated parameters", t, func() {
-		params := queryparams.ValidatedParams{
-			Limit:     10,
-			Page:      2,
-			AfterDate: queryparams.MustParseDate("2021-11-30"),
-			Keywords:  "test",
-			Sort:      queryparams.TitleAZ,
-			Published: true,
+		testcases := []struct {
+			params   queryparams.ValidatedParams
+			expected string
+		}{
+			{
+				params: queryparams.ValidatedParams{
+					Limit:       10,
+					Page:        2,
+					AfterDate:   queryparams.MustParseDate("2021-11-30"),
+					Keywords:    "test",
+					Sort:        queryparams.TitleAZ,
+					ReleaseType: queryparams.Published,
+					Highlight:   true,
+				},
+				expected: "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&census=false&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
+			},
+			{
+				params: queryparams.ValidatedParams{
+					Limit:       25,
+					Page:        5,
+					BeforeDate:  queryparams.MustParseDate("2022-04-01"),
+					Sort:        queryparams.RelDateDesc,
+					ReleaseType: queryparams.Upcoming,
+					Provisional: true,
+					Postponed:   true,
+					Census:      true,
+				},
+				expected: "/releasecalendar?after-day=&after-month=&after-year=&before-day=1&before-month=4&before-year=2022&census=true&highlight=false&keywords=&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-confirmed=false&subtype-postponed=true&subtype-provisional=true",
+			},
 		}
 
 		Convey("check the generated page url is correct", func() {
-			So(getPageURL(5, params), ShouldEqual, "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&keywords=test&limit=10&page=5&sort=title_asc&type-published=true&type-upcoming=false")
+			for _, tc := range testcases {
+				So(getPageURL(tc.params.Page, tc.params), ShouldEqual, tc.expected)
+			}
 		})
 	})
 }
