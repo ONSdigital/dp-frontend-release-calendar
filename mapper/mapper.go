@@ -272,11 +272,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
-		ElementId:  "keyword-search",
-		InputName:  "keywords",
-		Language:   calendar.Language,
-		Label:      "Search keywords",
-		SearchTerm: params.Keywords,
+		ElementId:        "keyword-search",
+		InputName:        "keywords",
+		Language:         calendar.Language,
+		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
+		SearchTerm:       params.Keywords,
 	}
 	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
 
