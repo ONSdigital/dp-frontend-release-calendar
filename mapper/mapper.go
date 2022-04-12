@@ -671,11 +671,11 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 	}
 
 	calendar.KeywordSearch = coreModel.CompactSearch{
-		ElementId:  "keyword-search",
-		InputName:  "keywords",
-		Language:   calendar.Language,
-		Label:      "Search keywords",
-		SearchTerm: "zip zap zoo",
+		ElementId:        "keyword-search",
+		InputName:        "keywords",
+		Language:         calendar.Language,
+		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
+		SearchTerm:       "zip zap zoo",
 	}
 
 	return calendar
