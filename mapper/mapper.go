@@ -595,7 +595,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			Name:    "type-upcoming",
 			Id:      "release-type-upcoming",
 			Label:   "Upcoming",
-			Checked: true,
+			Checked: false,
 			Count:   234,
 			SubTypes: map[string]model.ReleaseType{
 				"subtype-confirmed": {
