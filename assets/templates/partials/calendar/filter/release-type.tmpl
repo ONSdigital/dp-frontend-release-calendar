@@ -1,162 +1,72 @@
 <form>
-  {{/* Include all other page settings in the form submission */}}
-  {{ template "partials/calendar/hidden-inputs/keywords" . }}
-  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
-  {{ template "partials/calendar/hidden-inputs/before-date" . }}
-  {{ template "partials/calendar/hidden-inputs/after-date" . }}
+    {{/* Include all other page settings in the form submission */}}
+    {{ template "partials/calendar/hidden-inputs/keywords" . }}
+    {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
+    {{ template "partials/calendar/hidden-inputs/before-date" . }}
+    {{ template "partials/calendar/hidden-inputs/after-date" . }}
 
-<!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
-  <div class="ons-checkboxes__items">
-    <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-      <span class="ons-checkbox ons-checkbox--no-border">
-        {{ with index .ReleaseTypes "type-published" }}
-          <input
-            type="checkbox"
-            id="release-type-published"
-            class="ons-checkbox__input ons-js-checkbox"
-            name="type-published"
-            value="true"
-            {{ if .Checked }}
-              checked
+    <!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
+
+    <fieldset class="ons-fieldset">
+        <div class="ons-radios__items">
+            {{ with index .ReleaseTypes "type-published" }}
+                <span class="ons-radios__item ons-radios__item--no-border">
+                  <span class="ons-radio ons-radio--no-border">
+                    {{ template "partials/calendar/inputs/radio-inputs" . }}
+                  </span>
+                </span>
             {{ end }}
-          >
-          <label
-            class="ons-checkbox__label"
-            for="release-type-published"
-          >
-            {{ .Label }} ({{ .Count }})
-          </label>
-        {{ end }}
-      </span>
-    </span>
-    <br>
-    <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-      <span class="ons-checkbox ons-checkbox--no-border">
-        {{ with index .ReleaseTypes "type-upcoming" }}
-          <input
-            type="checkbox"
-            id="release-type-upcoming"
-            class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children"
-            name="type-upcoming"
-            value="true"
-            aria-controls="publications-other-wrap"
-            aria-haspopup="true"
-            {{ if .Checked }}
-              checked
-            {{ end }}
-          >
-          <label
-            class="ons-checkbox__label"
-            for="release-type-upcoming"
-          >
-            {{ .Label }} ({{ .Count }})
-          </label>
-          <span class="ons-checkbox__other">
-            <fieldset class="ons-fieldset ons-js-other-fieldset">
-              <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">
-                {{ .Label }} type
-              </legend>
-              <p class="ons-checkboxes__label"></p>
-              <div class="ons-checkboxes__items">
-                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                  <span class="ons-checkbox ons-checkbox--no-border">
-                    {{ with index .SubTypes "subtype-confirmed" }}
-                      <input
-                        type="checkbox"
-                        id="release-subtype-confirmed"
-                        class="ons-checkbox__input ons-js-checkbox"
-                        name="subtype-confirmed"
-                        value="true"
-                        {{ if .Checked }}
-                          checked
-                        {{ end }}
-                      >
-                      <label
-                        class="ons-checkbox__label"
-                        for="release-subtype-confirmed"
-                      >
-                        {{ .Label }} ({{ .Count }})
-                      </label>
-                    {{ end }}
+            {{ with index .ReleaseTypes "type-upcoming" }}
+                <span class="ons-radios__item ons-radios__item--no-border">
+                  <span class="ons-radio ons-radio--no-border">
+                      {{ template "partials/calendar/inputs/radio-inputs" . }}
+                      <span class="ons-checkbox__other">
+                        <span class="ons-fieldset ons-js-other-fieldset">
+                          <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">
+                            {{ .Label }} type
+                          </legend>
+                          <p class="ons-checkboxes__label"></p>
+                          <div class="ons-checkboxes__items">
+                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                              <span class="ons-checkbox ons-checkbox--no-border">
+                                {{ with index .SubTypes "subtype-confirmed" }}
+                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
+                                {{ end }}
+                              </span>
+                            </span>
+                            <br>
+                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                              <span class="ons-checkbox ons-checkbox--no-border">
+                                {{ with index .SubTypes "subtype-provisional" }}
+                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
+                                {{ end }}
+                              </span>
+                            </span>
+                            <br>
+                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+                              <span class="ons-checkbox ons-checkbox--no-border">
+                                {{ with index .SubTypes "subtype-postponed" }}
+                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
+                                {{ end }}
+                              </span>
+                            </span>
+                          </div>
+                        </span>
+                      </span>
                   </span>
                 </span>
                 <br>
-                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                  <span class="ons-checkbox ons-checkbox--no-border">
-                    {{ with index .SubTypes "subtype-provisional" }}
-                      <input
-                        type="checkbox"
-                        id="release-subtype-provisional"
-                        class="ons-checkbox__input ons-js-checkbox"
-                        name="subtype-provisional"
-                        value="true"
-                        {{ if .Checked }}
-                          checked
-                        {{ end }}
-                      >
-                      <label
-                        class="ons-checkbox__label"
-                        for="release-subtype-provisional"
-                      >
-                        {{ .Label }} ({{ .Count }})
-                      </label>
-                    {{ end }}
-                  </span>
-                </span>
-                <br>
-                <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                  <span class="ons-checkbox ons-checkbox--no-border">
-                    {{ with index .SubTypes "subtype-postponed" }}
-                      <input
-                        type="checkbox"
-                        id="release-subtype-postponed"
-                        class="ons-checkbox__input ons-js-checkbox"
-                        name="subtype-postponed"
-                        value="true"
-                        {{ if .Checked }}
-                          checked
-                        {{ end }}
-                      >
-                      <label
-                        class="ons-checkbox__label"
-                        for="release-subtype-postponed"
-                      >
-                        {{ .Label }} ({{ .Count }})
-                      </label>
-                    {{ end }}
-                  </span>
-                </span>
-              </div>
-            </fieldset>
-          </span>
-        {{ end }}
-      </span>
-    </span>
-    <br>
-    <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-      <span class="ons-checkbox ons-checkbox--no-border">
-        {{ with index .ReleaseTypes "type-cancelled" }}
-          <input
-            type="checkbox"
-            id="release-type-cancelled"
-            class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children"
-            name="type-cancelled"
-            value="true"
-            {{ if .Checked }}
-              checked
             {{ end }}
-          >
-          <label
-            class="ons-checkbox__label"
-            for="release-type-cancelled"
-          >
-            {{ .Label }} ({{ .Count }})
-          </label>
-        {{ end }}
-      </span>
-    </span>
-  </div>
-  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
-    <span class="ons-btn__inner">Apply release type filters</span>
-  </button>
+            {{ with index .ReleaseTypes "type-cancelled" }}
+                <span class="ons-radios__item ons-radios__item--no-border">
+                  <span class="ons-radio ons-radio--no-border">
+                    {{ template "partials/calendar/inputs/radio-inputs" . }}
+                  </span>
+                </span>
+            {{ end }}
+        </div>
+    </fieldset>
+    <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
+        <span class="ons-btn__inner">Apply release type filters</span>
+    </button>
 </form>

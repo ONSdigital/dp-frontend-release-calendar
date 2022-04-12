@@ -585,26 +585,36 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 
 	calendar.ReleaseTypes = map[string]model.ReleaseType{
 		"type-published": {
+			Name:    "type-published",
+			Id:      "release-type-published",
 			Label:   "Published",
-			Checked: true,
+			Checked: false,
 			Count:   450,
 		},
 		"type-upcoming": {
+			Name:    "type-upcoming",
+			Id:      "release-type-upcoming",
 			Label:   "Upcoming",
 			Checked: true,
 			Count:   234,
 			SubTypes: map[string]model.ReleaseType{
 				"subtype-confirmed": {
+					Name:    "subtype-confirmed",
+					Id:      "release-subtype-confirmed",
 					Label:   "Confirmed",
 					Checked: true,
 					Count:   500,
 				},
 				"subtype-provisional": {
+					Name:    "subtype-provisional",
+					Id:      "release-subtype-provisional",
 					Label:   "Provisional",
 					Checked: false,
 					Count:   789,
 				},
 				"subtype-postponed": {
+					Name:    "subtype-postponed",
+					Id:      "release-subtype-postponed",
 					Label:   "Postponed",
 					Checked: true,
 					Count:   890,
@@ -613,6 +623,8 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		},
 		"type-cancelled": {
 			Label:   "Cancelled",
+			Name:    "type-cancelled",
+			Id:      "release-type-cancelled",
 			Checked: true,
 			Count:   0,
 		},
