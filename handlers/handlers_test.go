@@ -34,6 +34,7 @@ func (e *testCliError) Code() int     { return http.StatusNotFound }
 func TestUnitHandlers(t *testing.T) {
 	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
 	mockCtrl := gomock.NewController(t)
+
 	defer mockCtrl.Finish()
 	ctx := gomock.Any()
 
@@ -62,6 +63,7 @@ func TestUnitHandlers(t *testing.T) {
 
 	Convey("test API (Release and ReleaseCalendar)", t, func() {
 		mockRenderClient := NewMockRenderClient(mockCtrl)
+		mockBabbageAPI := NewMockBabbageAPI(mockCtrl)
 		mockConfig, _ := config.Get()
 
 		w := httptest.NewRecorder()
@@ -70,7 +72,8 @@ func TestUnitHandlers(t *testing.T) {
 		Convey("test Release", func() {
 			mockApiClient := NewMockReleaseCalendarAPI(mockCtrl)
 			url := "/releases/test"
-			router.HandleFunc(url, Release(*mockConfig, mockRenderClient, mockApiClient))
+			maxAge := 670
+			router.HandleFunc(url, Release(*mockConfig, mockRenderClient, mockApiClient, mockBabbageAPI))
 
 			r := releasecalendar.Release{
 				URI: url,
@@ -79,96 +82,209 @@ func TestUnitHandlers(t *testing.T) {
 				},
 			}
 
-			Convey("it returns 200 when rendered successfully", func() {
-				mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(&r, nil)
+			req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+
+			Convey("When there is an error getting the release from the release calendar API", func() {
+				apiError := errors.New("error reading data")
+				Convey("And the request uses headers", func() {
+					setRequestHeaders(req)
+					mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(nil, apiError)
+
+					Convey("Then it returns 500", func() {
+						router.ServeHTTP(w, req)
+
+						So(w.Code, ShouldEqual, http.StatusInternalServerError)
+					})
+				})
+
+				Convey("And the request does not use headers", func() {
+					mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, url).Return(&r, nil).Return(nil, apiError)
+
+					Convey("Then it returns 500", func() {
+						router.ServeHTTP(w, req)
+
+						So(w.Code, ShouldEqual, http.StatusInternalServerError)
+					})
+				})
+			})
+
+			Convey("When there is no problem with the request", func() {
 				mockRenderClient.EXPECT().NewBasePageModel()
 				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
 
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-				setRequestHeaders(req)
+				Convey("And the request uses headers", func() {
+					setRequestHeaders(req)
+					mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(&r, nil)
 
-				router.ServeHTTP(w, req)
+					Convey("And Babbage calculates the cache max age successfully", func() {
+						mockBabbageAPI.EXPECT().GetMaxAge(ctx, url, mockConfig.MaxAgeKey).Return(maxAge, nil)
+						expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
 
-				So(w.Code, ShouldEqual, http.StatusOK)
-			})
+						Convey("Then it returns 200 and the right cache header", func() {
+							router.ServeHTTP(w, req)
 
-			Convey("it returns 200 when rendered successfully without headers or cookies", func() {
-				mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, url).Return(&r, nil)
-				mockRenderClient.EXPECT().NewBasePageModel()
-				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
+							So(w.Code, ShouldEqual, http.StatusOK)
+							So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
+						})
+					})
 
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+					Convey("And there is an error calling Babbage", func() {
+						mockBabbageAPI.EXPECT().GetMaxAge(ctx, url, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
 
-				router.ServeHTTP(w, req)
+						Convey("Then it returns 200 and the default cache header", func() {
+							router.ServeHTTP(w, req)
 
-				So(w.Code, ShouldEqual, http.StatusOK)
-			})
+							So(w.Code, ShouldEqual, http.StatusOK)
+							So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+						})
+					})
 
-			Convey("it returns 500 when there is an error getting the release from the api", func() {
-				mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, url).Return(nil, errors.New("error reading data"))
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-				setRequestHeaders(req)
+				})
 
-				router.ServeHTTP(w, req)
+				Convey("And the request does not use headers", func() {
+					mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, url).Return(&r, nil)
 
-				So(w.Code, ShouldEqual, http.StatusInternalServerError)
+					Convey("And Babbage calculates the cache max age successfully", func() {
+						mockBabbageAPI.EXPECT().GetMaxAge(ctx, url, mockConfig.MaxAgeKey).Return(maxAge, nil)
+						expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+
+						Convey("Then it returns 200 and the right cache header", func() {
+							router.ServeHTTP(w, req)
+							So(w.Code, ShouldEqual, http.StatusOK)
+							So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
+						})
+					})
+
+					Convey("And there is an error calling Babbage", func() {
+						mockBabbageAPI.EXPECT().GetMaxAge(ctx, url, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+
+						Convey("Then it returns 200 and the default cache header", func() {
+							router.ServeHTTP(w, req)
+
+							So(w.Code, ShouldEqual, http.StatusOK)
+							So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+						})
+					})
+				})
 			})
 		})
 
 		Convey("test ReleaseCalendar", func() {
 			mockSearchClient := NewMockSearchAPI(mockCtrl)
-			url := "/releasecalendar/test"
-			router.HandleFunc(url, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient))
+			url := "/releasecalendar"
+			maxAge := 422
+			router.HandleFunc(url, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient, mockBabbageAPI))
+
 			r := sitesearch.ReleaseResponse{
 				Releases: []sitesearch.Release{
-					{URI: url,
+					{
+						URI:         url,
 						Description: sitesearch.ReleaseDescription{Title: "Release Calendar Entry Test"},
 					},
 				},
 			}
 
-			Convey("it returns 200 when rendered successfully", func() {
-				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
-				mockRenderClient.EXPECT().NewBasePageModel()
-				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
-
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-				setRequestHeaders(req)
-
-				router.ServeHTTP(w, req)
-
-				So(w.Code, ShouldEqual, http.StatusOK)
-			})
-
-			Convey("it returns 200 when rendered successfully without headers or cookies", func() {
-				mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
-				mockRenderClient.EXPECT().NewBasePageModel()
-				mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
-
+			Convey("Given a request without parameters", func() {
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
 
-				router.ServeHTTP(w, req)
+				Convey("When there is an error getting the releases from the search API", func() {
+					apiError := errors.New("error reading data")
+					Convey("And the request uses headers", func() {
+						setRequestHeaders(req)
+						mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, apiError)
 
-				So(w.Code, ShouldEqual, http.StatusOK)
+						Convey("Then it returns 500", func() {
+							router.ServeHTTP(w, req)
+
+							So(w.Code, ShouldEqual, http.StatusInternalServerError)
+						})
+					})
+
+					Convey("And the request does not use headers", func() {
+						mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, apiError)
+
+						Convey("Then it returns 500", func() {
+							router.ServeHTTP(w, req)
+
+							So(w.Code, ShouldEqual, http.StatusInternalServerError)
+						})
+					})
+				})
+
+				Convey("When there is no problem with the request", func() {
+					mockRenderClient.EXPECT().NewBasePageModel()
+					mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
+
+					Convey("And the request uses headers", func() {
+						setRequestHeaders(req)
+						mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
+
+						Convey("And Babbage calculates the cache max age successfully", func() {
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, nil)
+							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+
+							Convey("Then it returns 200 and the right cache header", func() {
+								router.ServeHTTP(w, req)
+
+								So(w.Code, ShouldEqual, http.StatusOK)
+								So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
+							})
+						})
+
+						Convey("And there is an error calling Babbage", func() {
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+
+							Convey("Then it returns 200 and the default cache header", func() {
+								router.ServeHTTP(w, req)
+
+								So(w.Code, ShouldEqual, http.StatusOK)
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+							})
+						})
+					})
+
+					Convey("And the request does not use headers", func() {
+						mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
+
+						Convey("And Babbage calculates the cache max age successfully", func() {
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, nil)
+							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+
+							Convey("Then it returns 200 and the right cache header", func() {
+								router.ServeHTTP(w, req)
+
+								So(w.Code, ShouldEqual, http.StatusOK)
+								So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
+							})
+						})
+
+						Convey("And there is an error calling Babbage", func() {
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+
+							Convey("Then it returns 200 and the default cache header", func() {
+								router.ServeHTTP(w, req)
+
+								So(w.Code, ShouldEqual, http.StatusOK)
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+							})
+						})
+					})
+				})
 			})
 
-			Convey("it returns 400 when there is an error in one of the parameters", func() {
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", url), nil)
-				setRequestHeaders(req)
+			Convey("Given a request with parameters", func() {
 
-				router.ServeHTTP(w, req)
+				Convey("When the limit parameter is negative", func() {
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", url), nil)
 
-				So(w.Code, ShouldEqual, http.StatusBadRequest)
-			})
+					Convey("Then it returns 400", func() {
+						router.ServeHTTP(w, req)
 
-			Convey("it returns 500 when there is an error getting the releases from the search api", func() {
-				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, errors.New("error reading data"))
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
-				setRequestHeaders(req)
+						So(w.Code, ShouldEqual, http.StatusBadRequest)
+					})
+				})
 
-				router.ServeHTTP(w, req)
-
-				So(w.Code, ShouldEqual, http.StatusInternalServerError)
+				//TODO: Add test cases for parameter validation
 			})
 		})
 	})

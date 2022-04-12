@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -24,14 +25,24 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 }
 
+func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageAPI, uri, key string) {
+	maxAge, err := babbage.GetMaxAge(ctx, uri, key)
+	if err != nil {
+		// Do not cache
+		maxAge = 0
+		log.Warn(ctx, "Couldn't find max age from Babbage, using default 0", log.Data{"uri": uri, "err": err.Error()})
+	}
+	w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
+}
+
 // Release will load a release page
-func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.HandlerFunc {
+func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		release(w, r, accessToken, collectionID, lang, rc, api, cfg)
+		release(w, r, accessToken, collectionID, lang, rc, api, babbage, cfg)
 	})
 }
 
-func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, _ config.Config) {
+func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI, cfg config.Config) {
 	ctx := req.Context()
 
 	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, req.URL.EscapedPath())
@@ -42,6 +53,8 @@ func release(w http.ResponseWriter, req *http.Request, userAccessToken, collecti
 
 	basePage := rc.NewBasePageModel()
 	m := mapper.CreateRelease(basePage, *release)
+
+	setCacheHeader(ctx, w, babbage, req.URL.EscapedPath(), cfg.MaxAgeKey)
 
 	rc.BuildPage(w, m, "release")
 }
@@ -60,13 +73,13 @@ func previousReleasesSample(w http.ResponseWriter, req *http.Request, rc RenderC
 	rc.BuildPage(w, m, "previousreleases")
 }
 
-func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.HandlerFunc {
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		releaseCalendar(w, r, accessToken, collectionID, lang, rc, api, cfg)
+		releaseCalendar(w, r, accessToken, collectionID, lang, rc, api, babbage, cfg)
 	})
 }
 
-func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api SearchAPI, cfg config.Config) {
+func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api SearchAPI, babbage BabbageAPI, cfg config.Config) {
 	ctx := req.Context()
 	params := req.URL.Query()
 	validatedParams := queryparams.ValidatedParams{}
@@ -161,6 +174,8 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 
 	basePage := rc.NewBasePageModel()
 	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
+
+	setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 
 	rc.BuildPage(w, calendar, "calendar")
 }

@@ -10,6 +10,8 @@ import (
 
 type Config struct {
 	APIRouterURL                string        `envconfig:"API_ROUTER_URL"`
+	BabbageURL                  string        `envconfig:"BABBAGE_URL"`
+	MaxAgeKey                   string        `envconfig:"BABBAGE_MAXAGE_KEY"`
 	BindAddr                    string        `envconfig:"BIND_ADDR"`
 	Debug                       bool          `envconfig:"DEBUG"`
 	DefaultLimit                int           `envconfig:"DEFAULT_LIMIT"`
@@ -52,6 +54,8 @@ func get() (*Config, error) {
 
 	cfg = &Config{
 		APIRouterURL:                "http://localhost:23200/v1",
+		BabbageURL:                  "http://localhost:8080",
+		MaxAgeKey:                   "",
 		BindAddr:                    ":27700",
 		Debug:                       false,
 		DefaultLimit:                10,
