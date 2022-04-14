@@ -50,7 +50,7 @@ one = "Er enghraifft: 2006 neu 19/07/2010"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
-one = "Hidlo'r canlyniadau"
+other = "Hidlo'r canlyniadau"
 
 [ReleaseCalendarFilterReleaseType]
 description = "Release type"

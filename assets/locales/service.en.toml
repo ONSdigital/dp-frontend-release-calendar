@@ -50,7 +50,7 @@ one = "For example: 2006 or 19/07/2010"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
-one = "Filter results"
+other = "Filter results"
 
 [ReleaseCalendarFilterReleaseType]
 description = "Release type"
