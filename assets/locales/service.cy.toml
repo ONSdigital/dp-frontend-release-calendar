@@ -47,3 +47,31 @@ one = "Cyhoeddwyd ar ôl"
 [DateFilterDescription]
 description = "For example: 2006 or 19/07/2010"
 one = "Er enghraifft: 2006 neu 19/07/2010"
+
+[ReleaseCalendarSortByLabel]
+description = "Sort by"
+one = "Trefnu yn ôl"
+
+[ReleaseCalendarSortBySubmit]
+description = "Sort"
+one = "Trefnu"
+
+[ReleaseCalendarSortOptionDateNewest]
+description = "Date (newest)"
+one = "Dyddiad (diweddaraf)"
+
+[ReleaseCalendarSortOptionDateOldest]
+description = "Date (oldest)"
+one = "Dyddiad (hynaf)"
+
+[ReleaseCalendarSortOptionAlphabeticalAZ]
+description = "Alphabetical (A to Z)"
+one = "Yn nhrefn yr wyddor (A-Y)"
+
+[ReleaseCalendarSortOptionAlphabeticalZA]
+description = "Alphabetical (Z to A)"
+one = "Yn nhrefn yr wyddor (Y-A)"
+
+[ReleaseCalendarSortOptionRelevance]
+description = "Relevance"
+one = "Perthnasedd"
