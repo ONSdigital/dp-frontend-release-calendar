@@ -17,7 +17,9 @@
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
 
   <div class="ons-field ons-field--inline">
-    <label class="ons-label" for="select-calendar-item-order">Sort by</label>
+    <label class="ons-label" for="select-calendar-item-order">
+      {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
+    </label>
     <select
       id="select-calendar-item-order"
       name="sort"
@@ -38,7 +40,7 @@
       type="submit"
       class="ons-btn btn btn--primary btn--thin btn--small js--hide font-size--16 ons-u-ml-s"
     >
-      Sort
+      {{- localise "ReleaseCalendarSortBySubmit" .Language 1 -}}
     </button>
   </div>
 </form>
