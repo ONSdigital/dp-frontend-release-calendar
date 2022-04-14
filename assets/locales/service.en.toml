@@ -91,3 +91,23 @@ one = "Alphabetical (Z to A)"
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
 one = "Relevance"
+
+[FilterReleaseTypeShowOnly]
+description = "Show only"
+one = "Show only"
+
+[FilterReleaseTypeApplyFilters]
+description = "Apply release type filters"
+one = "Apply release type filters"
+
+[FilterReleaseTypePublished]
+description = "Published"
+one = "Published"
+
+[FilterReleaseTypeUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[FilterReleaseTypeCancelled]
+description = "Cancelled"
+one = "Cancelled"
