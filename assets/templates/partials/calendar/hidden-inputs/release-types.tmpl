@@ -2,10 +2,4 @@
   {{ if $value.Checked }}
     <input type="hidden" name="{{ $type }}" value="true">
   {{ end }}
-
-{{/*  {{ range $subType, $subValue := $value.SubTypes }}*/}}
-{{/*    {{ if $subValue.Checked }}*/}}
-{{/*      <input type="hidden" name="{{ $subType }}" value="true">*/}}
-{{/*    {{ end }}*/}}
-{{/*  {{ end }}*/}}
 {{ end }}
