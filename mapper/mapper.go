@@ -585,14 +585,16 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 
 	calendar.ReleaseTypes = map[string]model.ReleaseType{
 		"type-published": {
-			Name:    "type-published",
+			Name:    "release-type",
+			Value:   "type-published",
 			Id:      "release-type-published",
 			Label:   "Published",
 			Checked: false,
 			Count:   450,
 		},
 		"type-upcoming": {
-			Name:    "type-upcoming",
+			Name:    "release-type",
+			Value:   "type-upcoming",
 			Id:      "release-type-upcoming",
 			Label:   "Upcoming",
 			Checked: true,
@@ -622,9 +624,10 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			},
 		},
 		"type-cancelled": {
-			Label:   "Cancelled",
-			Name:    "type-cancelled",
+			Name:    "release-type",
+			Value:   "type-cancelled",
 			Id:      "release-type-cancelled",
+			Label:   "Cancelled",
 			Checked: true,
 			Count:   0,
 		},
@@ -708,26 +711,38 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 	checkFlag := func(flag bool) bool { return flag }
 	return map[string]model.ReleaseType{
 		"type-published": {
+			Name:    "release-type",
+			Value:   "type-published",
+			Id:      "release-type-published",
 			Label:   "Published",
 			Checked: checkType(params.ReleaseType, queryparams.Published),
 			Count:   response.Breakdown.Published,
 		},
 		"type-upcoming": {
+			Name:    "release-type",
+			Value:   "type-upcoming",
+			Id:      "release-type-upcoming",
 			Label:   "Upcoming",
 			Checked: checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:   response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
 			SubTypes: map[string]model.ReleaseType{
 				"subtype-confirmed": {
+					Name:    "subtype-confirmed",
+					Id:      "release-subtype-confirmed",
 					Label:   "Confirmed",
 					Checked: checkFlag(params.Confirmed),
 					Count:   response.Breakdown.Confirmed,
 				},
 				"subtype-provisional": {
+					Name:    "subtype-provisional",
+					Id:      "release-subtype-provisional",
 					Label:   "Provisional",
 					Checked: checkFlag(params.Provisional),
 					Count:   response.Breakdown.Provisional,
 				},
 				"subtype-postponed": {
+					Name:    "subtype-postponed",
+					Id:      "release-subtype-postponed",
 					Label:   "Postponed",
 					Checked: checkFlag(params.Postponed),
 					Count:   response.Breakdown.Postponed,
@@ -735,6 +750,9 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			},
 		},
 		"type-cancelled": {
+			Name:    "release-type",
+			Value:   "type-cancelled",
+			Id:      "release-type-cancelled",
 			Label:   "Cancelled",
 			Checked: checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:   response.Breakdown.Cancelled,
