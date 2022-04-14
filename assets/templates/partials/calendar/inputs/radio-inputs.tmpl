@@ -13,5 +13,10 @@
   for="{{.Id}}"
   id="{{.Id}}-label"
 >
-  {{ .Label }} ({{ .Count }})
+  {{ if .LocaleKey }}
+    {{ localise .LocaleKey .Language .Plural }}
+  {{ else }}
+    {{ .Label }}
+  {{ end }}
+  ({{ .Count }})
 </label>
