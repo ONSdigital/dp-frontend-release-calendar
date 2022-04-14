@@ -1,6 +1,8 @@
 <div class="ons-pl-grid-col release-calendar__filters">
   <div class="ons-u-fs-r--b release-calendar__filters__heading">
-    <div class="release-calendar__filters__heading--margin-one-fix">Filter results</div>
+    <div class="release-calendar__filters__heading--margin-one-fix">
+      {{- localise "ReleaseCalendarFiltersTitle" .Language 1 -}}
+    </div>
   </div>
 
   <div class="ons-accordion">
@@ -12,7 +14,9 @@
     >
       <div class="ons-collapsible__heading ons-js-collapsible-heading">
         <div class="ons-collapsible__controls">
-          <h2 class="ons-collapsible__title">Release type</h2>
+          <h2 class="ons-collapsible__title">
+            {{- localise "ReleaseCalendarFilterReleaseType" .Language 1 -}}
+          </h2>
           {{ template "icons/collapsible" . }}
         </div>
       </div>
@@ -29,7 +33,9 @@
     >
       <div class="ons-collapsible__heading ons-js-collapsible-heading">
         <div class="ons-collapsible__controls">
-          <h2 class="ons-collapsible__title">Search</h2>
+          <h2 class="ons-collapsible__title">
+            {{- localise "ReleaseCalendarFilterSearch" .Language 1 -}}
+          </h2>
           {{ template "icons/collapsible" . }}
         </div>
       </div>
@@ -46,7 +52,9 @@
     >
       <div class="ons-collapsible__heading ons-js-collapsible-heading">
         <div class="ons-collapsible__controls">
-          <h2 class="ons-collapsible__title">Date</h2>
+          <h2 class="ons-collapsible__title">
+            {{- localise "ReleaseCalendarFilterDate" .Language 1 -}}
+          </h2>
           {{ template "icons/collapsible" . }}
         </div>
       </div>
