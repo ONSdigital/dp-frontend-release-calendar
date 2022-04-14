@@ -32,7 +32,7 @@
           value="{{ .Value }}"
           {{ if eq .Value $sortMode }}selected{{ end }}
         >
-          {{ .Label }}
+          {{- localise .LocaleKey $.Language .Plural -}}
         </option>
       {{ end }}
     </select>

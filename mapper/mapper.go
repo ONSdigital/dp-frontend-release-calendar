@@ -637,24 +637,29 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		Mode: "alphabetical-az",
 		Options: []model.SortOption{
 			{
-				Label: "Date (newest)",
-				Value: "date-newest",
+				LocaleKey: "ReleaseCalendarSortOptionDateNewest",
+				Plural:    1,
+				Value:     "date-newest",
 			},
 			{
-				Label: "Date (oldest)",
-				Value: "date-oldest",
+				LocaleKey: "ReleaseCalendarSortOptionDateOldest",
+				Plural:    1,
+				Value:     "date-oldest",
 			},
 			{
-				Label: "Alphabetical (A to Z)",
-				Value: "alphabetical-az",
+				LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
+				Plural:    1,
+				Value:     "alphabetical-az",
 			},
 			{
-				Label: "Alphabetical (Z to A)",
-				Value: "alphabetical-za",
+				LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
+				Plural:    1,
+				Value:     "alphabetical-za",
 			},
 			{
-				Label: "Relevance",
-				Value: "relevance",
+				LocaleKey: "ReleaseCalendarSortOptionRelevance",
+				Plural:    1,
+				Value:     "relevance",
 			},
 		},
 	}
