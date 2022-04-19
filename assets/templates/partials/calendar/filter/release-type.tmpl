@@ -21,39 +21,6 @@
                 <span class="ons-radios__item ons-radios__item--no-border">
                   <span class="ons-radio ons-radio--no-border">
                       {{ template "partials/calendar/inputs/radio-inputs" . }}
-                      <span class="ons-checkbox__other">
-                        <span class="ons-fieldset ons-js-other-fieldset">
-                          <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">
-                            {{ .Label }} type
-                          </legend>
-                          <p class="ons-checkboxes__label"></p>
-                          <div class="ons-checkboxes__items">
-                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                              <span class="ons-checkbox ons-checkbox--no-border">
-                                {{ with index .SubTypes "subtype-confirmed" }}
-                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
-                                {{ end }}
-                              </span>
-                            </span>
-                            <br>
-                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                              <span class="ons-checkbox ons-checkbox--no-border">
-                                {{ with index .SubTypes "subtype-provisional" }}
-                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
-                                {{ end }}
-                              </span>
-                            </span>
-                            <br>
-                            <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                              <span class="ons-checkbox ons-checkbox--no-border">
-                                {{ with index .SubTypes "subtype-postponed" }}
-                                    {{ template "partials/calendar/inputs/checkbox-inputs" . }}
-                                {{ end }}
-                              </span>
-                            </span>
-                          </div>
-                        </span>
-                      </span>
                   </span>
                 </span>
                 <br>
