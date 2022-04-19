@@ -63,3 +63,31 @@ one = "Search"
 [ReleaseCalendarFilterDate]
 description = "Date"
 one = "Date"
+
+[ReleaseCalendarSortByLabel]
+description = "Sort by"
+one = "Sort by"
+
+[ReleaseCalendarSortBySubmit]
+description = "Sort"
+one = "Sort"
+
+[ReleaseCalendarSortOptionDateNewest]
+description = "Date (newest)"
+one = "Date (newest)"
+
+[ReleaseCalendarSortOptionDateOldest]
+description = "Date (oldest)"
+one = "Date (oldest)"
+
+[ReleaseCalendarSortOptionAlphabeticalAZ]
+description = "Alphabetical (A to Z)"
+one = "Alphabetical (A to Z)"
+
+[ReleaseCalendarSortOptionAlphabeticalZA]
+description = "Alphabetical (Z to A)"
+one = "Alphabetical (Z to A)"
+
+[ReleaseCalendarSortOptionRelevance]
+description = "Relevance"
+one = "Relevance"

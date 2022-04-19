@@ -63,3 +63,31 @@ one = "Chwilio"
 [ReleaseCalendarFilterDate]
 description = "Date"
 one = "Dyddiad"
+
+[ReleaseCalendarSortByLabel]
+description = "Sort by"
+one = "Trefnu yn ôl"
+
+[ReleaseCalendarSortBySubmit]
+description = "Sort"
+one = "Trefnu"
+
+[ReleaseCalendarSortOptionDateNewest]
+description = "Date (newest)"
+one = "Dyddiad (diweddaraf)"
+
+[ReleaseCalendarSortOptionDateOldest]
+description = "Date (oldest)"
+one = "Dyddiad (hynaf)"
+
+[ReleaseCalendarSortOptionAlphabeticalAZ]
+description = "Alphabetical (A to Z)"
+one = "Yn nhrefn yr wyddor (A-Y)"
+
+[ReleaseCalendarSortOptionAlphabeticalZA]
+description = "Alphabetical (Z to A)"
+one = "Yn nhrefn yr wyddor (Y-A)"
+
+[ReleaseCalendarSortOptionRelevance]
+description = "Relevance"
+one = "Perthnasedd"
