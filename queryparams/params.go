@@ -313,16 +313,37 @@ func (s Sort) OptionString() string {
 }
 
 type SortOption struct {
-	Label string `json:"label"`
-	Value string `json:"value"`
+	LocaleKey string `json:"locale_key"`
+	Plural    int    `json:"plural"`
+	Value     string `json:"value"`
 }
 
 var SortOptions = []SortOption{
-	{Label: "Date (newest)", Value: sortNames[RelDateDesc]},
-	{Label: "Date (oldest)", Value: sortNames[RelDateAsc]},
-	{Label: "Alphabetical (A to Z)", Value: sortNames[TitleAZ]},
-	{Label: "Alphabetical (Z to A)", Value: sortNames[TitleZA]},
-	{Label: "Relevance", Value: sortNames[Relevance]},
+	{
+		LocaleKey: "ReleaseCalendarSortOptionDateNewest",
+		Plural:    1,
+		Value:     sortNames[RelDateDesc],
+	},
+	{
+		LocaleKey: "ReleaseCalendarSortOptionDateOldest",
+		Plural:    1,
+		Value:     sortNames[RelDateAsc],
+	},
+	{
+		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
+		Plural:    1,
+		Value:     sortNames[TitleAZ],
+	},
+	{
+		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
+		Plural:    1,
+		Value:     sortNames[TitleZA],
+	},
+	{
+		LocaleKey: "ReleaseCalendarSortOptionRelevance",
+		Plural:    1,
+		Value:     sortNames[Relevance],
+	},
 }
 
 type Date struct {
