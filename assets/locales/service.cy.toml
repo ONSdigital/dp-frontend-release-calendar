@@ -48,6 +48,22 @@ one = "Cyhoeddwyd ar ôl"
 description = "For example: 2006 or 19/07/2010"
 one = "Er enghraifft: 2006 neu 19/07/2010"
 
+[ReleaseCalendarFiltersTitle]
+description = "Filter results"
+other = "Hidlo'r canlyniadau"
+
+[ReleaseCalendarFilterReleaseType]
+description = "Release type"
+one = "Math o ddatganiad"
+
+[ReleaseCalendarFilterSearch]
+description = "Search"
+one = "Chwilio"
+
+[ReleaseCalendarFilterDate]
+description = "Date"
+one = "Dyddiad"
+
 [ReleaseCalendarSortByLabel]
 description = "Sort by"
 one = "Trefnu yn ôl"

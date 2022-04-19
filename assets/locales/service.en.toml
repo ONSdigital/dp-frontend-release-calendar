@@ -48,6 +48,22 @@ one = "Released after"
 description = "For example: 2006 or 19/07/2010"
 one = "For example: 2006 or 19/07/2010"
 
+[ReleaseCalendarFiltersTitle]
+description = "Filter results"
+other = "Filter results"
+
+[ReleaseCalendarFilterReleaseType]
+description = "Release type"
+one = "Release type"
+
+[ReleaseCalendarFilterSearch]
+description = "Search"
+one = "Search"
+
+[ReleaseCalendarFilterDate]
+description = "Date"
+one = "Date"
+
 [ReleaseCalendarSortByLabel]
 description = "Sort by"
 one = "Sort by"
