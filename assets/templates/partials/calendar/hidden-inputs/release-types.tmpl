@@ -1,5 +1,5 @@
 {{ range $type, $value := .ReleaseTypes }}
   {{ if $value.Checked }}
-    <input type="hidden" name="{{ $type }}" value="true">
+    <input type="hidden" name="{{ $value.Name }}" value="{{ $value.Value }}">
   {{ end }}
 {{ end }}

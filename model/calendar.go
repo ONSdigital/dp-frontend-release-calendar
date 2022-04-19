@@ -15,7 +15,8 @@ type ReleaseType struct {
 	Id       string                 `json:"id"`
 	Label    string                 `json:"label"`
 	Name     string                 `json:"name"`
-	Checked  bool                   `json:"value"`
+	Value    string                 `json:"value"`
+	Checked  bool                   `json:"checked"`
 	Count    int                    `json:"count"`
 	SubTypes map[string]ReleaseType `json:"sub_types"`
 }
