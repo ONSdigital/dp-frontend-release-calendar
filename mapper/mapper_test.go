@@ -268,7 +268,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				Title:           "Released after",
 				Description:     "For example: 2006 or 19/07/2010",
 			})
-			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse))
+			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, ""))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
 			So(calendar.Pagination.Limit, ShouldEqual, 5)

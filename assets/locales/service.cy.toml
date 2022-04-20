@@ -91,3 +91,23 @@ one = "Yn nhrefn yr wyddor (Y-A)"
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
 one = "Perthnasedd"
+
+[FilterReleaseTypeShowOnly]
+description = "Show only"
+one = "Dangos hyn yn unig"
+
+[FilterReleaseTypeApplyFilters]
+description = "Apply release type filters"
+one = "Rhoi'r hidlyddion math o ddatganiad ar waith"
+
+[FilterReleaseTypePublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[FilterReleaseTypeUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[FilterReleaseTypeCancelled]
+description = "Cancelled"
+one = "Canslwyd"

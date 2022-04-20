@@ -306,7 +306,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
 	}
 
-	calendar.ReleaseTypes = mapReleases(params, response)
+	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
 
 	totalResults := cfg.DefaultMaximumSearchResults
 	if totalResults > response.Breakdown.Total {
@@ -585,28 +585,34 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 
 	calendar.ReleaseTypes = map[string]model.ReleaseType{
 		"type-published": {
-			Name:    "release-type",
-			Value:   "type-published",
-			Id:      "release-type-published",
-			Label:   "Published",
-			Checked: false,
-			Count:   450,
+			Name:      "release-type",
+			Value:     "type-published",
+			Id:        "release-type-published",
+			LocaleKey: "FilterReleaseTypePublished",
+			Plural:    1,
+			Language:  calendar.Language,
+			Checked:   false,
+			Count:     450,
 		},
 		"type-upcoming": {
-			Name:    "release-type",
-			Value:   "type-upcoming",
-			Id:      "release-type-upcoming",
-			Label:   "Upcoming",
-			Checked: false,
-			Count:   234,
+			Name:      "release-type",
+			Value:     "type-upcoming",
+			Id:        "release-type-upcoming",
+			LocaleKey: "FilterReleaseTypeUpcoming",
+			Plural:    1,
+			Language:  calendar.Language,
+			Checked:   false,
+			Count:     234,
 		},
 		"type-cancelled": {
-			Name:    "release-type",
-			Value:   "type-cancelled",
-			Id:      "release-type-cancelled",
-			Label:   "Cancelled",
-			Checked: true,
-			Count:   0,
+			Name:      "release-type",
+			Value:     "type-cancelled",
+			Id:        "release-type-cancelled",
+			LocaleKey: "FilterReleaseTypeCancelled",
+			Plural:    1,
+			Language:  calendar.Language,
+			Checked:   true,
+			Count:     0,
 		},
 	}
 
@@ -688,25 +694,29 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 	return modelChanges
 }
 
-func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse) map[string]model.ReleaseType {
+func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse, language string) map[string]model.ReleaseType {
 	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
 	checkFlag := func(flag bool) bool { return flag }
 	return map[string]model.ReleaseType{
 		"type-published": {
-			Name:    "release-type",
-			Value:   "type-published",
-			Id:      "release-type-published",
-			Label:   "Published",
-			Checked: checkType(params.ReleaseType, queryparams.Published),
-			Count:   response.Breakdown.Published,
+			Name:      "release-type",
+			Value:     "type-published",
+			Id:        "release-type-published",
+			LocaleKey: "FilterReleaseTypePublished",
+			Plural:    1,
+			Language:  language,
+			Checked:   checkType(params.ReleaseType, queryparams.Published),
+			Count:     response.Breakdown.Published,
 		},
 		"type-upcoming": {
-			Name:    "release-type",
-			Value:   "type-upcoming",
-			Id:      "release-type-upcoming",
-			Label:   "Upcoming",
-			Checked: checkType(params.ReleaseType, queryparams.Upcoming),
-			Count:   response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
+			Name:      "release-type",
+			Value:     "type-upcoming",
+			Id:        "release-type-upcoming",
+			LocaleKey: "FilterReleaseTypeUpcoming",
+			Plural:    1,
+			Language:  language,
+			Checked:   checkType(params.ReleaseType, queryparams.Upcoming),
+			Count:     response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
 			SubTypes: map[string]model.ReleaseType{
 				"subtype-confirmed": {
 					Name:    "subtype-confirmed",
@@ -732,12 +742,14 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			},
 		},
 		"type-cancelled": {
-			Name:    "release-type",
-			Value:   "type-cancelled",
-			Id:      "release-type-cancelled",
-			Label:   "Cancelled",
-			Checked: checkType(params.ReleaseType, queryparams.Cancelled),
-			Count:   response.Breakdown.Cancelled,
+			Name:      "release-type",
+			Value:     "type-cancelled",
+			Id:        "release-type-cancelled",
+			LocaleKey: "FilterReleaseTypeCancelled",
+			Plural:    1,
+			Language:  language,
+			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
+			Count:     response.Breakdown.Cancelled,
 		},
 	}
 }

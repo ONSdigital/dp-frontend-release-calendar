@@ -12,13 +12,16 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	Id       string                 `json:"id"`
-	Label    string                 `json:"label"`
-	Name     string                 `json:"name"`
-	Value    string                 `json:"value"`
-	Checked  bool                   `json:"checked"`
-	Count    int                    `json:"count"`
-	SubTypes map[string]ReleaseType `json:"sub_types"`
+	Id        string                 `json:"id"`
+	Label     string                 `json:"label"`
+	LocaleKey string                 `json:"locale_key"`
+	Plural    int                    `json:"plural"`
+	Language  string                 `json:"langugage"`
+	Name      string                 `json:"name"`
+	Value     string                 `json:"value"`
+	Checked   bool                   `json:"checked"`
+	Count     int                    `json:"count"`
+	SubTypes  map[string]ReleaseType `json:"sub_types"`
 }
 
 type SortOption = queryparams.SortOption
