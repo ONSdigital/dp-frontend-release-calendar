@@ -23,8 +23,14 @@ func createTableOfContents(
 	codeOfPractice bool,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
-		AriaLabelLocaliseKey: "TableOfContents",
-		TitleLocaliseKey:     "Contents",
+		AriaLabel: coreModel.Localisation{
+			LocaleKey: "TableOfContents",
+			Plural:    1,
+		},
+		Title: coreModel.Localisation{
+			LocaleKey: "Contents",
+			Plural:    1,
+		},
 	}
 
 	sections := make(map[string]coreModel.ContentSection)
@@ -33,7 +39,9 @@ func createTableOfContents(
 	if description.Summary != "" {
 		sections["summary"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Summary",
+			Title: coreModel.Localisation{
+				Text: "Summary",
+			},
 		}
 		displayOrder = append(displayOrder, "summary")
 	}
@@ -41,7 +49,9 @@ func createTableOfContents(
 	if len(relatedDocuments) > 0 {
 		sections["publications"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Publications",
+			Title: coreModel.Localisation{
+				Text: "Publications",
+			},
 		}
 		displayOrder = append(displayOrder, "publications")
 	}
@@ -49,7 +59,9 @@ func createTableOfContents(
 	if len(relatedDatasets) > 0 {
 		sections["data"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Data",
+			Title: coreModel.Localisation{
+				Text: "Data",
+			},
 		}
 		displayOrder = append(displayOrder, "data")
 	}
@@ -57,7 +69,9 @@ func createTableOfContents(
 	if (model.ContactDetails{} != description.Contact) {
 		sections["contactdetails"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Contact details",
+			Title: coreModel.Localisation{
+				Text: "Contact details",
+			},
 		}
 		displayOrder = append(displayOrder, "contactdetails")
 	}
@@ -65,7 +79,9 @@ func createTableOfContents(
 	if len(dateChanges) > 0 {
 		sections["changestothisreleasedate"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Changes to this release date",
+			Title: coreModel.Localisation{
+				Text: "Changes to this release date",
+			},
 		}
 		displayOrder = append(displayOrder, "changestothisreleasedate")
 	}
@@ -73,7 +89,9 @@ func createTableOfContents(
 	if len(releaseHistory) > 0 {
 		sections["releasehistory"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Release history",
+			Title: coreModel.Localisation{
+				Text: "Release history",
+			},
 		}
 		displayOrder = append(displayOrder, "releasehistory")
 	}
@@ -81,7 +99,9 @@ func createTableOfContents(
 	if codeOfPractice {
 		sections["codeofpractice"] = coreModel.ContentSection{
 			Current: false,
-			Title:   "Code of Practice",
+			Title: coreModel.Localisation{
+				Text: "Code of Practice",
+			},
 		}
 		displayOrder = append(displayOrder, "codeofpractice")
 	}
@@ -272,11 +292,14 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
-		ElementId:        "keyword-search",
-		InputName:        "keywords",
-		Language:         calendar.Language,
-		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
-		SearchTerm:       params.Keywords,
+		ElementId: "keyword-search",
+		InputName: "keywords",
+		Language:  calendar.Language,
+		Label: coreModel.Localisation{
+			LocaleKey: "ReleaseCalendarPageSearchKeywords",
+			Plural:    1,
+		},
+		SearchTerm: params.Keywords,
 	}
 
 	calendar.Sort = model.Sort{
@@ -293,8 +316,14 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		InputValueDay:   params.AfterDate.DayString(),
 		InputValueMonth: params.AfterDate.MonthString(),
 		InputValueYear:  params.AfterDate.YearString(),
-		Title:           helper.Localise("ReleasedAfter", calendar.Language, 1),
-		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
+		Title: coreModel.Localisation{
+			LocaleKey: "ReleasedAfter",
+			Plural:    1,
+		},
+		Description: coreModel.Localisation{
+			LocaleKey: "DateFilterDescription",
+			Plural:    1,
+		},
 	}
 
 	calendar.BeforeDate = coreModel.InputDate{
@@ -306,8 +335,14 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		InputValueDay:   params.BeforeDate.DayString(),
 		InputValueMonth: params.BeforeDate.MonthString(),
 		InputValueYear:  params.BeforeDate.YearString(),
-		Title:           helper.Localise("ReleasedBefore", calendar.Language, 1),
-		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
+		Title: coreModel.Localisation{
+			LocaleKey: "ReleasedBefore",
+			Plural:    1,
+		},
+		Description: coreModel.Localisation{
+			LocaleKey: "DateFilterDescription",
+			Plural:    1,
+		},
 	}
 
 	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
@@ -660,8 +695,14 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		InputValueDay:   "1",
 		InputValueMonth: "2",
 		InputValueYear:  "2050",
-		Title:           helper.Localise("ReleasedBefore", calendar.Language, 1),
-		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
+		Title: coreModel.Localisation{
+			LocaleKey: "ReleasedBefore",
+			Plural:    1,
+		},
+		Description: coreModel.Localisation{
+			LocaleKey: "DateFilterDescription",
+			Plural:    1,
+		},
 	}
 
 	calendar.AfterDate = coreModel.InputDate{
@@ -673,16 +714,25 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 		InputValueDay:   "5",
 		InputValueMonth: "6",
 		InputValueYear:  "1950",
-		Title:           helper.Localise("ReleasedAfter", calendar.Language, 1),
-		Description:     helper.Localise("DateFilterDescription", calendar.Language, 1),
+		Title: coreModel.Localisation{
+			LocaleKey: "ReleasedAfter",
+			Plural:    1,
+		},
+		Description: coreModel.Localisation{
+			LocaleKey: "DateFilterDescription",
+			Plural:    1,
+		},
 	}
 
 	calendar.KeywordSearch = coreModel.CompactSearch{
-		ElementId:        "keyword-search",
-		InputName:        "keywords",
-		Language:         calendar.Language,
-		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
-		SearchTerm:       "zip zap zoo",
+		ElementId: "keyword-search",
+		InputName: "keywords",
+		Language:  calendar.Language,
+		Label: coreModel.Localisation{
+			LocaleKey: "ReleaseCalendarPageSearchKeywords",
+			Plural:    1,
+		},
+		SearchTerm: "zip zap zoo",
 	}
 
 	return calendar
