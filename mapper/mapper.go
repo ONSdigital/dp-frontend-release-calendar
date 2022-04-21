@@ -265,6 +265,24 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
+func associateSortRelevanceWithKeywordPresence(sortOptions []queryparams.SortOption, searchTerm string) []queryparams.SortOption {
+	var options []queryparams.SortOption
+
+	for _, option := range sortOptions {
+		if option.Value == "relevance" {
+			if searchTerm == "" {
+				option.Disabled = true
+			} else {
+				option.Disabled = false
+			}
+		}
+
+		options = append(options, option)
+	}
+
+	return options
+}
+
 func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
@@ -278,7 +296,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
 		SearchTerm:       params.Keywords,
 	}
-	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
+
+	calendar.Sort = model.Sort{
+		Mode:    params.Sort.String(),
+		Options: associateSortRelevanceWithKeywordPresence(queryparams.SortOptions, calendar.KeywordSearch.SearchTerm),
+	}
 
 	calendar.AfterDate = coreModel.InputDate{
 		Language:        calendar.Language,

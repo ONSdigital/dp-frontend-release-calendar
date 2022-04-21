@@ -316,6 +316,7 @@ type SortOption struct {
 	LocaleKey string `json:"locale_key"`
 	Plural    int    `json:"plural"`
 	Value     string `json:"value"`
+	Disabled  bool   `json:"disabled"`
 }
 
 var SortOptions = []SortOption{
@@ -323,26 +324,31 @@ var SortOptions = []SortOption{
 		LocaleKey: "ReleaseCalendarSortOptionDateNewest",
 		Plural:    1,
 		Value:     sortNames[RelDateDesc],
+		Disabled:  false,
 	},
 	{
 		LocaleKey: "ReleaseCalendarSortOptionDateOldest",
 		Plural:    1,
 		Value:     sortNames[RelDateAsc],
+		Disabled:  false,
 	},
 	{
 		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
 		Plural:    1,
 		Value:     sortNames[TitleAZ],
+		Disabled:  false,
 	},
 	{
 		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
 		Plural:    1,
 		Value:     sortNames[TitleZA],
+		Disabled:  false,
 	},
 	{
 		LocaleKey: "ReleaseCalendarSortOptionRelevance",
 		Plural:    1,
 		Value:     sortNames[Relevance],
+		Disabled:  false,
 	},
 }
 
