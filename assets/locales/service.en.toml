@@ -14,7 +14,7 @@
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 [ReleaseCalendarPageTitle]
 description = "Release Calendar Title"
-one = "Release Calendar"
+one = "Release calendar"
 
 [ReleaseCalendarPageSearchKeywords]
 description = "Release Calendar Page Search Keywords"
