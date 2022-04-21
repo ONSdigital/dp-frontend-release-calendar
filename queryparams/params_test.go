@@ -359,9 +359,9 @@ func TestParamsAsQuery(t *testing.T) {
 			So(uv.Get(Keywords), ShouldEqual, "some keywords")
 			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
 			So(uv.Get(Type), ShouldEqual, Upcoming.String())
-			So(uv.Get(Provisional), ShouldEqual, "true")
-			So(uv.Get(Confirmed), ShouldEqual, "false")
-			So(uv.Get(Postponed), ShouldEqual, "false")
+			So(uv.Get(Provisional.String()), ShouldEqual, "true")
+			So(uv.Get(Confirmed.String()), ShouldEqual, "false")
+			So(uv.Get(Postponed.String()), ShouldEqual, "false")
 			So(uv.Get(Census), ShouldEqual, "true")
 			So(uv.Get(Highlight), ShouldEqual, "false")
 

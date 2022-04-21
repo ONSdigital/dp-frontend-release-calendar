@@ -28,21 +28,9 @@ const (
 	DateFrom    = "fromDate"
 	DateTo      = "toDate"
 	Type        = "release-type"
-	Provisional = "subtype-provisional"
-	Confirmed   = "subtype-confirmed"
-	Postponed   = "subtype-postponed"
 	Census      = "census"
 	Highlight   = "highlight"
 )
-
-func ParamGet(params url.Values, key string, defaultValue string) string {
-	valueAsString := params.Get(key)
-	if valueAsString == "" {
-		return defaultValue
-	}
-
-	return valueAsString
-}
 
 type IntValidator func(name string, valueAsString string) (int, error)
 
@@ -135,21 +123,6 @@ func GetKeywords(_ context.Context, params url.Values, defaultValue string) (str
 	}
 
 	return keywords, nil
-}
-
-func GetBackwardsCompatibleReleaseType(ctx context.Context, params url.Values, defaultValue ReleaseType) (ReleaseType, error) {
-	if params.Get("release-type") == "" {
-		switch {
-		case params.Get("type-upcoming") != "":
-			return Upcoming, nil
-		case params.Get("type-published") != "":
-			return Published, nil
-		default:
-			return Cancelled, nil
-		}
-	}
-
-	return GetReleaseType(ctx, params, defaultValue)
 }
 
 func GetReleaseType(ctx context.Context, params url.Values, defaultValue ReleaseType) (ReleaseType, error) {
@@ -389,9 +362,12 @@ const (
 	Upcoming
 	Published
 	Cancelled
+	Provisional
+	Confirmed
+	Postponed
 )
 
-var relTypeNames = map[ReleaseType]string{Upcoming: "type-upcoming", Published: "type-published", Cancelled: "type-cancelled", InvalidReleaseType: "Invalid"}
+var relTypeNames = map[ReleaseType]string{Upcoming: "type-upcoming", Published: "type-published", Cancelled: "type-cancelled", Provisional: "subtype-provisional", Confirmed: "subtype-confirmed", Postponed: "subtype-postponed", InvalidReleaseType: "Invalid"}
 
 func ParseReleaseType(s string) (ReleaseType, error) {
 	for rt, rtn := range relTypeNames {
@@ -401,15 +377,6 @@ func ParseReleaseType(s string) (ReleaseType, error) {
 	}
 
 	return InvalidReleaseType, errors.New("invalid release type string")
-}
-
-func MustParseReleaseType(s string) ReleaseType {
-	rt, err := ParseReleaseType(s)
-	if err != nil {
-		panic("invalid release type string: " + s)
-	}
-
-	return rt
 }
 
 func (rt ReleaseType) String() string {
@@ -449,9 +416,9 @@ func (vp ValidatedParams) AsQuery() url.Values {
 	query.Set(SortName, vp.Sort.String())
 	query.Set(Type, vp.ReleaseType.String())
 	if vp.ReleaseType == Upcoming {
-		query.Set(Provisional, strconv.FormatBool(vp.Provisional))
-		query.Set(Confirmed, strconv.FormatBool(vp.Confirmed))
-		query.Set(Postponed, strconv.FormatBool(vp.Postponed))
+		query.Set(Provisional.String(), strconv.FormatBool(vp.Provisional))
+		query.Set(Confirmed.String(), strconv.FormatBool(vp.Confirmed))
+		query.Set(Postponed.String(), strconv.FormatBool(vp.Postponed))
 	}
 	query.Set(Census, strconv.FormatBool(vp.Census))
 	query.Set(Highlight, strconv.FormatBool(vp.Highlight))
