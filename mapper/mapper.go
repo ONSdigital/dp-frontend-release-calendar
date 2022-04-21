@@ -591,7 +591,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			LocaleKey: "FilterReleaseTypePublished",
 			Plural:    1,
 			Language:  calendar.Language,
-			Checked:   false,
+			Checked:   true,
 			Count:     450,
 		},
 		"type-upcoming": {
@@ -611,7 +611,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			LocaleKey: "FilterReleaseTypeCancelled",
 			Plural:    1,
 			Language:  calendar.Language,
-			Checked:   true,
+			Checked:   false,
 			Count:     0,
 		},
 	}
