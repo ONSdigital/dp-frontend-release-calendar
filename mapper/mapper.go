@@ -717,29 +717,6 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			Language:  language,
 			Checked:   checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:     response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
-			SubTypes: map[string]model.ReleaseType{
-				"subtype-confirmed": {
-					Name:    "subtype-confirmed",
-					Id:      "release-subtype-confirmed",
-					Label:   "Confirmed",
-					Checked: checkFlag(params.Confirmed),
-					Count:   response.Breakdown.Confirmed,
-				},
-				"subtype-provisional": {
-					Name:    "subtype-provisional",
-					Id:      "release-subtype-provisional",
-					Label:   "Provisional",
-					Checked: checkFlag(params.Provisional),
-					Count:   response.Breakdown.Provisional,
-				},
-				"subtype-postponed": {
-					Name:    "subtype-postponed",
-					Id:      "release-subtype-postponed",
-					Label:   "Postponed",
-					Checked: checkFlag(params.Postponed),
-					Count:   response.Breakdown.Postponed,
-				},
-			},
 		},
 		"type-cancelled": {
 			Name:      "release-type",
