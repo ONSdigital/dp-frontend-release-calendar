@@ -5,9 +5,15 @@
 >
   {{/* Include all other page settings in the form submission */}}
   {{ template "partials/calendar/hidden-inputs/release-types" . }}
-  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
   {{ template "partials/calendar/hidden-inputs/before-date" . }}
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
+
+  {{/*
+    Force the sort order to 'relevance' when submitting keywords.
+    Empty keywords will be detected by the backend and ignore 'relevance'
+    in favour of a more appropriate default.
+  */}}
+  <input type="hidden" name="sort" value="relevance">
 
   {{ template "partials/compact-search" .KeywordSearch }}
 </form>
