@@ -243,7 +243,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
 			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
-			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
+			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: mapSortOptions(params)})
 			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
 				Language:        basePage.Language,
 				Id:              "before-date",

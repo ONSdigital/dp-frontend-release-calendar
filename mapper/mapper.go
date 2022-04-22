@@ -265,24 +265,6 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func associateSortRelevanceWithKeywordPresence(sortOptions []queryparams.SortOption, searchTerm string) []queryparams.SortOption {
-	var options []queryparams.SortOption
-
-	for _, option := range sortOptions {
-		if option.Value == "relevance" {
-			if searchTerm == "" {
-				option.Disabled = true
-			} else {
-				option.Disabled = false
-			}
-		}
-
-		options = append(options, option)
-	}
-
-	return options
-}
-
 func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
@@ -299,7 +281,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 	calendar.Sort = model.Sort{
 		Mode:    params.Sort.String(),
-		Options: associateSortRelevanceWithKeywordPresence(queryparams.SortOptions, calendar.KeywordSearch.SearchTerm),
+		Options: mapSortOptions(params),
 	}
 
 	calendar.AfterDate = coreModel.InputDate{
@@ -772,6 +754,46 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			Language:  language,
 			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:     response.Breakdown.Cancelled,
+		},
+	}
+}
+
+func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
+	return []model.SortOption{
+		{
+			LocaleKey: "ReleaseCalendarSortOptionDateNewest",
+			Plural:    1,
+			Value:     queryparams.RelDateDesc.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionDateOldest",
+			Plural:    1,
+			Value:     queryparams.RelDateAsc.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
+			Plural:    1,
+			Value:     queryparams.TitleAZ.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
+			Plural:    1,
+			Value:     queryparams.TitleZA.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionRelevance",
+			Plural:    1,
+			Value:     queryparams.Relevance.String(),
+			Disabled: func(keywords string) bool {
+				if keywords == "" {
+					return true
+				}
+				return false
+			}(params.Keywords),
 		},
 	}
 }

@@ -282,11 +282,11 @@ const (
 	Relevance
 )
 
-var sortNames = map[Sort]string{RelDateAsc: "date-oldest", RelDateDesc: "date-newest", TitleAZ: "alphabetical-az", TitleZA: "alphabetical-za", Relevance: "relevance", Invalid: "invalid"}
-var sortOptions = map[Sort]string{RelDateAsc: "release_date_asc", RelDateDesc: "release_date_desc", TitleAZ: "title_asc", TitleZA: "title_desc", Relevance: "relevance", Invalid: "invalid"}
+var feSortNames = map[Sort]string{RelDateAsc: "date-oldest", RelDateDesc: "date-newest", TitleAZ: "alphabetical-az", TitleZA: "alphabetical-za", Relevance: "relevance", Invalid: "invalid"}
+var beSortNames = map[Sort]string{RelDateAsc: "release_date_asc", RelDateDesc: "release_date_desc", TitleAZ: "title_asc", TitleZA: "title_desc", Relevance: "relevance", Invalid: "invalid"}
 
 func ParseSort(sort string) (Sort, error) {
-	for s, sn := range sortNames {
+	for s, sn := range feSortNames {
 		if strings.EqualFold(sort, sn) {
 			return s, nil
 		}
@@ -305,51 +305,11 @@ func MustParseSort(sort string) Sort {
 }
 
 func (s Sort) String() string {
-	return sortNames[s]
+	return feSortNames[s]
 }
 
-func (s Sort) OptionString() string {
-	return sortOptions[s]
-}
-
-type SortOption struct {
-	LocaleKey string `json:"locale_key"`
-	Plural    int    `json:"plural"`
-	Value     string `json:"value"`
-	Disabled  bool   `json:"disabled"`
-}
-
-var SortOptions = []SortOption{
-	{
-		LocaleKey: "ReleaseCalendarSortOptionDateNewest",
-		Plural:    1,
-		Value:     sortNames[RelDateDesc],
-		Disabled:  false,
-	},
-	{
-		LocaleKey: "ReleaseCalendarSortOptionDateOldest",
-		Plural:    1,
-		Value:     sortNames[RelDateAsc],
-		Disabled:  false,
-	},
-	{
-		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
-		Plural:    1,
-		Value:     sortNames[TitleAZ],
-		Disabled:  false,
-	},
-	{
-		LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
-		Plural:    1,
-		Value:     sortNames[TitleZA],
-		Disabled:  false,
-	},
-	{
-		LocaleKey: "ReleaseCalendarSortOptionRelevance",
-		Plural:    1,
-		Value:     sortNames[Relevance],
-		Disabled:  false,
-	},
+func (s Sort) BackendString() string {
+	return beSortNames[s]
 }
 
 type Date struct {
