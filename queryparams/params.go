@@ -117,6 +117,11 @@ func GetSortOrder(ctx context.Context, params url.Values, defaultValue Sort) (So
 		}
 	}
 
+	// When keywords are empty in this case, force the sort order back to the default.
+	if params.Get(Keywords) == "" && sort == Relevance {
+		return defaultValue, nil
+	}
+
 	return sort, nil
 }
 

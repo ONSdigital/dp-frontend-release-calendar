@@ -100,28 +100,19 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	params.Set(queryparams.DateTo, toDate.String())
 	validatedParams.BeforeDate = toDate
 
-	defaultSort := queryparams.MustParseSort(cfg.DefaultSort)
-	sort, err := queryparams.GetSortOrder(ctx, params, defaultSort)
+	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	params.Set(queryparams.SortName, sort.BackendString())
+	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	// The frontend keyword search forces the sort order to 'Relevance'
-	// When keywords are empty in this case, force the sort order back to the default.
-	if keywords == "" && sort.String() == queryparams.Relevance.String() {
-		sort = defaultSort
-	}
-
-	params.Set(queryparams.SortName, sort.BackendString())
-	validatedParams.Sort = sort
-
 	params.Set(queryparams.Keywords, keywords)
 	validatedParams.Keywords = keywords
 	params.Set(queryparams.Query, keywords)
