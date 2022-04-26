@@ -339,6 +339,10 @@ func (d Date) String() string {
 	return d.date.UTC().Format(DateFormat)
 }
 
+func (d Date) Format(format string) string {
+	return d.date.UTC().Format(format)
+}
+
 func (d Date) Date() (int, int, int) {
 	return d.y, d.m, d.d
 }
@@ -367,7 +371,10 @@ const (
 	Postponed
 )
 
-var relTypeNames = map[ReleaseType]string{Upcoming: "type-upcoming", Published: "type-published", Cancelled: "type-cancelled", Provisional: "subtype-provisional", Confirmed: "subtype-confirmed", Postponed: "subtype-postponed", InvalidReleaseType: "Invalid"}
+var (
+	relTypeNames     = map[ReleaseType]string{Upcoming: "type-upcoming", Published: "type-published", Cancelled: "type-cancelled", Provisional: "subtype-provisional", Confirmed: "subtype-confirmed", Postponed: "subtype-postponed", InvalidReleaseType: "Invalid"}
+	relTypeIcalNames = map[ReleaseType]string{Upcoming: "Upcoming", Published: "Published", Cancelled: "Cancelled", Provisional: "Provisional", Confirmed: "Confirmed", Postponed: "Postponed", InvalidReleaseType: "Invalid"}
+)
 
 func ParseReleaseType(s string) (ReleaseType, error) {
 	for rt, rtn := range relTypeNames {
@@ -381,6 +388,10 @@ func ParseReleaseType(s string) (ReleaseType, error) {
 
 func (rt ReleaseType) String() string {
 	return relTypeNames[rt]
+}
+
+func (rt ReleaseType) IcalString() string {
+	return relTypeIcalNames[rt]
 }
 
 type ValidatedParams struct {

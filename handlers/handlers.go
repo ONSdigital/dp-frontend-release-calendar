@@ -1,10 +1,15 @@
 package handlers
 
 import (
+	"bytes"
+	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
+	"time"
 
+	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
@@ -163,6 +168,104 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
 
 	rc.BuildPage(w, calendar, "calendar")
+}
+
+func ReleaseCalendarICSEntries(cfg config.Config, api SearchAPI) http.HandlerFunc {
+	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		releaseCalendarICSEntries(w, r, accessToken, collectionID, lang, api, cfg)
+	})
+}
+
+func releaseCalendarICSEntries(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, api SearchAPI, cfg config.Config) {
+	ctx := req.Context()
+	params := req.URL.Query()
+
+	params.Set(queryparams.Limit, strconv.Itoa(cfg.DefaultMaximumSearchResults))
+	params.Set(queryparams.SortName, queryparams.RelDateAsc.BackendString())
+	params.Set(queryparams.DateTo, time.Now().AddDate(0, 3, 0).Format(queryparams.DateFormat))
+	params.Set(queryparams.Type, queryparams.Upcoming.String())
+
+	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
+	if err != nil {
+		setStatusCode(req, w, err)
+		return
+	}
+
+	fileWriter := new(bytes.Buffer)
+	err = toICSFile(ctx, releases.Releases, fileWriter)
+	if err != nil {
+		setStatusCode(req, w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/calendar")
+	w.Header().Set("Character-Encoding", "UTF8")
+	w.Header().Set("Content-Disposition", "attachment; filename=releases.ics")
+	if _, err = w.Write(fileWriter.Bytes()); err != nil {
+		setStatusCode(req, w, err)
+		return
+	}
+
+}
+
+func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = r.(error)
+		}
+	}()
+
+	printLine := func(s string) {
+		if _, e := fmt.Fprintln(w, s); e != nil {
+			panic(e)
+		}
+	}
+	printLine("BEGIN:VCALENDAR")
+	printLine("PRODID:-//Office for National Statistics//NONSGML//EN")
+	printLine("VERSION:2.0")
+	printLine("CALSCALE:GREGORIAN")
+	for _, r := range releases {
+		printLine("BEGIN:VEVENT")
+		printLine("DTSTAMP:" + iCalDate(ctx, time.Now().UTC().Format(time.RFC3339)))
+		printLine("DTSTART:" + iCalDate(ctx, r.Description.ReleaseDate))
+		printLine("DTEND:" + iCalDate(ctx, r.Description.ReleaseDate))
+		printLine("SUMMARY:" + r.Description.Title)
+		printLine("UID:" + r.URI)
+		printLine("STATUS:" + releaseStatus(r))
+		printLine("DESCRIPTION:" + r.Description.Summary)
+		printLine("END:VEVENT")
+	}
+	printLine("END:VCALENDAR")
+
+	return nil
+}
+
+const iCalDateFormat = "20060102T150405Z"
+
+func iCalDate(ctx context.Context, dateRFC3339 string) string {
+	dateiCal, err := time.Parse(time.RFC3339, dateRFC3339)
+	if err != nil {
+		log.Warn(ctx, "iCalDate::unrecognised date format", log.Data{"date": dateRFC3339, "error": err})
+		return ""
+	}
+
+	return dateiCal.UTC().Format(iCalDateFormat)
+}
+
+func releaseStatus(r search.Release) string {
+	switch {
+	case r.Description.Published:
+		return queryparams.Published.IcalString()
+	case r.Description.Cancelled:
+		return queryparams.Cancelled.IcalString()
+	case r.Description.Finalised:
+		if r.DateChanges != nil {
+			return queryparams.Postponed.IcalString()
+		}
+		return queryparams.Confirmed.IcalString()
+	default:
+		return queryparams.Provisional.IcalString()
+	}
 }
 
 func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
