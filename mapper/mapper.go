@@ -700,7 +700,6 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 
 func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse, language string) map[string]model.ReleaseType {
 	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
-	checkFlag := func(flag bool) bool { return flag }
 	return map[string]model.ReleaseType{
 		"type-published": {
 			Name:      "release-type",
