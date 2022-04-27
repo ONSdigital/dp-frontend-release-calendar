@@ -117,7 +117,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	validatedParams.Keywords = keywords
 	params.Set(queryparams.Query, keywords)
 
-	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Upcoming)
+	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

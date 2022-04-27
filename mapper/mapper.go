@@ -595,7 +595,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			LocaleKey: "FilterReleaseTypePublished",
 			Plural:    1,
 			Language:  calendar.Language,
-			Checked:   false,
+			Checked:   true,
 			Count:     450,
 		},
 		"type-upcoming": {
@@ -615,7 +615,7 @@ func CreateCalendar(_ context.Context, basePage coreModel.Page, _ config.Config)
 			LocaleKey: "FilterReleaseTypeCancelled",
 			Plural:    1,
 			Language:  calendar.Language,
-			Checked:   true,
+			Checked:   false,
 			Count:     0,
 		},
 	}
@@ -700,7 +700,6 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 
 func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse, language string) map[string]model.ReleaseType {
 	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
-	checkFlag := func(flag bool) bool { return flag }
 	return map[string]model.ReleaseType{
 		"type-published": {
 			Name:      "release-type",
@@ -721,29 +720,6 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			Language:  language,
 			Checked:   checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:     response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
-			SubTypes: map[string]model.ReleaseType{
-				"subtype-confirmed": {
-					Name:    "subtype-confirmed",
-					Id:      "release-subtype-confirmed",
-					Label:   "Confirmed",
-					Checked: checkFlag(params.Confirmed),
-					Count:   response.Breakdown.Confirmed,
-				},
-				"subtype-provisional": {
-					Name:    "subtype-provisional",
-					Id:      "release-subtype-provisional",
-					Label:   "Provisional",
-					Checked: checkFlag(params.Provisional),
-					Count:   response.Breakdown.Provisional,
-				},
-				"subtype-postponed": {
-					Name:    "subtype-postponed",
-					Id:      "release-subtype-postponed",
-					Label:   "Postponed",
-					Checked: checkFlag(params.Postponed),
-					Count:   response.Breakdown.Postponed,
-				},
-			},
 		},
 		"type-cancelled": {
 			Name:      "release-type",
