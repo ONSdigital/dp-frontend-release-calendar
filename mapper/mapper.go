@@ -359,7 +359,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.LimitOptions = []int{10, 25}
 
 	for _, release := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release))
+		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.PrivateRoutingPrefix))
 	}
 
 	return calendar
@@ -441,9 +441,14 @@ func getWindowOffset(windowSize int) int {
 	return windowSize / 2
 }
 
-func calendarEntryFromRelease(release search.Release) model.CalendarEntry {
+func calendarEntryFromRelease(release search.Release, uriPrivatePrefix string) model.CalendarEntry {
 	result := model.CalendarEntry{
-		URI:         release.URI,
+		URI: func(uri, privateSuffix string) string {
+			if privateSuffix == "" {
+				return release.URI
+			}
+			return privateSuffix + release.URI
+		}(release.URI, uriPrivatePrefix),
 		DateChanges: dateChanges(release.DateChanges),
 		Description: model.ReleaseDescription{
 			Title:           release.Description.Title,

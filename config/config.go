@@ -22,6 +22,7 @@ type Config struct {
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
+	PrivateRoutingPrefix        string        `envconfig:"PRIVATE_ROUTING_PREFIX"`
 }
 
 var cfg *Config
@@ -63,6 +64,7 @@ func get() (*Config, error) {
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
+		PrivateRoutingPrefix:        "",
 	}
 
 	return cfg, envconfig.Process("", cfg)
