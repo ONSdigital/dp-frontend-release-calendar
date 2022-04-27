@@ -278,7 +278,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		LabelLocaliseKey: "ReleaseCalendarPageSearchKeywords",
 		SearchTerm:       params.Keywords,
 	}
-	calendar.Sort = model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions}
+
+	calendar.Sort = model.Sort{
+		Mode:    params.Sort.String(),
+		Options: mapSortOptions(params),
+	}
 
 	calendar.AfterDate = coreModel.InputDate{
 		Language:        calendar.Language,
@@ -727,6 +731,46 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			Language:  language,
 			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:     response.Breakdown.Cancelled,
+		},
+	}
+}
+
+func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
+	return []model.SortOption{
+		{
+			LocaleKey: "ReleaseCalendarSortOptionDateNewest",
+			Plural:    1,
+			Value:     queryparams.RelDateDesc.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionDateOldest",
+			Plural:    1,
+			Value:     queryparams.RelDateAsc.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
+			Plural:    1,
+			Value:     queryparams.TitleAZ.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
+			Plural:    1,
+			Value:     queryparams.TitleZA.String(),
+			Disabled:  false,
+		},
+		{
+			LocaleKey: "ReleaseCalendarSortOptionRelevance",
+			Plural:    1,
+			Value:     queryparams.Relevance.String(),
+			Disabled: func(keywords string) bool {
+				if keywords == "" {
+					return true
+				}
+				return false
+			}(params.Keywords),
 		},
 	}
 }

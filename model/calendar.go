@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
@@ -24,7 +23,12 @@ type ReleaseType struct {
 	SubTypes  map[string]ReleaseType `json:"sub_types"`
 }
 
-type SortOption = queryparams.SortOption
+type SortOption struct {
+	LocaleKey string `json:"locale_key"`
+	Plural    int    `json:"plural"`
+	Value     string `json:"value"`
+	Disabled  bool   `json:"disabled"`
+}
 
 type Sort struct {
 	Mode    string       `json:"mode"`

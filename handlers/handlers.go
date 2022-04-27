@@ -105,7 +105,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	params.Set(queryparams.SortName, sort.OptionString())
+	params.Set(queryparams.SortName, sort.BackendString())
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
@@ -117,7 +117,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	validatedParams.Keywords = keywords
 	params.Set(queryparams.Query, keywords)
 
-	releaseType, err := queryparams.GetBackwardsCompatibleReleaseType(ctx, params, queryparams.Upcoming)
+	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Upcoming)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -125,20 +125,20 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 	params.Set(queryparams.Type, releaseType.String())
 	validatedParams.ReleaseType = releaseType
 
-	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional, false)
+	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
 	validatedParams.Provisional = provisional
 	if provisional || set {
-		params.Set(queryparams.Provisional, strconv.FormatBool(provisional))
+		params.Set(queryparams.Provisional.String(), strconv.FormatBool(provisional))
 	}
-	confirmed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Confirmed, false)
+	confirmed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
 	validatedParams.Confirmed = confirmed
 	if confirmed || set {
-		params.Set(queryparams.Confirmed, strconv.FormatBool(confirmed))
+		params.Set(queryparams.Confirmed.String(), strconv.FormatBool(confirmed))
 	}
-	postponed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Postponed, false)
+	postponed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
 	validatedParams.Postponed = postponed
 	if postponed || set {
-		params.Set(queryparams.Postponed, strconv.FormatBool(postponed))
+		params.Set(queryparams.Postponed.String(), strconv.FormatBool(postponed))
 	}
 
 	census, set, err := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
