@@ -47,11 +47,11 @@ type Calendar struct {
 	KeywordSearch coreModel.CompactSearch `json:"keyword_search"`
 }
 
-func (calendar Calendar) IsFilterSearchPresent() bool {
+func (calendar Calendar) FuncIsFilterSearchPresent() bool {
 	return calendar.KeywordSearch.SearchTerm != ""
 }
 
-func (calendar Calendar) IsFilterDatePresent() bool {
+func (calendar Calendar) FuncIsFilterDatePresent() bool {
 	isBeforeDatePresent := func() bool {
 		return calendar.BeforeDate.InputValueDay != "" &&
 			calendar.BeforeDate.InputValueMonth != "" &&
