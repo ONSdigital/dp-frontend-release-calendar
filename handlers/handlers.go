@@ -226,9 +226,10 @@ func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err
 	printLine("CALSCALE:GREGORIAN")
 	for _, r := range releases {
 		printLine("BEGIN:VEVENT")
-		printLine("DTSTAMP:" + iCalDate(ctx, time.Now().UTC().Format(time.RFC3339)))
-		printLine("DTSTART:" + iCalDate(ctx, r.Description.ReleaseDate))
-		printLine("DTEND:" + iCalDate(ctx, r.Description.ReleaseDate))
+		printLine("DTSTAMP:" + time.Now().UTC().Format(iCalDateFormat))
+		releaseDate := iCalDate(ctx, r.Description.ReleaseDate)
+		printLine("DTSTART:" + releaseDate)
+		printLine("DTEND:" + releaseDate)
 		printLine("SUMMARY:" + r.Description.Title)
 		printLine("UID:" + r.URI)
 		printLine("STATUS:" + releaseStatus(r))
