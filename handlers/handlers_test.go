@@ -181,18 +181,18 @@ func TestUnitHandlers(t *testing.T) {
 			url := "/calendar/releasecalendar"
 			router.HandleFunc(url, ReleaseCalendarICSEntries(*mockConfig, mockSearchClient))
 
-			Convey("it returns 200 when the ICS file is generated successfully", func() {
-				r := sitesearch.ReleaseResponse{
+			Convey("it returns 200 when an ICS file is generated successfully with a single calendar entry", func() {
+				single := sitesearch.ReleaseResponse{
 					Releases: []sitesearch.Release{
 						{URI: url,
 							Description: sitesearch.ReleaseDescription{
-								Title:       "Release Calendar Entry Test",
+								Title:       "Release Calendar Entry Test 1",
 								ReleaseDate: "2022-03-15T07:30:00Z",
 							},
 						},
 					},
 				}
-				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(r, nil)
+				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(single, nil)
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
 				setRequestHeaders(req)
 
@@ -208,6 +208,43 @@ func TestUnitHandlers(t *testing.T) {
 					So(bytes.Contains(payload, []byte(`END:VCALENDAR`)), ShouldBeTrue)
 				})
 
+			})
+
+			Convey("it returns 200 when an ICS file is generated successfully with multiple calendar entries", func() {
+				multiple := sitesearch.ReleaseResponse{
+					Releases: []sitesearch.Release{
+						{URI: url + "test1",
+							Description: sitesearch.ReleaseDescription{
+								Title:       "Release Calendar Entry Test 1",
+								ReleaseDate: "2022-03-15T07:30:00Z",
+							},
+						},
+						{URI: url + "test2",
+							Description: sitesearch.ReleaseDescription{
+								Title:       "Release Calendar Entry Test 2",
+								ReleaseDate: "2022-03-16T08:00:00Z",
+							},
+						},
+					},
+				}
+				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(multiple, nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", url), nil)
+				setRequestHeaders(req)
+
+				router.ServeHTTP(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusOK)
+				Convey("and the ICS file payload is as expected", func() {
+					payload := w.Body.Bytes()
+					So(bytes.HasPrefix(payload, []byte(`BEGIN:VCALENDAR`)), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(`Release Calendar Entry Test 1`)), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(url+"test1")), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(`20220315T073000`)), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(`Release Calendar Entry Test 2`)), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(url+"test2")), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(`20220316T080000`)), ShouldBeTrue)
+					So(bytes.Contains(payload, []byte(`END:VCALENDAR`)), ShouldBeTrue)
+				})
 			})
 
 			Convey("it returns a well formed but empty ICS file when there are no upcoming releases", func() {
@@ -253,7 +290,7 @@ func defaultParams() url.Values {
 	values.Set("sort", queryparams.RelDateDesc.BackendString())
 	values.Set("keywords", "")
 	values.Set("query", "")
-	values.Set("release-type", "type_published")
+	values.Set("release-type", queryparams.Published.Name())
 	values.Set("highlight", "true")
 
 	return values
@@ -270,26 +307,19 @@ func defaultICSParams() url.Values {
 }
 
 func TestICalDate(t *testing.T) {
-	bad := []string{"1st Jan 2020", "21-03-2021", "2021-03-04T12:10:00"}
-	for _, d := range bad {
-		Convey("given a badly formatted date string "+d, t, func() {
-			Convey("then the iCalDate returns an empty string", func() {
-				icd := iCalDate(context.Background(), d)
-				So(icd, ShouldEqual, "")
-			})
-		})
+	ds := []struct{ date, expected string }{
+		{date: "1st Jan 2020", expected: ""},
+		{date: "21-03-2021", expected: ""},
+		{date: "2021-03-04T12:10:00", expected: ""},
+		{date: "2021-03-04T12:10:00Z", expected: "20210304T121000Z"},
+		{date: "2021-03-04T12:10:00.000Z", expected: "20210304T121000Z"},
+		{date: "2021-03-04T12:10:00+05:00", expected: "20210304T071000Z"},
 	}
-
-	good := []struct{ date, icalDate string }{
-		{date: "2021-03-04T12:10:00Z", icalDate: "20210304T121000Z"},
-		{date: "2021-03-04T12:10:00.000Z", icalDate: "20210304T121000Z"},
-		{date: "2021-03-04T12:10:00+05:00", icalDate: "20210304T071000Z"},
-	}
-	for _, tc := range good {
-		Convey("given a well formatted date string "+tc.date, t, func() {
+	for _, tc := range ds {
+		Convey("given a date string "+tc.date, t, func() {
 			Convey("then the iCalDate returns the date formatted according to the iCal standard", func() {
 				icd := iCalDate(context.Background(), tc.date)
-				So(icd, ShouldEqual, tc.icalDate)
+				So(icd, ShouldEqual, tc.expected)
 			})
 		})
 	}

@@ -369,19 +369,19 @@ const (
 	Postponed
 )
 
-var relTypeValues = map[ReleaseType]struct{ value, iCalValue string }{
-	Upcoming:           {value: "type-upcoming", iCalValue: "Upcoming"},
-	Published:          {value: "type-published", iCalValue: "Published"},
-	Cancelled:          {value: "type-cancelled", iCalValue: "Cancelled"},
-	Provisional:        {value: "subtype-provisional", iCalValue: "Provisional"},
-	Confirmed:          {value: "subtype-confirmed", iCalValue: "Confirmed"},
-	Postponed:          {value: "subtype-postponed", iCalValue: "Postponed"},
-	InvalidReleaseType: {value: "Invalid", iCalValue: "Invalid"},
+var relTypeValues = map[ReleaseType]struct{ name, label string }{
+	Upcoming:           {name: "type-upcoming", label: "Upcoming"},
+	Published:          {name: "type-published", label: "Published"},
+	Cancelled:          {name: "type-cancelled", label: "Cancelled"},
+	Provisional:        {name: "subtype-provisional", label: "Provisional"},
+	Confirmed:          {name: "subtype-confirmed", label: "Confirmed"},
+	Postponed:          {name: "subtype-postponed", label: "Postponed"},
+	InvalidReleaseType: {name: "Invalid", label: "Invalid"},
 }
 
 func ParseReleaseType(s string) (ReleaseType, error) {
 	for rt, rtv := range relTypeValues {
-		if strings.EqualFold(s, rtv.value) {
+		if strings.EqualFold(s, rtv.name) {
 			return rt, nil
 		}
 	}
@@ -389,12 +389,16 @@ func ParseReleaseType(s string) (ReleaseType, error) {
 	return InvalidReleaseType, errors.New("invalid release type string")
 }
 
-func (rt ReleaseType) String() string {
-	return relTypeValues[rt].value
+func (rt ReleaseType) Name() string {
+	return relTypeValues[rt].name
 }
 
-func (rt ReleaseType) IcalString() string {
-	return relTypeValues[rt].iCalValue
+func (rt ReleaseType) Label() string {
+	return relTypeValues[rt].label
+}
+
+func (rt ReleaseType) String() string {
+	return rt.Name()
 }
 
 type ValidatedParams struct {

@@ -255,17 +255,17 @@ func iCalDate(ctx context.Context, dateRFC3339 string) string {
 
 func releaseStatus(r search.Release) string {
 	switch {
-	case r.Description.Published:
-		return queryparams.Published.IcalString()
 	case r.Description.Cancelled:
-		return queryparams.Cancelled.IcalString()
+		return queryparams.Cancelled.Label()
+	case r.Description.Published:
+		return queryparams.Published.Label()
 	case r.Description.Finalised:
 		if r.DateChanges != nil {
-			return queryparams.Postponed.IcalString()
+			return queryparams.Postponed.Label()
 		}
-		return queryparams.Confirmed.IcalString()
+		return queryparams.Confirmed.Label()
 	default:
-		return queryparams.Provisional.IcalString()
+		return queryparams.Provisional.Label()
 	}
 }
 
