@@ -111,3 +111,31 @@ one = "Upcoming"
 [FilterReleaseTypeCancelled]
 description = "Cancelled"
 one = "Cancelled"
+
+[ReleaseSectionSummary]
+description = "Summary"
+one = "Summary"
+
+[ReleaseSectionPublications]
+description = "Publications"
+one = "Publications"
+
+[ReleaseSectionData]
+description = "Data"
+one = "Data"
+
+[ReleaseSectionContactDetails]
+description = "Contact details"
+one = "Contact details"
+
+[ReleaseSectionDateChanges]
+description = "Changes to this release date"
+one = "Changes to this release date"
+
+[ReleaseSectionReleaseHistory]
+description = "Release history"
+one = "Release history"
+
+[ReleaseSectionCodeOfPractice]
+description = "Code of Practice for Official Statistics"
+one = "Code of Practice for Official Statistics"
