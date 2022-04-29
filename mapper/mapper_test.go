@@ -253,8 +253,14 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				InputValueDay:   params.BeforeDate.DayString(),
 				InputValueMonth: params.BeforeDate.MonthString(),
 				InputValueYear:  params.BeforeDate.YearString(),
-				Title:           "Released before",
-				Description:     "For example: 2006 or 19/07/2010",
+				Title: coreModel.Localisation{
+					LocaleKey: "ReleasedBefore",
+					Plural:    1,
+				},
+				Description: coreModel.Localisation{
+					LocaleKey: "DateFilterDescription",
+					Plural:    1,
+				},
 			})
 			So(calendar.AfterDate, ShouldResemble, coreModel.InputDate{
 				Language:        basePage.Language,
@@ -265,8 +271,14 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				InputValueDay:   params.AfterDate.DayString(),
 				InputValueMonth: params.AfterDate.MonthString(),
 				InputValueYear:  params.AfterDate.YearString(),
-				Title:           "Released after",
-				Description:     "For example: 2006 or 19/07/2010",
+				Title: coreModel.Localisation{
+					LocaleKey: "ReleasedAfter",
+					Plural:    1,
+				},
+				Description: coreModel.Localisation{
+					LocaleKey: "DateFilterDescription",
+					Plural:    1,
+				},
 			})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, ""))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
