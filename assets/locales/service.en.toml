@@ -159,3 +159,7 @@ one = "Upcoming"
 [BreadcrumbCancelled]
 description = "Cancelled"
 one = "Cancelled"
+
+[ReleasePageType]
+description = "Release"
+one = "Release"
