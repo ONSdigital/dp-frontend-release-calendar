@@ -111,3 +111,23 @@ one = "Ar ddod"
 [FilterReleaseTypeCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Hafan"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Calendr datganiadau"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Canslwyd"
