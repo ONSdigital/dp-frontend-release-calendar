@@ -15,6 +15,8 @@ var cyLocale = []string{
 	"one=\"Hafan\"",
 	"[BreadcrumbReleaseCalendar]",
 	"one = \"Calendr datganiadau\"",
+	"[BreadcrumbUpcoming]",
+	"one = \"Ar ddod\"",
 	"[BreadcrumbCancelled]",
 	"one = \"Canslwyd\"",
 }
@@ -32,6 +34,8 @@ var enLocale = []string{
 	"one=\"Home\"",
 	"[BreadcrumbReleaseCalendar]",
 	"one = \"Release calendar\"",
+	"[BreadcrumbUpcoming]",
+	"one = \"Upcoming\"",
 	"[BreadcrumbCancelled]",
 	"one = \"Cancelled\"",
 }
