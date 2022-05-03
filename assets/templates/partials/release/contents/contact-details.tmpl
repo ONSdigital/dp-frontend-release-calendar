@@ -1,10 +1,18 @@
 <div>
-  <h3>Name</h3>
+  <h3>{{ localise "ReleaseSubsectionName" .Language 1 }}</h3>
   <p>{{ .Description.Contact.Name }}</p>
 
-  <h3>Email</h3>
-  <p><a href="mailto:{{ .Description.Contact.Email }}">{{ .Description.Contact.Email }}</a></p>
+  <h3>{{ localise "ReleaseSubsectionEmail" .Language 1 }}</h3>
+  <p>
+    <a href="mailto:{{ .Description.Contact.Email }}">
+      {{- .Description.Contact.Email -}}
+    </a>
+  </p>
 
-  <h3>Phone</h3>
-  <p><a href="tel:{{ .Description.Contact.Telephone }}">{{ .Description.Contact.Telephone }}</a></p>
+  <h3>{{ localise "ReleaseSubsectionPhone" .Language 1 }}</h3>
+  <p>
+    <a href="tel:{{ .Description.Contact.Telephone }}">
+      {{- .Description.Contact.Telephone -}}
+    </a>
+  </p>
 </div>

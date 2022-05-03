@@ -4,10 +4,10 @@
     <thead class="ons-table__head">
       <tr class="ons-table__row">
         <th scope="col" class="ons-table__header">
-          <span>Release date</span>
+          <span>{{ localise "ReleaseHistoryReleaseDate" .Language 1 }}</span>
         </th>
         <th scope="col" class="ons-table__header">
-          <span>Reason for update</span>
+          <span>{{ localise "ReleaseHistoryReasonForUpdate" .Language 1 }}</span>
         </th>
       </tr>
     </thead>
@@ -18,7 +18,7 @@
             {{ if eq $index 0 }}
               {{ $element.Title }}
               <span class="sticker ons-u-fs-s--b">
-                LATEST
+                {{- localise "ReleaseHistoryLatest" $.Language 1 -}}
               </span>
             {{ else }}
               <a href="{{ $element.URI }}">{{ $element.Title }}</a>
@@ -33,6 +33,6 @@
   </table>
 
   <div class="ons-u-mb-s">
-    <a href="">See all previous releases</a>
+    <a href="">{{ localise "ReleaseHistoryAllPrevious" .Language 1 }}</a>
   </div>
 </div>
