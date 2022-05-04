@@ -1,11 +1,18 @@
-<div class="ons-page__container ons-container">
+<div class="ons-page__container ons-container release">
   {{ template "partials/breadcrumb" . }}
 
   <div class="ons-u-fs-m ons-u-mt-s">
     {{- localise "ReleasePageType" .Language 1 -}}
   </div>
   <h1 class="ons-u-fs-xxxl ons-u-mt-s">
-    {{- .Page.Metadata.Title -}}
+    <span>{{- .Page.Metadata.Title -}}</span>
+    {{ if .Description.NationalStatistic }}
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+        alt="UK Statistics Authority kitemark"
+        class="ons-u-ml-s"
+      >
+    {{ end }}
   </h1>
 
   {{ template "partials/release/status-header" . }}

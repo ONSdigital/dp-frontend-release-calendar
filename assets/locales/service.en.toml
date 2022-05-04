@@ -136,9 +136,9 @@ one = "Changes to this release date"
 description = "Release history"
 one = "Release history"
 
-[ReleaseSectionCodeOfPractice]
-description = "Code of Practice for Official Statistics"
-one = "Code of Practice for Official Statistics"
+[ReleaseSectionAboutTheData]
+description = "About the data"
+one = "About the data"
 
 [ReleaseSubsectionName]
 description = "Name"
