@@ -159,3 +159,7 @@ one = "Ar ddod"
 [BreadcrumbCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[ReleasePageType]
+description = "Release"
+one = "Datganiad"
