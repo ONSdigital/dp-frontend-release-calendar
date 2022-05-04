@@ -39,3 +39,5 @@ require (
 	golang.org/x/sys v0.0.0-20220204135822-1c1b9b1eba6a // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
+
+replace github.com/ONSdigital/dp-renderer v1.26.0 => /Users/yomiodeleye/Sites/GitHub/ONS/dp-renderer
