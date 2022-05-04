@@ -42,3 +42,15 @@ func TestConfig(t *testing.T) {
 		})
 	})
 }
+
+func TestValidatePrivatePrefix(t *testing.T) {
+	Convey("when a private prefix is not set", t, func() {
+		So(validatePrivatePrefix(""), ShouldEqual, "")
+	})
+	Convey("when a private prefix is set without an initial '/'", t, func() {
+		So(validatePrivatePrefix("a-prefix"), ShouldEqual, "/a-prefix")
+	})
+	Convey("when a valid private prefix is set with an initial '/'", t, func() {
+		So(validatePrivatePrefix("/a-prefix"), ShouldEqual, "/a-prefix")
+	})
+}

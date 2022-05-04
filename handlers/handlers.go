@@ -40,7 +40,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, cfg config.Config) {
 	ctx := req.Context()
 
-	_, uri, _ := strings.Cut(req.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
+	uri := strings.TrimPrefix(req.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
 	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, uri)
 	if err != nil {
 		setStatusCode(req, w, err)

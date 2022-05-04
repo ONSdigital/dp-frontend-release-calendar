@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strings"
 	"time"
 
 	"github.com/kelseyhightower/envconfig"
@@ -43,6 +44,8 @@ func Get() (*Config, error) {
 		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/8a0b3d6"
 	}
 
+	cfg.PrivateRoutingPrefix = validatePrivatePrefix(cfg.PrivateRoutingPrefix)
+
 	return cfg, nil
 }
 
@@ -68,4 +71,12 @@ func get() (*Config, error) {
 	}
 
 	return cfg, envconfig.Process("", cfg)
+}
+
+func validatePrivatePrefix(prefix string) string {
+	if prefix != "" && !strings.HasPrefix(prefix, "/") {
+		return "/" + prefix
+	}
+
+	return prefix
 }
