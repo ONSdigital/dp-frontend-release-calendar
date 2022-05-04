@@ -260,12 +260,18 @@ const (
 	Relevance
 )
 
-var feSortNames = map[Sort]string{RelDateAsc: "date-oldest", RelDateDesc: "date-newest", TitleAZ: "alphabetical-az", TitleZA: "alphabetical-za", Relevance: "relevance", Invalid: "invalid"}
-var beSortNames = map[Sort]string{RelDateAsc: "release_date_asc", RelDateDesc: "release_date_desc", TitleAZ: "title_asc", TitleZA: "title_desc", Relevance: "relevance", Invalid: "invalid"}
+var sortValues = map[Sort]struct{ feValue, beValue string }{
+	RelDateAsc:  {feValue: "date-oldest", beValue: "release_date_asc"},
+	RelDateDesc: {feValue: "date-newest", beValue: "release_date_desc"},
+	TitleAZ:     {feValue: "alphabetical-az", beValue: "title_asc"},
+	TitleZA:     {feValue: "alphabetical-za", beValue: "title_desc"},
+	Relevance:   {feValue: "relevance", beValue: "relevance"},
+	Invalid:     {feValue: "invalid", beValue: "invalid"},
+}
 
 func ParseSort(sort string) (Sort, error) {
-	for s, sn := range feSortNames {
-		if strings.EqualFold(sort, sn) {
+	for s, sv := range sortValues {
+		if strings.EqualFold(sort, sv.feValue) {
 			return s, nil
 		}
 	}
@@ -283,11 +289,11 @@ func MustParseSort(sort string) Sort {
 }
 
 func (s Sort) String() string {
-	return feSortNames[s]
+	return sortValues[s].feValue
 }
 
 func (s Sort) BackendString() string {
-	return beSortNames[s]
+	return sortValues[s].beValue
 }
 
 type Date struct {
@@ -339,10 +345,6 @@ func (d Date) String() string {
 	return d.date.UTC().Format(DateFormat)
 }
 
-func (d Date) Date() (int, int, int) {
-	return d.y, d.m, d.d
-}
-
 func (d Date) YearString() string {
 	return d.ys
 }
@@ -367,11 +369,19 @@ const (
 	Postponed
 )
 
-var relTypeNames = map[ReleaseType]string{Upcoming: "type-upcoming", Published: "type-published", Cancelled: "type-cancelled", Provisional: "subtype-provisional", Confirmed: "subtype-confirmed", Postponed: "subtype-postponed", InvalidReleaseType: "Invalid"}
+var relTypeValues = map[ReleaseType]struct{ name, label string }{
+	Upcoming:           {name: "type-upcoming", label: "Upcoming"},
+	Published:          {name: "type-published", label: "Published"},
+	Cancelled:          {name: "type-cancelled", label: "Cancelled"},
+	Provisional:        {name: "subtype-provisional", label: "Provisional"},
+	Confirmed:          {name: "subtype-confirmed", label: "Confirmed"},
+	Postponed:          {name: "subtype-postponed", label: "Postponed"},
+	InvalidReleaseType: {name: "Invalid", label: "Invalid"},
+}
 
 func ParseReleaseType(s string) (ReleaseType, error) {
-	for rt, rtn := range relTypeNames {
-		if strings.EqualFold(s, rtn) {
+	for rt, rtv := range relTypeValues {
+		if strings.EqualFold(s, rtv.name) {
 			return rt, nil
 		}
 	}
@@ -379,8 +389,16 @@ func ParseReleaseType(s string) (ReleaseType, error) {
 	return InvalidReleaseType, errors.New("invalid release type string")
 }
 
+func (rt ReleaseType) Name() string {
+	return relTypeValues[rt].name
+}
+
+func (rt ReleaseType) Label() string {
+	return relTypeValues[rt].label
+}
+
 func (rt ReleaseType) String() string {
-	return relTypeNames[rt]
+	return rt.Name()
 }
 
 type ValidatedParams struct {
