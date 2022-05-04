@@ -53,20 +53,6 @@ func release(w http.ResponseWriter, req *http.Request, userAccessToken, collecti
 	rc.BuildPage(w, m, "release")
 }
 
-func PreviousReleasesSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		previousReleasesSample(w, req, rc, cfg)
-	}
-}
-
-func previousReleasesSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
-	ctx := req.Context()
-	basePage := rc.NewBasePageModel()
-	m := mapper.CreatePreviousReleases(ctx, basePage, cfg)
-
-	rc.BuildPage(w, m, "previousreleases")
-}
-
 func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		releaseCalendar(w, r, accessToken, collectionID, lang, rc, api, cfg)
@@ -269,18 +255,4 @@ func releaseStatus(r search.Release) string {
 	default:
 		return queryparams.Provisional.Label()
 	}
-}
-
-func CalendarSample(cfg config.Config, rc RenderClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		calendarSample(w, req, rc, cfg)
-	}
-}
-
-func calendarSample(w http.ResponseWriter, req *http.Request, rc RenderClient, cfg config.Config) {
-	ctx := req.Context()
-	basePage := rc.NewBasePageModel()
-	m := mapper.CreateCalendar(ctx, basePage, cfg)
-
-	rc.BuildPage(w, m, "calendar")
 }

@@ -29,7 +29,11 @@
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
       data-btn-close="Hide"
       data-group="accordion"
-      data-open="true"
+      {{ if .FuncIsFilterSearchPresent }}
+        data-open="true"
+      {{ else }}
+        data-open="false"
+      {{ end }}
     >
       <div class="ons-collapsible__heading ons-js-collapsible-heading">
         <div class="ons-collapsible__controls">
@@ -48,7 +52,11 @@
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
       data-btn-close="Hide"
       data-group="accordion"
-      data-open="true"
+      {{ if .FuncIsFilterDatePresent }}
+        data-open="true"
+      {{ else }}
+        data-open="false"
+      {{ end }}
     >
       <div class="ons-collapsible__heading ons-js-collapsible-heading">
         <div class="ons-collapsible__controls">
