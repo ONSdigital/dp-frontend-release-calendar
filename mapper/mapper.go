@@ -39,7 +39,8 @@ func createTableOfContents(
 		sections["summary"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Summary",
+				LocaleKey: "ReleaseSectionSummary",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "summary")
@@ -49,7 +50,8 @@ func createTableOfContents(
 		sections["publications"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Publications",
+				LocaleKey: "ReleaseSectionPublications",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "publications")
@@ -59,7 +61,8 @@ func createTableOfContents(
 		sections["data"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Data",
+				LocaleKey: "ReleaseSectionData",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "data")
@@ -69,7 +72,8 @@ func createTableOfContents(
 		sections["contactdetails"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Contact details",
+				LocaleKey: "ReleaseSectionContactDetails",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "contactdetails")
@@ -79,7 +83,8 @@ func createTableOfContents(
 		sections["changestothisreleasedate"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Changes to this release date",
+				LocaleKey: "ReleaseSectionDateChanges",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "changestothisreleasedate")
@@ -89,7 +94,8 @@ func createTableOfContents(
 		sections["releasehistory"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Release history",
+				LocaleKey: "ReleaseSectionReleaseHistory",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "releasehistory")
@@ -99,7 +105,8 @@ func createTableOfContents(
 		sections["codeofpractice"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				Text: "Code of Practice",
+				LocaleKey: "ReleaseSectionCodeOfPractice",
+				Plural:    1,
 			},
 		}
 		displayOrder = append(displayOrder, "codeofpractice")

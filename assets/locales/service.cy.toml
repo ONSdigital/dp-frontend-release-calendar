@@ -112,6 +112,34 @@ one = "Ar ddod"
 description = "Cancelled"
 one = "Canslwyd"
 
+[ReleaseSectionSummary]
+description = "Summary"
+one = "Crynodeb"
+
+[ReleaseSectionPublications]
+description = "Publications"
+one = "Cyhoeddiadau"
+
+[ReleaseSectionData]
+description = "Data"
+one = "Data"
+
+[ReleaseSectionContactDetails]
+description = "Contact details"
+one = "Manylion cyswllt"
+
+[ReleaseSectionDateChanges]
+description = "Changes to this release date"
+one = "Newidiadau i ddyddiad y datganiad hwn"
+
+[ReleaseSectionReleaseHistory]
+description = "Release history"
+one = "Hanes datganiadau"
+
+[ReleaseSectionCodeOfPractice]
+description = "Code of Practice for Official Statistics"
+one = "Y Cod Ymarfer ar gyfer Ystadegau Swyddogol"
+
 [BreadcrumbHome]
 description = "Home"
 one = "Hafan"
@@ -131,3 +159,7 @@ one = "Ar ddod"
 [BreadcrumbCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[ReleasePageType]
+description = "Release"
+one = "Datganiad"
