@@ -15,7 +15,7 @@
       </a>
       <div class="ons-u-mt-s">
         <span class="ons-u-fs-r--b">Release date:</span>
-        <span>{{ dateTimeFormat .Description.ReleaseDate }}</span>
+        <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
         <span>|</span>
         <span>
           {{ if .Description.Published }}
