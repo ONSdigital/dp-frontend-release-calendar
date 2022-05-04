@@ -140,6 +140,22 @@ func TestUnitMapper(t *testing.T) {
 			So(model.Description.Cancelled, ShouldEqual, release.Description.Cancelled)
 			So(model.Description.CancellationNotice, ShouldResemble, release.Description.CancellationNotice)
 			So(model.Description.ProvisionalDate, ShouldEqual, release.Description.ProvisionalDate)
+			So(model.Breadcrumb, ShouldResemble, []coreModel.TaxonomyNode{
+				{
+					Title: "Home",
+					URI:   "/",
+				},
+				{
+					Title: "Release calendar",
+					URI:   "/releasecalendar",
+				},
+				{
+					Title: "Cancelled",
+					URI:   "/releasecalendar?release-type=type-cancelled",
+				}, {
+					Title: "Release title",
+				},
+			})
 		})
 	})
 }

@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -230,7 +231,6 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 			ProvisionalDate:    release.Description.ProvisionalDate,
 		},
 	}
-
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
@@ -249,24 +249,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
 	result.CodeOfPractice = true
-
-	result.Breadcrumb = []coreModel.TaxonomyNode{
-		{
-			Title: "Home",
-			URI:   "/",
-		},
-		{
-			Title: "Release calendar",
-			URI:   "/calendar",
-		},
-		{
-			Title: "Published", // TODO Set this from data
-			URI:   "/calendar", // TODO Integrate with Search API
-		},
-		{
-			Title: release.Description.Title,
-		},
-	}
+	result.Breadcrumb = mapBreadcrumbTrail(result.Description, result.Language)
 
 	result.TableOfContents = createTableOfContents(
 		result.Description,
@@ -278,6 +261,40 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 	)
 
 	return result
+}
+
+func mapBreadcrumbTrail(description model.ReleaseDescription, language string) []coreModel.TaxonomyNode {
+	selectState := func(description model.ReleaseDescription) (string, queryparams.ReleaseType) {
+		if description.Cancelled {
+			return "BreadcrumbCancelled", queryparams.Cancelled
+		}
+
+		if description.Published {
+			return "BreadcrumbPublished", queryparams.Published
+		}
+
+		return "BreadcrumbUpcoming", queryparams.Upcoming
+	}
+
+	localeKey, releaseType := selectState(description)
+
+	return []coreModel.TaxonomyNode{
+		{
+			Title: helper.Localise("BreadcrumbHome", language, 1),
+			URI:   "/",
+		},
+		{
+			Title: helper.Localise("BreadcrumbReleaseCalendar", language, 1),
+			URI:   "/releasecalendar",
+		},
+		{
+			Title: helper.Localise(localeKey, language, 1),
+			URI:   fmt.Sprintf("/releasecalendar?release-type=%s", releaseType.String()),
+		},
+		{
+			Title: description.Title,
+		},
+	}
 }
 
 func mapLink(links []releasecalendar.Link) []model.Link {

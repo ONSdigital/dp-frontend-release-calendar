@@ -139,3 +139,23 @@ one = "Release history"
 [ReleaseSectionCodeOfPractice]
 description = "Code of Practice for Official Statistics"
 one = "Code of Practice for Official Statistics"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Home"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Release calendar"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Published"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Cancelled"

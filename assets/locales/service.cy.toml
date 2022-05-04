@@ -139,3 +139,23 @@ one = "Hanes datganiadau"
 [ReleaseSectionCodeOfPractice]
 description = "Code of Practice for Official Statistics"
 one = "Y Cod Ymarfer ar gyfer Ystadegau Swyddogol"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Hafan"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Calendr datganiadau"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Canslwyd"
