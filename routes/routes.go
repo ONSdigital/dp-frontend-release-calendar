@@ -29,8 +29,6 @@ func Setup(ctx context.Context, r *mux.Router, cfg *config.Config, c Clients) {
 	r.StrictSlash(true).Path("/health").HandlerFunc(c.HealthCheckHandler)
 
 	r.StrictSlash(true).Path("/releases/{uri:.*}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI))
-	r.StrictSlash(true).Path("/previousreleasessample").Methods("GET").HandlerFunc(handlers.PreviousReleasesSample(*cfg, c.Render))
 	r.StrictSlash(true).Path("/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI))
 	r.StrictSlash(true).Path("/calendar/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendarICSEntries(*cfg, c.SearchAPI))
-	r.StrictSlash(true).Path("/calendarsample").Methods("GET").HandlerFunc(handlers.CalendarSample(*cfg, c.Render))
 }
