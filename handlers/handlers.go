@@ -3,9 +3,11 @@ package handlers
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -33,49 +35,109 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 // Release will load a release page
 func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		release(w, r, accessToken, collectionID, lang, rc, api, cfg)
+		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix))
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+
+		basePage := rc.NewBasePageModel()
+		m := mapper.CreateRelease(basePage, *release)
+
+		rc.BuildPage(w, m, "release")
 	})
 }
+	
+func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
+	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimSuffix(strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix), "/data"))
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
 
-func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, cfg config.Config) {
-	ctx := req.Context()
+		data, err := json.Marshal(release)
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
 
-	uri := strings.TrimPrefix(req.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
-	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, uri)
-	if err != nil {
-		setStatusCode(req, w, err)
-		return
-	}
-
-	basePage := rc.NewBasePageModel()
-	m := mapper.CreateRelease(basePage, *release)
-
-	rc.BuildPage(w, m, "release")
+		if _, err = w.Write(data); err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+	})
 }
 
 func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		releaseCalendar(w, r, accessToken, collectionID, lang, rc, api, cfg)
+		ctx := r.Context()
+		params := r.URL.Query()
+
+		validatedParams, err := validateParams(ctx, params, cfg)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+
+		basePage := rc.NewBasePageModel()
+		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
+
+		rc.BuildPage(w, calendar, "calendar")
 	})
 }
 
-func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api SearchAPI, cfg config.Config) {
-	ctx := req.Context()
-	params := req.URL.Query()
+func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
+	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		ctx := r.Context()
+		params := r.URL.Query()
+
+		_, err := validateParams(ctx, params, cfg)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+
+		data, err := json.Marshal(releases)
+		if err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+
+		if _, err = w.Write(data); err != nil {
+			setStatusCode(r, w, err)
+			return
+		}
+	})
+}
+
+func validateParams(ctx context.Context, params url.Values, cfg config.Config) (queryparams.ValidatedParams, error) {
 	validatedParams := queryparams.ValidatedParams{}
 
 	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Invalid %s parameter", queryparams.Limit), http.StatusBadRequest)
-		return
+		if err != nil {
+			return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Limit)
+		}
 	}
 	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
 	validatedParams.Limit = pageSize
 
 	pageNumber, err := queryparams.GetPage(ctx, params, 1, queryparams.GetIntValidator(1, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit))
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Invalid %s parameter", queryparams.Page), http.StatusBadRequest)
-		return
+		return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Page)
 	}
 	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
 	validatedParams.Page = pageNumber
@@ -85,8 +147,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 
 	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return validatedParams, err
 	}
 	params.Set(queryparams.DateFrom, fromDate.String())
 	validatedParams.AfterDate = fromDate
@@ -95,16 +156,14 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 
 	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return validatedParams, err
 	}
 	params.Set(queryparams.SortName, sort.BackendString())
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return validatedParams, err
 	}
 	params.Set(queryparams.Keywords, keywords)
 	validatedParams.Keywords = keywords
@@ -112,8 +171,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 
 	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return validatedParams, err
 	}
 	params.Set(queryparams.Type, releaseType.String())
 	validatedParams.ReleaseType = releaseType
@@ -146,16 +204,7 @@ func releaseCalendar(w http.ResponseWriter, req *http.Request, userAccessToken, 
 		params.Set(queryparams.Highlight, strconv.FormatBool(highlight))
 	}
 
-	releases, err := api.GetReleases(ctx, userAccessToken, collectionID, lang, params)
-	if err != nil {
-		setStatusCode(req, w, err)
-		return
-	}
-
-	basePage := rc.NewBasePageModel()
-	calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
-
-	rc.BuildPage(w, calendar, "calendar")
+	return validatedParams, nil
 }
 
 func ReleaseCalendarICSEntries(cfg config.Config, api SearchAPI) http.HandlerFunc {
