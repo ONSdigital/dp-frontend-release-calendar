@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
@@ -36,10 +37,11 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 	})
 }
 
-func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, _ config.Config) {
+func release(w http.ResponseWriter, req *http.Request, userAccessToken, collectionID, lang string, rc RenderClient, api ReleaseCalendarAPI, cfg config.Config) {
 	ctx := req.Context()
 
-	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, req.URL.EscapedPath())
+	uri := strings.TrimPrefix(req.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
+	release, err := api.GetLegacyRelease(ctx, userAccessToken, collectionID, lang, uri)
 	if err != nil {
 		setStatusCode(req, w, err)
 		return
