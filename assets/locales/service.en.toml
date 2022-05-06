@@ -140,6 +140,42 @@ one = "Release history"
 description = "Code of Practice for Official Statistics"
 one = "Code of Practice for Official Statistics"
 
+[ReleaseSubsectionName]
+description = "Name"
+one = "Name"
+
+[ReleaseSubsectionEmail]
+description = "Email"
+one = "Email"
+
+[ReleaseSubsectionPhone]
+description = "Phone"
+one = "Phone"
+
+[ReleaseSubsectionPreviousDate]
+description = "Previous date"
+one = "Previous date"
+
+[ReleaseSubsectionReasonForChange]
+description = "Reason for change"
+one = "Reason for change"
+
+[ReleaseHistoryReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseHistoryReasonForUpdate]
+description = "Reason for update"
+one = "Reason for update"
+
+[ReleaseHistoryLatest]
+description = "LATEST"
+one = "LATEST"
+
+[ReleaseHistoryAllPrevious]
+description = "See all previous releases"
+one = "See all previous releases"
+
 [BreadcrumbHome]
 description = "Home"
 one = "Home"
