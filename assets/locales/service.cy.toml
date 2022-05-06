@@ -70,7 +70,7 @@ one = "Trefnu yn ôl"
 
 [ReleaseCalendarSortBySubmit]
 description = "Sort"
-one = "Trefnu"
+one = "Didoli"
 
 [ReleaseCalendarSortOptionDateNewest]
 description = "Date (newest)"
