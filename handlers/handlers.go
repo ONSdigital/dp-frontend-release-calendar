@@ -47,7 +47,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 		rc.BuildPage(w, m, "release")
 	})
 }
-	
+
 func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimSuffix(strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix), "/data"))
@@ -62,6 +62,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 			return
 		}
 
+		w.Header().Set(http.CanonicalHeaderKey("content-type"), "application/json")
 		if _, err = w.Write(data); err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -116,6 +117,7 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 			return
 		}
 
+		w.Header().Set(http.CanonicalHeaderKey("content-type"), "application/json")
 		if _, err = w.Write(data); err != nil {
 			setStatusCode(r, w, err)
 			return

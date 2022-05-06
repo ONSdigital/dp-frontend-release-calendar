@@ -128,7 +128,7 @@ func TestUnitHandlers(t *testing.T) {
 				router.HandleFunc(root+"/{release-title}/"+dataSegment, ReleaseData(*mockConfig, mockApiClient))
 
 				js, _ := json.Marshal(r)
-				Convey("it returns 200 with the expected json payload when the release is retrieved successfully", func() {
+				Convey("when the release is retrieved successfully", func() {
 					mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
@@ -136,19 +136,29 @@ func TestUnitHandlers(t *testing.T) {
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusOK)
-					So(w.Body.Bytes(), ShouldResemble, js)
+					Convey("it returns 200 with the expected json payload ", func() {
+						So(w.Code, ShouldEqual, http.StatusOK)
+						So(w.Body.Bytes(), ShouldResemble, js)
+					})
+					Convey("and the content type is 'application/json' ", func() {
+						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+					})
 				})
 
-				Convey("it returns 200 with the expected json payload when the release is retrieved successfully without headers or cookies", func() {
+				Convey("when the release is retrieved successfully without headers or cookies", func() {
 					mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusOK)
-					So(w.Body.Bytes(), ShouldResemble, js)
+					Convey("it returns 200 with the expected json payload ", func() {
+						So(w.Code, ShouldEqual, http.StatusOK)
+						So(w.Body.Bytes(), ShouldResemble, js)
+					})
+					Convey("and the content type is 'application/json' ", func() {
+						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+					})
 				})
 
 				Convey("it returns 500 when there is an error getting the release from the api", func() {
@@ -234,7 +244,7 @@ func TestUnitHandlers(t *testing.T) {
 				}
 
 				js, _ := json.Marshal(r)
-				Convey("it returns 200 when rendered successfully", func() {
+				Convey("when the release calendar entries are retrieved successfully", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
@@ -242,19 +252,29 @@ func TestUnitHandlers(t *testing.T) {
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusOK)
-					So(w.Body.Bytes(), ShouldResemble, js)
+					Convey("it returns 200 with the expected json payload ", func() {
+						So(w.Code, ShouldEqual, http.StatusOK)
+						So(w.Body.Bytes(), ShouldResemble, js)
+					})
+					Convey("and the content type is 'application/json' ", func() {
+						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+					})
 				})
 
-				Convey("it returns 200 when rendered successfully without headers or cookies", func() {
+				Convey("when the release calendar entries are retrieved successfully without headers or cookies", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusOK)
-					So(w.Body.Bytes(), ShouldResemble, js)
+					Convey("it returns 200 with the expected json payload ", func() {
+						So(w.Code, ShouldEqual, http.StatusOK)
+						So(w.Body.Bytes(), ShouldResemble, js)
+					})
+					Convey("and the content type is 'application/json' ", func() {
+						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+					})
 				})
 
 				Convey("it returns 400 when there is an error in one of the parameters", func() {
