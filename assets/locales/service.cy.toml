@@ -82,11 +82,11 @@ one = "Dyddiad (hynaf)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Yn nhrefn yr wyddor (A-Y)"
+one = "Yn nhrefn yr wyddor (A i Y)"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Yn nhrefn yr wyddor (Y-A)"
+one = "Yn nhrefn yr wyddor (Y i A)"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
@@ -98,7 +98,7 @@ one = "Dangos hyn yn unig"
 
 [FilterReleaseTypeApplyFilters]
 description = "Apply release type filters"
-one = "Rhoi'r hidlyddion math o ddatganiad ar waith"
+one = "Cymhwyso hidlyddion o ran math o ddatganiad"
 
 [FilterReleaseTypePublished]
 description = "Published"
