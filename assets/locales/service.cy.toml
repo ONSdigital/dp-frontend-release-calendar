@@ -98,7 +98,7 @@ one = "Dangos hyn yn unig"
 
 [FilterReleaseTypeApplyFilters]
 description = "Apply release type filters"
-one = "Rhoi'r hidlyddion math o ddatganiad ar waith"
+one = "Cymhwyso hidlyddion o ran math o ddatganiad"
 
 [FilterReleaseTypePublished]
 description = "Published"
