@@ -28,7 +28,17 @@ func Setup(ctx context.Context, r *mux.Router, cfg *config.Config, c Clients) {
 	log.Info(ctx, "adding routes")
 	r.StrictSlash(true).Path("/health").HandlerFunc(c.HealthCheckHandler)
 
-	r.StrictSlash(true).Path("/releases/{uri:.*}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI))
+	r.StrictSlash(true).Path("/releases/{uri}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI))
+	r.StrictSlash(true).Path("/releases/{uri}/data").Methods("GET").HandlerFunc(handlers.ReleaseData(*cfg, c.ReleaseCalendarAPI))
 	r.StrictSlash(true).Path("/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI))
+	r.StrictSlash(true).Path("/releasecalendar/data").Methods("GET").HandlerFunc(handlers.ReleaseCalendarData(*cfg, c.SearchAPI))
 	r.StrictSlash(true).Path("/calendar/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendarICSEntries(*cfg, c.SearchAPI))
+
+	if cfg.PrivateRoutingPrefix != "" {
+		r.StrictSlash(true).Path(cfg.PrivateRoutingPrefix + "/releases/{uri}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI))
+		r.StrictSlash(true).Path(cfg.PrivateRoutingPrefix + "/releases/{uri}/data").Methods("GET").HandlerFunc(handlers.ReleaseData(*cfg, c.ReleaseCalendarAPI))
+		r.StrictSlash(true).Path(cfg.PrivateRoutingPrefix + "/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI))
+		r.StrictSlash(true).Path(cfg.PrivateRoutingPrefix + "/releasecalendar/data").Methods("GET").HandlerFunc(handlers.ReleaseCalendarData(*cfg, c.SearchAPI))
+		r.StrictSlash(true).Path(cfg.PrivateRoutingPrefix + "/calendar/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendarICSEntries(*cfg, c.SearchAPI))
+	}
 }

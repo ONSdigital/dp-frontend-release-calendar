@@ -70,7 +70,7 @@ one = "Trefnu yn ôl"
 
 [ReleaseCalendarSortBySubmit]
 description = "Sort"
-one = "Trefnu"
+one = "Didoli"
 
 [ReleaseCalendarSortOptionDateNewest]
 description = "Date (newest)"
@@ -82,11 +82,11 @@ one = "Dyddiad (hynaf)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Yn nhrefn yr wyddor (A-Y)"
+one = "Yn nhrefn yr wyddor (A i Y)"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Yn nhrefn yr wyddor (Y-A)"
+one = "Yn nhrefn yr wyddor (Y i A)"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
@@ -98,7 +98,7 @@ one = "Dangos hyn yn unig"
 
 [FilterReleaseTypeApplyFilters]
 description = "Apply release type filters"
-one = "Rhoi'r hidlyddion math o ddatganiad ar waith"
+one = "Cymhwyso hidlyddion o ran math o ddatganiad"
 
 [FilterReleaseTypePublished]
 description = "Published"
@@ -139,6 +139,42 @@ one = "Hanes datganiadau"
 [ReleaseSectionCodeOfPractice]
 description = "Code of Practice for Official Statistics"
 one = "Y Cod Ymarfer ar gyfer Ystadegau Swyddogol"
+
+[ReleaseSubsectionName]
+description = "Name"
+one = "Enw"
+
+[ReleaseSubsectionEmail]
+description = "Email"
+one = "E-bost"
+
+[ReleaseSubsectionPhone]
+description = "Phone"
+one = "Ffôn"
+
+[ReleaseSubsectionPreviousDate]
+description = "Previous date"
+one = "Dyddiad blaenorol"
+
+[ReleaseSubsectionReasonForChange]
+description = "Reason for change"
+one = "Rheswm dros newid"
+
+[ReleaseHistoryReleaseDate]
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseHistoryReasonForUpdate]
+description = "Reason for update"
+one = "Rheswm dros ddiweddaru"
+
+[ReleaseHistoryLatest]
+description = "LATEST"
+one = "DIWEDDARAF"
+
+[ReleaseHistoryAllPrevious]
+description = "See all previous releases"
+one = "Gweld pob datganiad blaenorol"
 
 [BreadcrumbHome]
 description = "Home"
