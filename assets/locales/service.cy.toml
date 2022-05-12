@@ -70,7 +70,7 @@ one = "Trefnu yn ôl"
 
 [ReleaseCalendarSortBySubmit]
 description = "Sort"
-one = "Trefnu"
+one = "Didoli"
 
 [ReleaseCalendarSortOptionDateNewest]
 description = "Date (newest)"
@@ -82,11 +82,11 @@ one = "Dyddiad (hynaf)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Yn nhrefn yr wyddor (A-Y)"
+one = "Yn nhrefn yr wyddor (A i Y)"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Yn nhrefn yr wyddor (Y-A)"
+one = "Yn nhrefn yr wyddor (Y i A)"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"

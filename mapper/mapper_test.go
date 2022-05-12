@@ -152,8 +152,6 @@ func TestUnitMapper(t *testing.T) {
 				{
 					Title: "Cancelled",
 					URI:   "/releasecalendar?release-type=type-cancelled",
-				}, {
-					Title: "Release title",
 				},
 			})
 		})
