@@ -201,9 +201,6 @@ func mapBreadcrumbTrail(description model.ReleaseDescription, language string) [
 			Title: helper.Localise(localeKey, language, 1),
 			URI:   fmt.Sprintf("/releasecalendar?release-type=%s", releaseType.String()),
 		},
-		{
-			Title: description.Title,
-		},
 	}
 }
 

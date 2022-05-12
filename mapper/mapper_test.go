@@ -156,8 +156,6 @@ func TestUnitMapper(t *testing.T) {
 				{
 					Title: crumbLabelCancelled,
 					URI:   "/releasecalendar?release-type=type-cancelled",
-				}, {
-					Title: "Release title",
 				},
 			})
 		})
