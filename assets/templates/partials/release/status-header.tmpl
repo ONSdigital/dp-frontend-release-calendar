@@ -1,30 +1,36 @@
 {{ if .Description.ProvisionalDate }}
   <div>
-    <span class="ons-u-fs-r--b">Provisional release date:</span> {{ .Description.ProvisionalDate }}
+    <span class="ons-u-fs-r--b">Provisional release date:</span>
+    {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
+    <span>{{ .Description.ProvisionalDate }}</span>
   </div>
 {{ else if .Description.Cancelled }}
   <div>
-    <span class="ons-u-fs-r--b">Release date:</span> Cancelled
+    <span class="ons-u-fs-r--b">Release date:</span>
+    <span>Cancelled</span>
   </div>
 {{ else if .Description.NextRelease }}
   <div class="ons-grid ons-u-ml-no">
     <!-- Left column -->
     <div class="ons-grid__col ons-col-4@m ons-u-p-no">
       <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Released:</span> {{ .Description.ReleaseDate }}
+        <span class="ons-u-fs-r--b">Released:</span>
+        <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
       </div>
     </div>
 
     <!-- Right column -->
     <div class="ons-grid__col ons-col-8@m">
       <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Next release:</span> {{ .Description.NextRelease }}
+        <span class="ons-u-fs-r--b">Next release:</span>
+        <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
       </div>
     </div>
   </div>
 {{ else }}
   <div>
-    <span class="ons-u-fs-r--b">Release date:</span> {{ .Description.ReleaseDate }}
+    <span class="ons-u-fs-r--b">Release date:</span>
+    <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
   </div>
 {{ end }}
 
