@@ -118,7 +118,7 @@ func createTableOfContents(
 	return toc
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang string) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -140,7 +140,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 			ProvisionalDate:    release.Description.ProvisionalDate,
 		},
 	}
-
+	result.Language = lang
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
@@ -216,10 +216,11 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang string) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
+	calendar.Language = lang
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
