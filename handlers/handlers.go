@@ -42,7 +42,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 		}
 
 		basePage := rc.NewBasePageModel()
-		m := mapper.CreateRelease(basePage, *release)
+		m := mapper.CreateRelease(basePage, *release, lang)
 
 		rc.BuildPage(w, m, "release")
 	})
@@ -88,7 +88,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.Han
 		}
 
 		basePage := rc.NewBasePageModel()
-		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg)
+		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang)
 
 		rc.BuildPage(w, calendar, "calendar")
 	})

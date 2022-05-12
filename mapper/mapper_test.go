@@ -114,7 +114,7 @@ func TestUnitMapper(t *testing.T) {
 		}
 
 		Convey("CreateRelease maps correctly to a model object", func() {
-			model := CreateRelease(basePage, release)
+			model := CreateRelease(basePage, release, "")
 
 			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -252,7 +252,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		cfg := config.Config{DefaultMaximumSearchResults: 1000}
 
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg)
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "")
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
