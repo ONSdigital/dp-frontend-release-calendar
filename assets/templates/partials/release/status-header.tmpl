@@ -1,89 +1,100 @@
-{{ if .Description.ProvisionalDate }}
-  <div>
-    <span class="ons-u-fs-r--b">Provisional release date:</span>
-    {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
-    <span>{{ .Description.ProvisionalDate }}</span>
-  </div>
-{{ else if .Description.Cancelled }}
-  <div>
-    <span class="ons-u-fs-r--b">Release date:</span>
-    <span>Cancelled</span>
-  </div>
-{{ else if .Description.NextRelease }}
-  <div class="ons-grid ons-u-ml-no">
-    <!-- Left column -->
-    <div class="ons-grid__col ons-col-4@m ons-u-p-no">
-      <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Released:</span>
-        <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+<div class="ons-u-mb-xl">
+  {{ if .Description.ProvisionalDate }}
+    <div>
+      <span class="ons-u-fs-r--b">Provisional release date:</span>
+      {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
+      <span>{{ .Description.ProvisionalDate }}</span>
+    </div>
+  {{ else if .Description.Cancelled }}
+    <div>
+      <span class="ons-u-fs-r--b">Release date:</span>
+      <span>Cancelled</span>
+    </div>
+  {{ else if .Description.NextRelease }}
+    <div class="ons-grid ons-u-ml-no">
+      <!-- Left column -->
+      <div class="ons-grid__col ons-col-4@m ons-u-p-no">
+        <div class="ons-pl-grid-col">
+          <span class="ons-u-fs-r--b">Released:</span>
+          <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div class="ons-grid__col ons-col-8@m">
+        <div class="ons-pl-grid-col">
+          <span class="ons-u-fs-r--b">Next release:</span>
+          <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
+        </div>
       </div>
     </div>
-
-    <!-- Right column -->
-    <div class="ons-grid__col ons-col-8@m">
-      <div class="ons-pl-grid-col">
-        <span class="ons-u-fs-r--b">Next release:</span>
-        <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
-      </div>
+  {{ else }}
+    <div>
+      <span class="ons-u-fs-r--b">Release date:</span>
+      <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
     </div>
-  </div>
-{{ else }}
-  <div>
-    <span class="ons-u-fs-r--b">Release date:</span>
-    <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
-  </div>
-{{ end }}
+  {{ end }}
 
-{{ if not .Description.Published }}
-  <div class="ons-panel ons-panel--info ons-panel--no-title">
-    <span class="ons-u-vh">Important information: </span>
-    <div class="ons-panel__body">
-      <p>
-        This release is not yet published
-      </p>
-    </div>
-  </div>
-{{ end }}
-
-{{ if and .Description.Cancelled .Description.CancellationNotice }}
-  <div class="ons-panel ons-panel--info ons-panel--no-title">
-    <span class="ons-u-vh">Important information: </span>
-    <div class="ons-panel__body">
-      {{ range .Description.CancellationNotice }}
-        <p>{{ . }}</p>
-      {{ end }}
-    </div>
-  </div>
-{{ end }}
-
-{{/* TODO How is 'postponed' represented in the Release model?
-  {{ if .StatusFlags.InsufficientDataPostponed }}
+  {{ if not .Description.Published }}
     <div class="ons-panel ons-panel--info ons-panel--no-title">
       <span class="ons-u-vh">Important information: </span>
       <div class="ons-panel__body">
         <p>
-          This release has been postponed as there is not enough
-          personal well-being data collected to provide robust
-          quarterly estimates.
+          This release is not yet published
         </p>
       </div>
     </div>
   {{ end }}
-*/}}
 
-{{/* TODO How can a cancellation notice containing a link be supported?
-  {{ if .StatusFlags.MergeCancelled }}
+  {{ if and .Description.Cancelled .Description.CancellationNotice }}
     <div class="ons-panel ons-panel--info ons-panel--no-title">
       <span class="ons-u-vh">Important information: </span>
       <div class="ons-panel__body">
-        <p>
-          This release has been cancelled as the publication is
-          being merged into one headline release titled
-          <a href="{{ .StatusFlags.MergeCancelled.URI }}">
-            {{ .StatusFlags.MergeCancelled.Title }}
-          </a>.
-        </p>
+        {{ range .Description.CancellationNotice }}
+          <p>{{ . }}</p>
+        {{ end }}
       </div>
     </div>
   {{ end }}
-*/}}
+
+  {{/* TODO How is 'postponed' represented in the Release model?
+    {{ if .StatusFlags.InsufficientDataPostponed }}
+      <div class="ons-panel ons-panel--info ons-panel--no-title">
+        <span class="ons-u-vh">Important information: </span>
+        <div class="ons-panel__body">
+          <p>
+            This release has been postponed as there is not enough
+            personal well-being data collected to provide robust
+            quarterly estimates.
+          </p>
+        </div>
+      </div>
+    {{ end }}
+  */}}
+
+  {{/* TODO How can a cancellation notice containing a link be supported?
+    {{ if .StatusFlags.MergeCancelled }}
+      <div class="ons-panel ons-panel--info ons-panel--no-title">
+        <span class="ons-u-vh">Important information: </span>
+        <div class="ons-panel__body">
+          <p>
+            This release has been cancelled as the publication is
+            being merged into one headline release titled
+            <a href="{{ .StatusFlags.MergeCancelled.URI }}">
+              {{ .StatusFlags.MergeCancelled.Title }}
+            </a>.
+          </p>
+        </div>
+      </div>
+    {{ end }}
+  */}}
+
+  {{ if .Description.Census2021 }}
+    <div class="ons-u-mt-l">
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-census-2021-purple-landscape.svg"
+        alt="Census 2021 logo"
+      >
+    </div>
+  {{ end }}
+</div>

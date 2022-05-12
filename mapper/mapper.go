@@ -19,7 +19,7 @@ func createTableOfContents(
 	relatedDatasets []model.Link,
 	dateChanges []model.DateChange,
 	releaseHistory []model.Link,
-	codeOfPractice bool,
+	aboutTheData bool,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -101,15 +101,15 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "releasehistory")
 	}
 
-	if codeOfPractice {
-		sections["codeofpractice"] = coreModel.ContentSection{
+	if aboutTheData {
+		sections["aboutthedata"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				LocaleKey: "ReleaseSectionCodeOfPractice",
+				LocaleKey: "ReleaseSectionAboutTheData",
 				Plural:    1,
 			},
 		}
-		displayOrder = append(displayOrder, "codeofpractice")
+		displayOrder = append(displayOrder, "aboutthedata")
 	}
 
 	toc.Sections = sections
@@ -158,7 +158,8 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
-	result.CodeOfPractice = true
+	result.AboutTheData = result.Description.NationalStatistic || result.Description.WelshStatistic || result.Description.Census2021
+
 	result.Breadcrumb = mapBreadcrumbTrail(result.Description, result.Language)
 
 	result.TableOfContents = createTableOfContents(
@@ -167,7 +168,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.RelatedDatasets,
 		result.DateChanges,
 		result.ReleaseHistory,
-		result.CodeOfPractice,
+		result.AboutTheData,
 	)
 
 	return result
