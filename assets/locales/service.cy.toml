@@ -136,9 +136,9 @@ one = "Newidiadau i ddyddiad y datganiad hwn"
 description = "Release history"
 one = "Hanes datganiadau"
 
-[ReleaseSectionCodeOfPractice]
-description = "Code of Practice for Official Statistics"
-one = "Y Cod Ymarfer ar gyfer Ystadegau Swyddogol"
+[ReleaseSectionAboutTheData]
+description = "About the data"
+one = "Ynglŷn â'r data"
 
 [ReleaseSubsectionName]
 description = "Name"

@@ -19,7 +19,7 @@ func createTableOfContents(
 	relatedDatasets []model.Link,
 	dateChanges []model.DateChange,
 	releaseHistory []model.Link,
-	codeOfPractice bool,
+	aboutTheData bool,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -101,15 +101,15 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "releasehistory")
 	}
 
-	if codeOfPractice {
-		sections["codeofpractice"] = coreModel.ContentSection{
+	if aboutTheData {
+		sections["aboutthedata"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
-				LocaleKey: "ReleaseSectionCodeOfPractice",
+				LocaleKey: "ReleaseSectionAboutTheData",
 				Plural:    1,
 			},
 		}
-		displayOrder = append(displayOrder, "codeofpractice")
+		displayOrder = append(displayOrder, "aboutthedata")
 	}
 
 	toc.Sections = sections
@@ -118,7 +118,7 @@ func createTableOfContents(
 	return toc
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) model.Release {
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang string) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -140,7 +140,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 			ProvisionalDate:    release.Description.ProvisionalDate,
 		},
 	}
-
+	result.Language = lang
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
@@ -158,7 +158,8 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
-	result.CodeOfPractice = true
+	result.AboutTheData = result.Description.NationalStatistic || result.Description.WelshStatistic || result.Description.Census2021
+
 	result.Breadcrumb = mapBreadcrumbTrail(result.Description, result.Language)
 
 	result.TableOfContents = createTableOfContents(
@@ -167,7 +168,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release) mod
 		result.RelatedDatasets,
 		result.DateChanges,
 		result.ReleaseHistory,
-		result.CodeOfPractice,
+		result.AboutTheData,
 	)
 
 	return result
@@ -201,9 +202,6 @@ func mapBreadcrumbTrail(description model.ReleaseDescription, language string) [
 			Title: helper.Localise(localeKey, language, 1),
 			URI:   fmt.Sprintf("/releasecalendar?release-type=%s", releaseType.String()),
 		},
-		{
-			Title: description.Title,
-		},
 	}
 }
 
@@ -219,10 +217,11 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang string) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
+	calendar.Language = lang
 	calendar.BetaBannerEnabled = true
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
