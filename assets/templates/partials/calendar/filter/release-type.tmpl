@@ -13,7 +13,7 @@
       {{ with index .ReleaseTypes "type-published" }}
         <span class="ons-radios__item ons-radios__item--no-border">
           <span class="ons-radio ons-radio--no-border">
-            {{ template "partials/calendar/inputs/radio-inputs" . }}
+            {{ template "partials/inputs/input-radio" . }}
           </span>
         </span>
         <br>
@@ -21,7 +21,7 @@
       {{ with index .ReleaseTypes "type-upcoming" }}
         <span class="ons-radios__item ons-radios__item--no-border">
           <span class="ons-radio ons-radio--no-border">
-              {{ template "partials/calendar/inputs/radio-inputs" . }}
+            {{ template "partials/inputs/input-radio" . }}
           </span>
         </span>
         <br>
@@ -29,7 +29,7 @@
       {{ with index .ReleaseTypes "type-cancelled" }}
         <span class="ons-radios__item ons-radios__item--no-border">
           <span class="ons-radio ons-radio--no-border">
-            {{ template "partials/calendar/inputs/radio-inputs" . }}
+            {{ template "partials/inputs/input-radio" . }}
           </span>
         </span>
       {{ end }}
