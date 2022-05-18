@@ -23,14 +23,19 @@
     </div>
   {{ end }}
   {{ if .Description.NationalStatistic }}
-    <div class="ons-u-mb-l national-statistic">
+    <div class="ons-u-mb-l national-statistics">
       <h2 class="ons-u-fs-l">
         <span>Code of Practice for Statistics content</span>
-        <img
-          src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
-          alt="UK Statistics Authority kitemark"
-          class="ons-u-ml-s"
+        <a
+          href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/"
+          class="national-statistics__link ons-u-ml-s"
         >
+          <img
+            src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+            alt="UK Statistics Authority kitemark"
+            class="national-statistics__logo"
+          >
+        </a>
       </h2>
       <p>
         These National Statistics have been independently assessed by the UK
