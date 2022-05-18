@@ -114,7 +114,11 @@ func TestUnitMapper(t *testing.T) {
 		}
 
 		Convey("CreateRelease maps correctly to a model object", func() {
-			model := CreateRelease(basePage, release)
+			lang := "cy"
+			crumbLabelHome := "Hafan"
+			crumbLabelReleaseCalendar := "Calendr datganiadau"
+			crumbLabelCancelled := "Canslwyd"
+			model := CreateRelease(basePage, release, lang)
 
 			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -140,6 +144,20 @@ func TestUnitMapper(t *testing.T) {
 			So(model.Description.Cancelled, ShouldEqual, release.Description.Cancelled)
 			So(model.Description.CancellationNotice, ShouldResemble, release.Description.CancellationNotice)
 			So(model.Description.ProvisionalDate, ShouldEqual, release.Description.ProvisionalDate)
+			So(model.Breadcrumb, ShouldResemble, []coreModel.TaxonomyNode{
+				{
+					Title: crumbLabelHome,
+					URI:   "/",
+				},
+				{
+					Title: crumbLabelReleaseCalendar,
+					URI:   "/releasecalendar",
+				},
+				{
+					Title: crumbLabelCancelled,
+					URI:   "/releasecalendar?release-type=type-cancelled",
+				},
+			})
 		})
 	})
 }
@@ -236,16 +254,18 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		cfg := config.Config{DefaultMaximumSearchResults: 1000}
 
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg)
+			lang := "cy"
+			metaTitle := "Calendr datganiadau"
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang)
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
-			So(calendar.Metadata.Title, ShouldEqual, "Release Calendar")
+			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
-			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: queryparams.SortOptions})
+			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: mapSortOptions(params)})
 			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
-				Language:        basePage.Language,
+				Language:        lang,
 				Id:              "before-date",
 				InputNameDay:    "before-day",
 				InputNameMonth:  "before-month",
@@ -253,11 +273,17 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				InputValueDay:   params.BeforeDate.DayString(),
 				InputValueMonth: params.BeforeDate.MonthString(),
 				InputValueYear:  params.BeforeDate.YearString(),
-				Title:           "Released before",
-				Description:     "For example: 2006 or 19/07/2010",
+				Title: coreModel.Localisation{
+					LocaleKey: "ReleasedBefore",
+					Plural:    1,
+				},
+				Description: coreModel.Localisation{
+					LocaleKey: "DateFilterDescription",
+					Plural:    1,
+				},
 			})
 			So(calendar.AfterDate, ShouldResemble, coreModel.InputDate{
-				Language:        basePage.Language,
+				Language:        lang,
 				Id:              "after-date",
 				InputNameDay:    "after-day",
 				InputNameMonth:  "after-month",
@@ -265,10 +291,16 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				InputValueDay:   params.AfterDate.DayString(),
 				InputValueMonth: params.AfterDate.MonthString(),
 				InputValueYear:  params.AfterDate.YearString(),
-				Title:           "Released after",
-				Description:     "For example: 2006 or 19/07/2010",
+				Title: coreModel.Localisation{
+					LocaleKey: "ReleasedAfter",
+					Plural:    1,
+				},
+				Description: coreModel.Localisation{
+					LocaleKey: "DateFilterDescription",
+					Plural:    1,
+				},
 			})
-			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, ""))
+			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, lang))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
 			So(calendar.Pagination.Limit, ShouldEqual, 5)

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
@@ -24,7 +23,12 @@ type ReleaseType struct {
 	SubTypes  map[string]ReleaseType `json:"sub_types"`
 }
 
-type SortOption = queryparams.SortOption
+type SortOption struct {
+	LocaleKey string `json:"locale_key"`
+	Plural    int    `json:"plural"`
+	Value     string `json:"value"`
+	Disabled  bool   `json:"disabled"`
+}
 
 type Sort struct {
 	Mode    string       `json:"mode"`
@@ -41,4 +45,24 @@ type Calendar struct {
 	AfterDate     coreModel.InputDate     `json:"after_date"`
 	Entries       []CalendarEntry         `json:"entries"`
 	KeywordSearch coreModel.CompactSearch `json:"keyword_search"`
+}
+
+func (calendar Calendar) FuncIsFilterSearchPresent() bool {
+	return calendar.KeywordSearch.SearchTerm != ""
+}
+
+func (calendar Calendar) FuncIsFilterDatePresent() bool {
+	isBeforeDatePresent := func() bool {
+		return calendar.BeforeDate.InputValueDay != "" &&
+			calendar.BeforeDate.InputValueMonth != "" &&
+			calendar.BeforeDate.InputValueYear != ""
+	}
+
+	isAfterDatePresent := func() bool {
+		return calendar.AfterDate.InputValueDay != "" &&
+			calendar.AfterDate.InputValueMonth != "" &&
+			calendar.AfterDate.InputValueYear != ""
+	}
+
+	return isBeforeDatePresent() || isAfterDatePresent()
 }

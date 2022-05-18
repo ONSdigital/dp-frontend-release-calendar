@@ -22,7 +22,7 @@ func TestConfig(t *testing.T) {
 			Convey("Then the values should be set to the expected defaults", func() {
 				So(cfg.Debug, ShouldBeFalse)
 				So(cfg.BindAddr, ShouldEqual, ":27700")
-				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/7aa530a")
+				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/e9dc639")
 				So(cfg.SupportedLanguages, ShouldResemble, []string{"en", "cy"})
 				So(cfg.GracefulShutdownTimeout, ShouldEqual, 5*time.Second)
 				So(cfg.HealthCheckInterval, ShouldEqual, 30*time.Second)
@@ -42,5 +42,17 @@ func TestConfig(t *testing.T) {
 				So(newCfg, ShouldResemble, cfg)
 			})
 		})
+	})
+}
+
+func TestValidatePrivatePrefix(t *testing.T) {
+	Convey("when a private prefix is not set", t, func() {
+		So(validatePrivatePrefix(""), ShouldEqual, "")
+	})
+	Convey("when a private prefix is set without an initial '/'", t, func() {
+		So(validatePrivatePrefix("a-prefix"), ShouldEqual, "/a-prefix")
+	})
+	Convey("when a valid private prefix is set with an initial '/'", t, func() {
+		So(validatePrivatePrefix("/a-prefix"), ShouldEqual, "/a-prefix")
 	})
 }

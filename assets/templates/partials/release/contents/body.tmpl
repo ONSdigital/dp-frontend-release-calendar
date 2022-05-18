@@ -4,7 +4,7 @@
   {{ range $id := .TableOfContents.DisplayOrder }}
     {{ $section := index $sections $id }}
     <section id="{{ $id }}">
-      <h2>{{ $section.Title }}</h2>
+      <h2>{{ $section.Title.FuncLocalise $.Language }}</h2>
       {{ if eq $id "summary"}}
         <p>{{ $release.Description.Summary }}</p>
       {{ else if eq $id "publications" }}
@@ -17,8 +17,8 @@
         {{ template "partials/release/contents/date-changes" $release }}
       {{ else if eq $id "releasehistory" }}
         {{ template "partials/release/contents/release-history" $release }}
-      {{ else if eq $id "codeofpractice" }}
-        {{ template "partials/release/contents/code-of-practice" $release }}
+      {{ else if eq $id "aboutthedata" }}
+        {{ template "partials/release/contents/about-the-data" $release }}
       {{ end }}
     </section>
   {{ end }}

@@ -31,6 +31,7 @@
         <option
           value="{{ .Value }}"
           {{ if eq .Value $sortMode }}selected{{ end }}
+          {{ if .Disabled }}disabled{{ end }}
         >
           {{- localise .LocaleKey $.Language .Plural -}}
         </option>

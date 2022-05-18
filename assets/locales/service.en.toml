@@ -111,3 +111,91 @@ one = "Upcoming"
 [FilterReleaseTypeCancelled]
 description = "Cancelled"
 one = "Cancelled"
+
+[ReleaseSectionSummary]
+description = "Summary"
+one = "Summary"
+
+[ReleaseSectionPublications]
+description = "Publications"
+one = "Publications"
+
+[ReleaseSectionData]
+description = "Data"
+one = "Data"
+
+[ReleaseSectionContactDetails]
+description = "Contact details"
+one = "Contact details"
+
+[ReleaseSectionDateChanges]
+description = "Changes to this release date"
+one = "Changes to this release date"
+
+[ReleaseSectionReleaseHistory]
+description = "Release history"
+one = "Release history"
+
+[ReleaseSectionAboutTheData]
+description = "About the data"
+one = "About the data"
+
+[ReleaseSubsectionName]
+description = "Name"
+one = "Name"
+
+[ReleaseSubsectionEmail]
+description = "Email"
+one = "Email"
+
+[ReleaseSubsectionPhone]
+description = "Phone"
+one = "Phone"
+
+[ReleaseSubsectionPreviousDate]
+description = "Previous date"
+one = "Previous date"
+
+[ReleaseSubsectionReasonForChange]
+description = "Reason for change"
+one = "Reason for change"
+
+[ReleaseHistoryReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseHistoryReasonForUpdate]
+description = "Reason for update"
+one = "Reason for update"
+
+[ReleaseHistoryLatest]
+description = "LATEST"
+one = "LATEST"
+
+[ReleaseHistoryAllPrevious]
+description = "See all previous releases"
+one = "See all previous releases"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Home"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Release calendar"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Published"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[ReleasePageType]
+description = "Release"
+one = "Release"

@@ -1,0 +1,52 @@
+<div class="about-the-data">
+  {{ if .Description.Census2021 }}
+    <div class="ons-u-mb-l census-2021">
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-census-2021-purple-landscape.svg"
+        alt="Census 2021 logo"
+        class="ons-u-mb-xs"
+      >
+      <p>This release includes data from Census 2021.</p>
+    </div>
+  {{ end }}
+  {{ if .Description.WelshStatistic }}
+    <div class="ons-u-mb-l welsh-statistic">
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/government/welsh-government.svg"
+        alt="Welsh Government logo"
+        class="ons-u-mb-xs ons-u-d-b"
+      >
+      <p>
+        This release has been written with contributions of analysis and data
+        supplied by the Welsh Government.
+      </p>
+    </div>
+  {{ end }}
+  {{ if .Description.NationalStatistic }}
+    <div class="ons-u-mb-l national-statistic">
+      <h2 class="ons-u-fs-l">
+        <span>Code of Practice for Statistics content</span>
+        <img
+          src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+          alt="UK Statistics Authority kitemark"
+          class="ons-u-ml-s"
+        >
+      </h2>
+      <p>
+        These National Statistics have been independently assessed by the UK
+        Statistics Authority. They have been produced by following the standards
+        set out in the <a href="https://code.statisticsauthority.gov.uk/the-code/">Code of Practice for Statistics</a>
+        and the <a href="https://www.legislation.gov.uk/ukpga/2007/18/contents">Statistics and Registration Service Act 2007</a>.
+      </p>
+      <p>
+        This means that they:
+        <ul>
+          <li>meet identified user needs</li>
+          <li>are well explained and easily accessible</li>
+          <li>are produced based on appropriate data and methods</li>
+          <li>are managed impartially and objectively in the public interest</li>
+        </ul>
+      </p>
+    </div>
+  {{ end }}
+</div>

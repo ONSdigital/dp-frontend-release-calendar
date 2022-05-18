@@ -27,7 +27,7 @@ type Release struct {
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
 	ReleaseHistory            []Link             `json:"release_history"` // TODO Provisional entry for modelling history
-	CodeOfPractice            bool               `json:"code_of_practice"`
+	AboutTheData              bool               `json:"about_the_data"`
 }
 
 type DateChange struct {
@@ -41,6 +41,8 @@ type ReleaseDescription struct {
 	Contact            ContactDetails `json:"contact"`
 	Finalised          bool           `json:"finalised"`
 	NationalStatistic  bool           `json:"national_statistic"`
+	WelshStatistic     bool           `json:"welsh_statistic"`
+	Census2021         bool           `json:"census_2021"`
 	NextRelease        string         `json:"next_release"`
 	ProvisionalDate    string         `json:"provisional_date"`
 	Published          bool           `json:"published"`

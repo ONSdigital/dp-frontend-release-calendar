@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strings"
 	"time"
 
 	"github.com/kelseyhightower/envconfig"
@@ -24,6 +25,7 @@ type Config struct {
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
+	PrivateRoutingPrefix        string        `envconfig:"PRIVATE_ROUTING_PREFIX"`
 }
 
 var cfg *Config
@@ -41,8 +43,10 @@ func Get() (*Config, error) {
 	if cfg.Debug {
 		cfg.PatternLibraryAssetsPath = "http://localhost:9002/dist/assets"
 	} else {
-		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/7aa530a"
+		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/e9dc639"
 	}
+
+	cfg.PrivateRoutingPrefix = validatePrivatePrefix(cfg.PrivateRoutingPrefix)
 
 	return cfg, nil
 }
@@ -67,7 +71,16 @@ func get() (*Config, error) {
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
+		PrivateRoutingPrefix:        "",
 	}
 
 	return cfg, envconfig.Process("", cfg)
+}
+
+func validatePrivatePrefix(prefix string) string {
+	if prefix != "" && !strings.HasPrefix(prefix, "/") {
+		return "/" + prefix
+	}
+
+	return prefix
 }

@@ -4,7 +4,7 @@
   tag designed for the purpose:
     <em class="ons-highlight">keyword</em>
 */}}
-<ol class="ons-list ons-list--bare ons-u-bt">
+<ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
   {{range .Entries }}
     <li class="ons-list__item ons-u-mt-l">
       <a
@@ -15,7 +15,7 @@
       </a>
       <div class="ons-u-mt-s">
         <span class="ons-u-fs-r--b">Release date:</span>
-        <span>{{ dateTimeFormat .Description.ReleaseDate }}</span>
+        <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
         <span>|</span>
         <span>
           {{ if .Description.Published }}
