@@ -8,6 +8,7 @@ import (
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/assets"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
+	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
 	"github.com/ONSdigital/dp-frontend-release-calendar/routes"
 	render "github.com/ONSdigital/dp-renderer"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -51,6 +52,7 @@ func (svc *Service) Init(ctx context.Context, cfg *config.Config, serviceList *E
 		Render:             render.NewWithDefaultClient(assets.Asset, assets.AssetNames, cfg.PatternLibraryAssetsPath, cfg.SiteDomain),
 		ReleaseCalendarAPI: releasecalendar.NewWithHealthClient(routerHealthClient),
 		SearchAPI:          sitesearch.NewWithHealthClient(routerHealthClient),
+		BabbageAPI:         handlers.NewBabbageClient(cfg.BabbageURL),
 	}
 
 	// Get healthcheck with checkers
@@ -138,6 +140,11 @@ func (svc *Service) registerCheckers(ctx context.Context, c routes.Clients) (err
 	if err = svc.HealthCheck.AddCheck("Release Calendar API", c.ReleaseCalendarAPI.Checker); err != nil {
 		hasErrors = true
 		log.Error(ctx, "failed to add release calendar API checker", err)
+	}
+
+	if err = svc.HealthCheck.AddCheck("Babbage", c.BabbageAPI.Checker); err != nil {
+		hasErrors = true
+		log.Error(ctx, "failed to add babbage checker", err)
 	}
 
 	if hasErrors {

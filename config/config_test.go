@@ -28,6 +28,8 @@ func TestConfig(t *testing.T) {
 				So(cfg.HealthCheckInterval, ShouldEqual, 30*time.Second)
 				So(cfg.HealthCheckCriticalTimeout, ShouldEqual, 90*time.Second)
 				So(cfg.APIRouterURL, ShouldEqual, "http://localhost:23200/v1")
+				So(cfg.BabbageURL, ShouldEqual, "http://localhost:8080")
+				So(cfg.MaxAgeKey, ShouldEqual, "")
 				So(cfg.DefaultLimit, ShouldEqual, 10)
 				So(cfg.DefaultMaximumLimit, ShouldEqual, 100)
 				So(cfg.DefaultSort, ShouldEqual, "date-newest")

@@ -32,10 +32,23 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 }
 
+func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageAPI, uri, key string) {
+	maxAge, err := babbage.GetMaxAge(ctx, uri, key)
+	if err != nil {
+		// Do not cache
+		maxAge = 0
+		log.Warn(ctx, "Couldn't find max age from Babbage, using default 0", log.Data{"uri": uri, "err": err.Error()})
+	}
+	w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
+}
+
 // Release will load a release page
-func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.HandlerFunc {
+func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix))
+		ctx := r.Context()
+		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
+
+		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseUri)
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -43,6 +56,8 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI) http.Ha
 
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(basePage, *release, lang)
+
+		setCacheHeader(ctx, w, babbage, releaseUri, cfg.MaxAgeKey)
 
 		rc.BuildPage(w, m, "release")
 	})
@@ -70,7 +85,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	})
 }
 
-func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.HandlerFunc {
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		params := r.URL.Query()
@@ -89,6 +104,8 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI) http.Han
 
 		basePage := rc.NewBasePageModel()
 		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang)
+
+		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 
 		rc.BuildPage(w, calendar, "calendar")
 	})

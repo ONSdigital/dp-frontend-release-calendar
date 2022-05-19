@@ -191,3 +191,41 @@ func (mr *MockSearchAPIMockRecorder) GetReleases(ctx, userAccessToken, collectio
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReleases", reflect.TypeOf((*MockSearchAPI)(nil).GetReleases), ctx, userAccessToken, collectionID, lang, query)
 }
+
+// MockBabbageAPI is a mock of BabbageAPI interface.
+type MockBabbageAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockBabbageAPIMockRecorder
+}
+
+// MockBabbageAPIMockRecorder is the mock recorder for MockBabbageAPI.
+type MockBabbageAPIMockRecorder struct {
+	mock *MockBabbageAPI
+}
+
+// NewMockBabbageAPI creates a new mock instance.
+func NewMockBabbageAPI(ctrl *gomock.Controller) *MockBabbageAPI {
+	mock := &MockBabbageAPI{ctrl: ctrl}
+	mock.recorder = &MockBabbageAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockBabbageAPI) EXPECT() *MockBabbageAPIMockRecorder {
+	return m.recorder
+}
+
+// GetMaxAge mocks base method.
+func (m *MockBabbageAPI) GetMaxAge(ctx context.Context, contentUri, key string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMaxAge", ctx, contentUri, key)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMaxAge indicates an expected call of GetMaxAge.
+func (mr *MockBabbageAPIMockRecorder) GetMaxAge(ctx, contentUri, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxAge", reflect.TypeOf((*MockBabbageAPI)(nil).GetMaxAge), ctx, contentUri, key)
+}

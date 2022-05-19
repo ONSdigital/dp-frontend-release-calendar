@@ -34,3 +34,8 @@ type ReleaseCalendarAPI interface {
 type SearchAPI interface {
 	GetReleases(ctx context.Context, userAccessToken, collectionID, lang string, query url.Values) (search.ReleaseResponse, error)
 }
+
+// BabbageClient is an interface to Babbage
+type BabbageAPI interface {
+	GetMaxAge(ctx context.Context, contentUri, key string) (int, error)
+}
