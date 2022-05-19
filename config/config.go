@@ -25,7 +25,7 @@ type Config struct {
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
-	PrivateRoutingPrefix        string        `envconfig:"PRIVATE_ROUTING_PREFIX"`
+	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
 }
 
 var cfg *Config
@@ -46,7 +46,7 @@ func Get() (*Config, error) {
 		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/8324f37"
 	}
 
-	cfg.PrivateRoutingPrefix = validatePrivatePrefix(cfg.PrivateRoutingPrefix)
+	cfg.RoutingPrefix = validateRoutingPrefix(cfg.RoutingPrefix)
 
 	return cfg, nil
 }
@@ -71,13 +71,13 @@ func get() (*Config, error) {
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
-		PrivateRoutingPrefix:        "",
+		RoutingPrefix:               "",
 	}
 
 	return cfg, envconfig.Process("", cfg)
 }
 
-func validatePrivatePrefix(prefix string) string {
+func validateRoutingPrefix(prefix string) string {
 	if prefix != "" && !strings.HasPrefix(prefix, "/") {
 		return "/" + prefix
 	}
@@ -86,5 +86,5 @@ func validatePrivatePrefix(prefix string) string {
 }
 
 func (cfg *Config) CalendarPath() string {
-	return cfg.PrivateRoutingPrefix + "/releasecalendar"
+	return cfg.RoutingPrefix + "/releasecalendar"
 }

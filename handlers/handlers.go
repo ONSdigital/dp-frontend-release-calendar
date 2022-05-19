@@ -46,7 +46,7 @@ func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageA
 func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
-		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix)
+		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
 
 		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseUri)
 		if err != nil {
@@ -65,7 +65,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 
 func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimSuffix(strings.TrimPrefix(r.URL.EscapedPath(), cfg.PrivateRoutingPrefix), "/data"))
+		release, err := api.GetLegacyRelease(r.Context(), accessToken, collectionID, lang, strings.TrimSuffix(strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix), "/data"))
 		if err != nil {
 			setStatusCode(r, w, err)
 			return

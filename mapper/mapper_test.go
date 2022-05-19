@@ -118,7 +118,7 @@ func TestUnitMapper(t *testing.T) {
 			crumbLabelHome := "Hafan"
 			crumbLabelReleaseCalendar := "Calendr datganiadau"
 			crumbLabelCancelled := "Canslwyd"
-			model := CreateRelease(basePage, release, lang, "/releasecalendar")
+			model := CreateRelease(basePage, release, lang, "/prefix/releasecalendar")
 
 			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -151,11 +151,11 @@ func TestUnitMapper(t *testing.T) {
 				},
 				{
 					Title: crumbLabelReleaseCalendar,
-					URI:   "/releasecalendar",
+					URI:   "/prefix/releasecalendar",
 				},
 				{
 					Title: crumbLabelCancelled,
-					URI:   "/releasecalendar?release-type=type-cancelled",
+					URI:   "/prefix/releasecalendar?release-type=type-cancelled",
 				},
 			})
 		})

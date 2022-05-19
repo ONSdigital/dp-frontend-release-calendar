@@ -292,7 +292,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.LimitOptions = []int{10, 25}
 
 	for _, release := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.PrivateRoutingPrefix))
+		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
 	}
 
 	return calendar
