@@ -84,3 +84,7 @@ func validatePrivatePrefix(prefix string) string {
 
 	return prefix
 }
+
+func (cfg *Config) CalendarPath() string {
+	return cfg.PrivateRoutingPrefix + "/releasecalendar"
+}

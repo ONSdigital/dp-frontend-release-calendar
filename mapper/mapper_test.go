@@ -118,7 +118,7 @@ func TestUnitMapper(t *testing.T) {
 			crumbLabelHome := "Hafan"
 			crumbLabelReleaseCalendar := "Calendr datganiadau"
 			crumbLabelCancelled := "Canslwyd"
-			model := CreateRelease(basePage, release, lang)
+			model := CreateRelease(basePage, release, lang, "/releasecalendar")
 
 			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
@@ -380,9 +380,10 @@ func TestGetStartEndPage(t *testing.T) {
 }
 
 func TestGetPageURL(t *testing.T) {
-	Convey("Given a set of Validated parameters", t, func() {
+	Convey("Given a set of Validated parameters, and a route path", t, func() {
 		testcases := []struct {
 			params   queryparams.ValidatedParams
+			path     string
 			expected string
 		}{
 			{
@@ -395,7 +396,8 @@ func TestGetPageURL(t *testing.T) {
 					ReleaseType: queryparams.Published,
 					Highlight:   true,
 				},
-				expected: "/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&census=false&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
+				path:     "/test-prefix/releasecalendar",
+				expected: "/test-prefix/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&census=false&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
 			},
 			{
 				params: queryparams.ValidatedParams{
@@ -408,13 +410,14 @@ func TestGetPageURL(t *testing.T) {
 					Postponed:   true,
 					Census:      true,
 				},
+				path:     "/releasecalendar",
 				expected: "/releasecalendar?after-day=&after-month=&after-year=&before-day=1&before-month=4&before-year=2022&census=true&highlight=false&keywords=&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-confirmed=false&subtype-postponed=true&subtype-provisional=true",
 			},
 		}
 
 		Convey("check the generated page url is correct", func() {
 			for _, tc := range testcases {
-				So(getPageURL(tc.params.Page, tc.params), ShouldEqual, tc.expected)
+				So(getPageURL(tc.params.Page, tc.params, tc.path), ShouldEqual, tc.expected)
 			}
 		})
 	})

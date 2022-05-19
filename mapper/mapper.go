@@ -118,7 +118,7 @@ func createTableOfContents(
 	return toc
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang string) model.Release {
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path string) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -160,7 +160,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	result.URI = release.URI
 	result.AboutTheData = result.Description.NationalStatistic || result.Description.WelshStatistic || result.Description.Census2021
 
-	result.Breadcrumb = mapBreadcrumbTrail(result.Description, result.Language)
+	result.Breadcrumb = mapBreadcrumbTrail(result.Description, result.Language, path)
 
 	result.TableOfContents = createTableOfContents(
 		result.Description,
@@ -174,7 +174,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	return result
 }
 
-func mapBreadcrumbTrail(description model.ReleaseDescription, language string) []coreModel.TaxonomyNode {
+func mapBreadcrumbTrail(description model.ReleaseDescription, language, path string) []coreModel.TaxonomyNode {
 	selectState := func(description model.ReleaseDescription) (string, queryparams.ReleaseType) {
 		if description.Cancelled {
 			return "BreadcrumbCancelled", queryparams.Cancelled
@@ -196,11 +196,11 @@ func mapBreadcrumbTrail(description model.ReleaseDescription, language string) [
 		},
 		{
 			Title: helper.Localise("BreadcrumbReleaseCalendar", language, 1),
-			URI:   "/releasecalendar",
+			URI:   path,
 		},
 		{
 			Title: helper.Localise(localeKey, language, 1),
-			URI:   fmt.Sprintf("/releasecalendar?release-type=%s", releaseType.String()),
+			URI:   fmt.Sprintf("%s?release-type=%s", path, releaseType.String()),
 		},
 	}
 }
@@ -287,8 +287,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, params.Limit)
 	calendar.Pagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
 	calendar.Pagination.Limit = params.Limit
-	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, calendar.Pagination.TotalPages, defaultWindowSize)
-	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, calendar.Pagination.TotalPages)
+	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, cfg.CalendarPath(), calendar.Pagination.TotalPages, defaultWindowSize)
+	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
 	calendar.Pagination.LimitOptions = []int{10, 25}
 
 	for _, release := range response.Releases {
@@ -300,29 +300,29 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 const defaultWindowSize = 5
 
-func getPagesToDisplay(params queryparams.ValidatedParams, totalPages, windowSize int) []coreModel.PageToDisplay {
+func getPagesToDisplay(params queryparams.ValidatedParams, path string, totalPages, windowSize int) []coreModel.PageToDisplay {
 	start, end := getWindowStartEndPage(params.Page, totalPages, windowSize)
 
 	var pagesToDisplay []coreModel.PageToDisplay
 	for i := start; i <= end; i++ {
 		pagesToDisplay = append(pagesToDisplay, coreModel.PageToDisplay{
 			PageNumber: i,
-			URL:        getPageURL(i, params),
+			URL:        getPageURL(i, params, path),
 		})
 	}
 
 	return pagesToDisplay
 }
 
-func getFirstAndLastPages(params queryparams.ValidatedParams, totalPages int) []coreModel.PageToDisplay {
+func getFirstAndLastPages(params queryparams.ValidatedParams, path string, totalPages int) []coreModel.PageToDisplay {
 	return []coreModel.PageToDisplay{
 		{
 			PageNumber: 1,
-			URL:        getPageURL(1, params),
+			URL:        getPageURL(1, params, path),
 		},
 		{
 			PageNumber: totalPages,
-			URL:        getPageURL(totalPages, params),
+			URL:        getPageURL(totalPages, params, path),
 		},
 	}
 }
@@ -359,11 +359,11 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	return start, end
 }
 
-func getPageURL(page int, params queryparams.ValidatedParams) (pageURL string) {
+func getPageURL(page int, params queryparams.ValidatedParams, path string) (pageURL string) {
 	query := params.AsQuery()
 	query.Set("page", strconv.Itoa(page))
 
-	return "/releasecalendar?" + query.Encode()
+	return path + "?" + query.Encode()
 }
 
 func getWindowOffset(windowSize int) int {
@@ -376,12 +376,7 @@ func getWindowOffset(windowSize int) int {
 
 func calendarEntryFromRelease(release search.Release, uriPrivatePrefix string) model.CalendarEntry {
 	result := model.CalendarEntry{
-		URI: func(uri, privateSuffix string) string {
-			if privateSuffix == "" {
-				return release.URI
-			}
-			return privateSuffix + release.URI
-		}(release.URI, uriPrivatePrefix),
+		URI:         uriPrivatePrefix + release.URI,
 		DateChanges: dateChanges(release.DateChanges),
 		Description: model.ReleaseDescription{
 			Title:           release.Description.Title,
