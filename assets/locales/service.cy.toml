@@ -247,3 +247,11 @@ one = "Gohiriwyd"
 [ReleaseStateCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[NoReleasesFound]
+description = "No releases found"
+one = "No releases found [cy]"
+
+[NoReleasesFoundDescription]
+description = "No Releases Found Description"
+one = "There are no cancelled releases. Try selecting a different type of release. [cy]"
