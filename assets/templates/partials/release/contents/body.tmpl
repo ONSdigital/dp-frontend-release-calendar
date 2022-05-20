@@ -6,7 +6,7 @@
     <section id="{{ $id }}">
       <h2>{{ $section.Title.FuncLocalise $.Language }}</h2>
       {{ if eq $id "summary"}}
-        <p>{{ $release.Description.Summary }}</p>
+        <p>{{ markdown $release.Description.Summary }}</p>
       {{ else if eq $id "publications" }}
         {{ template "partials/release/contents/publications" $release }}
       {{ else if eq $id "data" }}
