@@ -1,21 +1,21 @@
 <div class="ons-u-mb-xl">
   {{ if .Description.ProvisionalDate }}
     <div>
-      <span class="ons-u-fs-r--b">Provisional release date:</span>
+      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
       {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
       <span>{{ .Description.ProvisionalDate }}</span>
     </div>
   {{ else if .Description.Cancelled }}
     <div>
-      <span class="ons-u-fs-r--b">Release date:</span>
-      <span>Cancelled</span>
+      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
+      <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
     </div>
   {{ else if .Description.NextRelease }}
     <div class="ons-grid ons-u-ml-no">
       <!-- Left column -->
       <div class="ons-grid__col ons-col-4@m ons-u-p-no">
         <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">Released:</span>
+          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
           <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
         </div>
       </div>
@@ -23,14 +23,14 @@
       <!-- Right column -->
       <div class="ons-grid__col ons-col-8@m">
         <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">Next release:</span>
+          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
           <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
         </div>
       </div>
     </div>
   {{ else }}
     <div>
-      <span class="ons-u-fs-r--b">Release date:</span>
+      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
       <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
     </div>
   {{ end }}
