@@ -3,7 +3,7 @@
   {{ $sections := .TableOfContents.Sections }}
   {{ range $id := .TableOfContents.DisplayOrder }}
     {{ $section := index $sections $id }}
-    <section id="{{ $id }}">
+    <section id="{{ $id }}" class="ons-u-mb-l">
       <h2>{{ $section.Title.FuncLocalise $.Language }}</h2>
       {{ if eq $id "summary"}}
         <p>{{ markdown $release.Description.Summary }}</p>
