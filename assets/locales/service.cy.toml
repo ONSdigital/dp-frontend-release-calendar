@@ -199,3 +199,23 @@ one = "Canslwyd"
 [ReleasePageType]
 description = "Release"
 one = "Datganiad"
+
+[ReleaseStatusLineProvisionalReleaseDate]
+description = "Provisional release date"
+one = "Dyddiad dros dro'r datganiad"
+
+[ReleaseStatusLineReleaseDate]
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseStatusLineCancelled]
+description = "Cancelled"
+one = "Canslwyd"
+
+[ReleaseStatusLineReleased]
+description = "Released"
+one = "Rhyddhawyd"
+
+[ReleaseStatusLineNextRelease]
+description = "Next release"
+one = "Datganiad nesaf"
