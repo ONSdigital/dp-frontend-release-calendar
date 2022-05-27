@@ -8,29 +8,31 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
+// GetPublicationState returns the publication state
 func GetPublicationState(description model.ReleaseDescription, dateChanges []model.DateChange) model.PublicationState {
 	var state model.PublicationState
 
-	if description.Cancelled {
+	switch {
+	case description.Cancelled:
 		state = model.PublicationState{
 			Type: "cancelled",
 		}
-	} else if description.Published {
+	case description.Published:
 		state = model.PublicationState{
 			Type: "published",
 		}
-	} else {
+	default:
 		state = model.PublicationState{
 			Type: "upcoming",
 		}
 
-		if description.Finalised {
+		switch {
+		case description.Finalised:
 			state.SubType = "confirmed"
-
 			if isPostponed(description.ReleaseDate, dateChanges) {
 				state.SubType = "postponed"
 			}
-		} else {
+		default:
 			state.SubType = "provisional"
 		}
 	}

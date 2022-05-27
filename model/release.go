@@ -16,6 +16,8 @@ type ContactDetails struct {
 	Telephone string `json:"telephone"`
 }
 
+// PublicationState represents Types 'cancelled', 'published', or 'upcoming'
+// SubTypes of 'upcoming' are 'confirmed', 'postponed', or 'provisional'
 type PublicationState struct {
 	Type    string `json:"type"`
 	SubType string `json:"sub_type"`
