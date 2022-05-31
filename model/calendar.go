@@ -5,9 +5,10 @@ import (
 )
 
 type CalendarEntry struct {
-	URI         string             `json:"uri"`
-	DateChanges []DateChange       `json:"date_changes"`
-	Description ReleaseDescription `json:"description"`
+	URI              string             `json:"uri"`
+	DateChanges      []DateChange       `json:"date_changes"`
+	Description      ReleaseDescription `json:"description"`
+	PublicationState PublicationState   `json:"publication_state"`
 }
 
 type ReleaseType struct {
