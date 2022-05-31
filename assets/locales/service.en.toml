@@ -200,6 +200,26 @@ one = "Cancelled"
 description = "Release"
 one = "Release"
 
+[ReleaseStatusLineProvisionalReleaseDate]
+description = "Provisional release date"
+one = "Provisional release date"
+
+[ReleaseStatusLineReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseStatusLineCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[ReleaseStatusLineReleased]
+description = "Released"
+one = "Released"
+
+[ReleaseStatusLineNextRelease]
+description = "Next release"
+one = "Next release"
+
 [ReleaseDate]
 description = "Release date"
 one = "Release date"
