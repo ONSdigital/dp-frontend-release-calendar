@@ -21,7 +21,7 @@ func TestUnitMapper(t *testing.T) {
 	Convey("Given a release and a base page", t, func() {
 		basePage := coreModel.NewPage("path/to/assets", "site-domain")
 
-		release := releasecalendar.Release{
+		releaseResponse := releasecalendar.Release{
 			URI:      "/releases/test",
 			Markdown: []string{"markdown1", "markdown 2"},
 			RelatedDocuments: []releasecalendar.Link{
@@ -118,33 +118,33 @@ func TestUnitMapper(t *testing.T) {
 			crumbLabelHome := "Hafan"
 			crumbLabelReleaseCalendar := "Calendr datganiadau"
 			crumbLabelCancelled := "Canslwyd"
-			model := CreateRelease(basePage, release, lang, "/prefix/releasecalendar")
+			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar")
 
-			So(model.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
-			So(model.SiteDomain, ShouldEqual, basePage.SiteDomain)
-			So(model.BetaBannerEnabled, ShouldBeTrue)
-			So(model.Metadata.Title, ShouldEqual, release.Description.Title)
-			So(model.URI, ShouldEqual, release.URI)
-			So(model.Markdown, ShouldResemble, release.Markdown)
-			assertLinks(release.RelatedDatasets, model.RelatedDatasets)
-			assertLinks(release.RelatedDocuments, model.RelatedDocuments)
-			assertLinks(release.RelatedMethodology, model.RelatedMethodology)
-			assertLinks(release.RelatedMethodologyArticle, model.RelatedMethodologyArticle)
-			assertLinks(release.Links, model.Links)
-			assertDateChanges(release.DateChanges, model.DateChanges)
-			So(model.Description.Title, ShouldEqual, release.Description.Title)
-			So(model.Description.Summary, ShouldEqual, release.Description.Summary)
-			So(model.Description.Contact.Name, ShouldEqual, release.Description.Contact.Name)
-			So(model.Description.Contact.Email, ShouldEqual, release.Description.Contact.Email)
-			So(model.Description.Contact.Telephone, ShouldEqual, release.Description.Contact.Telephone)
-			So(model.Description.NationalStatistic, ShouldEqual, release.Description.NationalStatistic)
-			So(model.Description.ReleaseDate, ShouldEqual, release.Description.ReleaseDate)
-			So(model.Description.Published, ShouldEqual, release.Description.Published)
-			So(model.Description.Finalised, ShouldEqual, release.Description.Finalised)
-			So(model.Description.Cancelled, ShouldEqual, release.Description.Cancelled)
-			So(model.Description.CancellationNotice, ShouldResemble, release.Description.CancellationNotice)
-			So(model.Description.ProvisionalDate, ShouldEqual, release.Description.ProvisionalDate)
-			So(model.Breadcrumb, ShouldResemble, []coreModel.TaxonomyNode{
+			So(release.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
+			So(release.SiteDomain, ShouldEqual, basePage.SiteDomain)
+			So(release.BetaBannerEnabled, ShouldBeTrue)
+			So(release.Metadata.Title, ShouldEqual, releaseResponse.Description.Title)
+			So(release.URI, ShouldEqual, releaseResponse.URI)
+			So(release.Markdown, ShouldResemble, releaseResponse.Markdown)
+			assertLinks(releaseResponse.RelatedDatasets, release.RelatedDatasets)
+			assertLinks(releaseResponse.RelatedDocuments, release.RelatedDocuments)
+			assertLinks(releaseResponse.RelatedMethodology, release.RelatedMethodology)
+			assertLinks(releaseResponse.RelatedMethodologyArticle, release.RelatedMethodologyArticle)
+			assertLinks(releaseResponse.Links, release.Links)
+			assertDateChanges(releaseResponse.DateChanges, release.DateChanges)
+			So(release.Description.Title, ShouldEqual, releaseResponse.Description.Title)
+			So(release.Description.Summary, ShouldEqual, releaseResponse.Description.Summary)
+			So(release.Description.Contact.Name, ShouldEqual, releaseResponse.Description.Contact.Name)
+			So(release.Description.Contact.Email, ShouldEqual, releaseResponse.Description.Contact.Email)
+			So(release.Description.Contact.Telephone, ShouldEqual, releaseResponse.Description.Contact.Telephone)
+			So(release.Description.NationalStatistic, ShouldEqual, releaseResponse.Description.NationalStatistic)
+			So(release.Description.ReleaseDate, ShouldEqual, releaseResponse.Description.ReleaseDate)
+			So(release.Description.Published, ShouldEqual, releaseResponse.Description.Published)
+			So(release.Description.Finalised, ShouldEqual, releaseResponse.Description.Finalised)
+			So(release.Description.Cancelled, ShouldEqual, releaseResponse.Description.Cancelled)
+			So(release.Description.CancellationNotice, ShouldResemble, releaseResponse.Description.CancellationNotice)
+			So(release.Description.ProvisionalDate, ShouldEqual, releaseResponse.Description.ProvisionalDate)
+			So(release.Breadcrumb, ShouldResemble, []coreModel.TaxonomyNode{
 				{
 					Title: crumbLabelHome,
 					URI:   "/",
@@ -157,6 +157,9 @@ func TestUnitMapper(t *testing.T) {
 					Title: crumbLabelCancelled,
 					URI:   "/prefix/releasecalendar?release-type=type-cancelled",
 				},
+			})
+			So(release.PublicationState, ShouldResemble, model.PublicationState{
+				Type: "cancelled",
 			})
 		})
 	})
@@ -315,6 +318,30 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				So(r.Description.Cancelled, ShouldEqual, releaseResponse.Releases[i].Description.Cancelled)
 				So(r.Description.ProvisionalDate, ShouldEqual, releaseResponse.Releases[i].Description.ProvisionalDate)
 				So(r.Description.Contact, ShouldBeZeroValue)
+			}
+
+			expectedStates := []model.PublicationState{
+				{
+					Type: "published",
+				},
+				{
+					Type: "cancelled",
+				},
+				{
+					Type:    "upcoming",
+					SubType: "confirmed",
+				},
+				{
+					Type:    "upcoming",
+					SubType: "provisional",
+				},
+				{
+					Type:    "upcoming",
+					SubType: "provisional",
+				},
+			}
+			for i, r := range calendar.Entries {
+				So(r.PublicationState, ShouldResemble, expectedStates[i])
 			}
 		})
 	})
