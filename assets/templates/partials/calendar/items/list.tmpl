@@ -4,21 +4,24 @@
   tag designed for the purpose:
     <em class="ons-highlight">keyword</em>
 */}}
-
+{{ $currentPage := .Pagination.CurrentPage }}
+{{ $itemsPerPage := .Pagination.Limit }}
+{{ $totalSearchPosition := multiply (subtract $currentPage 1) $itemsPerPage }}
 {{ $pagination := .Pagination }}
 
 <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
-  {{range index .Entries }}
+  {{range $index, $element := .Entries }}
+    {{ $currentPosition := add $index 1 }}
     <li class="ons-list__item ons-u-mt-l">
       <a
-        href="{{ .URI }}"
+        href="{{ $element.URI }}"
         class="ons-u-fs-l ons-u-td-no ons-u-d-b"
-        data-gtm-release-title="{{ .Description.Title }}"
-        data-gtm-release-url="{{ .URI }}"
-        data-gtm-release-date="{{ dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
-        data-gtm-release-time="{{ dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
-        data-gtm-release-calendar-page="{{ $pagination.CurrentPage }}" 
-        data-gtm-release-calendar-position="{{ add index 1}}"
+        data-gtm-release-title="{{ $element.Description.Title }}"
+        data-gtm-release-url="{{ $element.URI }}"
+        data-gtm-release-date="{{ dateFormatYYYYMMDDNoSlashes $element.Description.ReleaseDate }}"
+        data-gtm-release-time="{{ dateFormatYYYYMMDDNoSlashes $element.Description.ReleaseDate }}"
+        data-gtm-release-calendar-page="{{ $currentPage }}" 
+        data-gtm-release-calendar-position="{{ add $totalSearchPosition $currentPosition }}"
       >
         {{- .Description.Title | safeHTML -}}
       </a>
