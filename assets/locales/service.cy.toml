@@ -219,8 +219,8 @@ one = "Rhyddhawyd"
 [ReleaseStatusLineNextRelease]
 description = "Next release"
 one = "Datganiad nesaf"
-[ReleaseDate]
 
+[ReleaseDate]
 description = "Release date"
 one = "Dyddiad y datganiad"
 
