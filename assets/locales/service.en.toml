@@ -219,3 +219,31 @@ one = "Released"
 [ReleaseStatusLineNextRelease]
 description = "Next release"
 one = "Next release"
+
+[ReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseStatePublished]
+description = "Published"
+one = "Published"
+
+[ReleaseStateUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[ReleaseStateConfirmed]
+description = "Confirmed"
+one = "Confirmed"
+
+[ReleaseStateProvisional]
+description = "Provisional"
+one = "Provisional"
+
+[ReleaseStatePostponed]
+description = "Postponed"
+one = "Postponed"
+
+[ReleaseStateCancelled]
+description = "Cancelled"
+one = "Cancelled"

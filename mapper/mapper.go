@@ -154,6 +154,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 			ChangeNotice: dc.ChangeNotice,
 		})
 	}
+	result.PublicationState = GetPublicationState(result.Description, result.DateChanges)
 
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
@@ -397,6 +398,8 @@ func calendarEntryFromRelease(release search.Release, uriPrivatePrefix string) m
 			result.Description.Summary = highlight.Summary
 		}
 	}
+
+	result.PublicationState = GetPublicationState(result.Description, result.DateChanges)
 
 	return result
 }

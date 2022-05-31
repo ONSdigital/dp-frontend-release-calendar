@@ -219,3 +219,31 @@ one = "Rhyddhawyd"
 [ReleaseStatusLineNextRelease]
 description = "Next release"
 one = "Datganiad nesaf"
+[ReleaseDate]
+
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseStatePublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[ReleaseStateUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[ReleaseStateConfirmed]
+description = "Confirmed"
+one = "Cadarnhawyd"
+
+[ReleaseStateProvisional]
+description = "Provisional"
+one = "Dros dro"
+
+[ReleaseStatePostponed]
+description = "Postponed"
+one = "Gohiriwyd"
+
+[ReleaseStateCancelled]
+description = "Cancelled"
+one = "Canslwyd"
