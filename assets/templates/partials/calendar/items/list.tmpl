@@ -14,16 +14,25 @@
         {{- .Description.Title | safeHTML -}}
       </a>
       <div class="ons-u-mt-s">
-        <span class="ons-u-fs-r--b">Release date:</span>
+        <span class="ons-u-fs-r--b">{{ localise "ReleaseDate" $.Language 1 }}:</span>
         <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
         <span>|</span>
-        <span>
-          {{ if .Description.Published }}
-            Published
+        {{/* template "partials/releasestate/type" .PublicationState */}}
+        {{ if eq .PublicationState.Type "published" }}
+          <span>{{ localise "ReleaseStatePublished" $.Language 1 }}</span>
+        {{ else if eq .PublicationState.Type "upcoming" }}
+          {{ if eq .PublicationState.SubType "provisional" }}
+            <span>{{ localise "ReleaseStateProvisional" $.Language 1 }}</span>
+          {{ else if eq .PublicationState.SubType "confirmed" }}
+            <span>{{ localise "ReleaseStateConfirmed" $.Language 1 }}</span>
+          {{ else if eq .PublicationState.SubType "postponed" }}
+            <span>{{ localise "ReleaseStatePostponed" $.Language 1 }}</span>
           {{ else }}
-            Not Published
+            <span>{{ localise "ReleaseStateUpcoming" $.Language 1 }}</span>
           {{ end }}
-        </span>
+        {{ else  }}
+          <span>{{ localise "ReleaseStateCancelled" $.Language 1 }}</span>
+        {{ end }}
       </div>
     </li>
   {{end}}
