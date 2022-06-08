@@ -65,3 +65,15 @@ type PreviousReleases struct {
 	Description    ReleaseDescription `json:"description"`
 	ReleaseHistory []Link             `json:"release_history"`
 }
+
+// Gets the most recent postponement reason, if available
+func (release Release) FuncGetPostponementReason() string {
+	reason := ""
+	totalDateChanges := len(release.DateChanges)
+
+	if totalDateChanges > 0 {
+		reason = release.DateChanges[totalDateChanges-1].ChangeNotice
+	}
+
+	return reason
+}
