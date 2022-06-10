@@ -3,7 +3,7 @@
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
       {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
-      <span>{{ .Description.ProvisionalDate }}</span>
+      <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
     </div>
   {{ else if .Description.Cancelled }}
     <div>
