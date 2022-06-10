@@ -31,10 +31,10 @@
   {{ else }}
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
     </div>
   {{ end }}
-  <div class="ons-u-pt-s ons-u-pb-m">
+  <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
     {{ if eq .PublicationState.Type "upcoming" }}
       {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
         <div class="ons-panel ons-panel--info ons-panel--no-title">
