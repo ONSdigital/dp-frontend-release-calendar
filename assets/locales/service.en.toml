@@ -264,3 +264,18 @@ one = "There are no upcoming releases. Try selecting a different type of release
 description = "No Releases Found Description Cancelled"
 one = "There are no cancelled releases. Try selecting a different type of release."
 
+[StatusBannerImportantInformation]
+description = "Important information"
+one = "Important information"
+
+[StatusBannerReleaseNotYetPublished]
+description = "This release is not yet published"
+one = "This release is not yet published"
+
+[StatusBannerReleasePostponed]
+description = "This release has been postponed"
+one = "This release has been postponed"
+
+[StatusBannerReleaseCancelled]
+description = "This release has been cancelled"
+one = "This release has been cancelled"
