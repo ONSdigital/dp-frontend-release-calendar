@@ -14,17 +14,17 @@
     <ul class="ons-list ons-list--bare ons-list--inline">
       <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
         <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
-        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
       </li>
       <li class="ons-list__item ons-u-mr-xl@xs">
         <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
       </li>
     </ul>
   {{ else }}
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
     </div>
   {{ end }}
   <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
