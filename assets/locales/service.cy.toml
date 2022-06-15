@@ -247,3 +247,19 @@ one = "Gohiriwyd"
 [ReleaseStateCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[NoReleasesFound]
+description = "No releases found"
+one = "Heb ddod o hyd i unrhyw ddatganiadau"
+
+[NoReleasesFoundDescriptionPublished]
+description = "No Releases Found Description Published"
+one = "Nid oes unrhyw ddatganiadau cyhoeddedig. Ceisiwch ddewis math gwahanol o ddatganiad."
+
+[NoReleasesFoundDescriptionUpcoming]
+description = "No Releases Found Description Upcoming"
+one = "Nid oes unrhyw ddatganiadau sydd ar ddod. Ceisiwch ddewis math gwahanol o ddatganiad."
+
+[NoReleasesFoundDescriptionCancelled]
+description = "No Releases Found Description Cancelled"
+one = "Nid oes unrhyw ddatganiadau a ganslwyd. Ceisiwch ddewis math gwahanol o ddatganiad."

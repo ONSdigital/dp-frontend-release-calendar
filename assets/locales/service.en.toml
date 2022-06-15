@@ -247,3 +247,20 @@ one = "Postponed"
 [ReleaseStateCancelled]
 description = "Cancelled"
 one = "Cancelled"
+
+[NoReleasesFound]
+description = "No releases found"
+one = "No releases found"
+
+[NoReleasesFoundDescriptionPublished]
+description = "No Releases Found Description Published"
+one = "There are no published releases. Try selecting a different type of release."
+
+[NoReleasesFoundDescriptionUpcoming]
+description = "No Releases Found Description Upcoming"
+one = "There are no upcoming releases. Try selecting a different type of release."
+
+[NoReleasesFoundDescriptionCancelled]
+description = "No Releases Found Description Cancelled"
+one = "There are no cancelled releases. Try selecting a different type of release."
+
