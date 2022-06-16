@@ -3,7 +3,7 @@
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
       {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
-      <span>{{ .Description.ProvisionalDate }}</span>
+      <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
     </div>
   {{ else if .Description.Cancelled }}
     <div>
@@ -11,30 +11,23 @@
       <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
     </div>
   {{ else if .Description.NextRelease }}
-    <div class="ons-grid ons-u-ml-no">
-      <!-- Left column -->
-      <div class="ons-grid__col ons-col-4@m ons-u-p-no">
-        <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
-          <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
-        </div>
-      </div>
-
-      <!-- Right column -->
-      <div class="ons-grid__col ons-col-8@m">
-        <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-          <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
-        </div>
-      </div>
-    </div>
+    <ul class="ons-list ons-list--bare ons-list--inline">
+      <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
+        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
+      </li>
+      <li class="ons-list__item ons-u-mr-xl@xs">
+        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
+      </li>
+    </ul>
   {{ else }}
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
     </div>
   {{ end }}
-  <div class="ons-u-pt-s ons-u-pb-m">
+  <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
     {{ if eq .PublicationState.Type "upcoming" }}
       {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
         <div class="ons-panel ons-panel--info ons-panel--no-title">

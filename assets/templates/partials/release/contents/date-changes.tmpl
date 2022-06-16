@@ -2,7 +2,7 @@
   {{ range .DateChanges }}
     <li class="ons-list__item">
         <h3>{{ localise "ReleaseSubsectionPreviousDate" $.Language 1 }}</h3>
-        <p>{{ dateTimeOnsDatePatternFormat .Date }}</p>
+        <p>{{ dateTimeOnsDatePatternFormat .Date $.Language }}</p>
 
         <h3>{{ localise "ReleaseSubsectionReasonForChange" $.Language 1 }}</h3>
         <p>{{ .ChangeNotice }}</p>

@@ -131,6 +131,8 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 				Telephone: release.Description.Contact.Telephone,
 			},
 			NationalStatistic:  release.Description.NationalStatistic,
+			WelshStatistic:     release.Description.WelshStatistic,
+			Census2021:         release.Census(),
 			ReleaseDate:        release.Description.ReleaseDate,
 			NextRelease:        release.Description.NextRelease,
 			Published:          release.Description.Published,
