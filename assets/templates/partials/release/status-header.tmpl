@@ -31,34 +31,34 @@
     {{ if eq .PublicationState.Type "upcoming" }}
       {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
         <div class="ons-panel ons-panel--info ons-panel--no-title">
-          <span class="ons-u-vh">Important information: </span>
+          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
           <div class="ons-panel__body">
-            <p>This release is not yet published</p>
+            <p>{{ localise "StatusBannerReleaseNotYetPublished" .Language 1 }}</p>
           </div>
         </div>
       {{ else if eq .PublicationState.SubType "postponed" }}
         <div class="ons-panel ons-panel--info ons-panel--no-title">
-          <span class="ons-u-vh">Important information: </span>
+          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
           <div class="ons-panel__body">
             {{ $reason := .FuncGetPostponementReason }}
             {{ if $reason }}
               {{- markdown $reason -}}
             {{ else }}
-              <p>This release has been postponed</p>
+              <p>{{ localise "StatusBannerReleasePostponed" .Language 1 }}</p>
             {{ end }}
           </div>
         </div>
       {{ end }}
     {{ else if eq .PublicationState.Type "cancelled" }}
       <div class="ons-panel ons-panel--info ons-panel--no-title">
-        <span class="ons-u-vh">Important information: </span>
+        <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
         <div class="ons-panel__body">
           {{ if .Description.CancellationNotice }}
             {{ range .Description.CancellationNotice }}
               {{- markdown . -}}
             {{ end }}
           {{ else }}
-            <p>This release has been cancelled</p>
+            <p>{{ localise "StatusBannerReleaseCancelled" .Language 1 }}</p>
           {{ end }}
         </div>
       </div>
