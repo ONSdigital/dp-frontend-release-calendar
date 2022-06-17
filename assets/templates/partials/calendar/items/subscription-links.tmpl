@@ -1,0 +1,47 @@
+<div class="ons-u-bt ons-u-mt-l ons-u-mb-l">
+  <ul class="ons-list ons-list--bare ons-list--icons ons-list--inline@l ons-u-fs-s ons-u-mt-s ons-u-mb-s ons-u-ml-no ons-u-mr-no ons-u-flex-ai-b">
+    {{/* TODO Remove ons-u-d-no to reinstate RSS link */}}
+    <li class="ons-list__item ons-u-d-no">
+      <span class="ons-list__prefix" aria-hidden="true">
+        <img
+          class="ons-svg-icon ons-u-d-b"
+          src="https://cdn.ons.gov.uk/assets/images/icon-library/rss/rss-feed_small.svg"
+          alt=""
+        >
+      </span>
+      <a href="#" class="ons-list__link ons-u-td-no ons-u-mr-m">
+        {{- localise "SubscriptionLinkRSS" .Language 1 -}}
+      </a>
+    </li>
+    <li class="ons-list__item">
+      <span class="ons-list__prefix" aria-hidden="true">
+        <img
+          class="ons-svg-icon ons-u-d-b"
+          src="https://cdn.ons.gov.uk/assets/images/icon-library/email/email-envelope_small.svg"
+          alt=""
+        >
+      </span>
+      <a
+        href="https://public.govdelivery.com/accounts/UKONS/subscribers/new"
+        class="ons-list__link ons-u-td-no ons-u-mr-m"
+      >
+        {{- localise "SubscriptionLinkEmail" .Language 1 -}}
+      </a>
+    </li>
+    <li class="ons-list__item">
+      <span class="ons-list__prefix" aria-hidden="true">
+        <img
+          class="ons-svg-icon ons-u-d-b"
+          src="https://cdn.ons.gov.uk/assets/images/icon-library/calendar/date-calendar_small.svg"
+          alt=""
+        >
+      </span>
+      <a
+        href="/calendar/releasecalendar"
+        class="ons-list__link ons-u-td-no ons-u-mr-no"
+      >
+        {{- localise "SubscriptionLinkICS" .Language 1 | safeHTML -}}
+      </a>
+    </li>
+  </ul>
+</div>

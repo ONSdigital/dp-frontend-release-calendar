@@ -1,0 +1,15 @@
+{{ if eq .Type "published" }}
+  <span>{{ localise "ReleaseStatePublished" $.Language 1 }}</span>
+{{ else if eq .Type "upcoming" }}
+  {{ if eq .SubType "provisional" }}
+    <span>{{ localise "ReleaseStateProvisional" $.Language 1 }}</span>
+  {{ else if eq .SubType "confirmed" }}
+    <span>{{ localise "ReleaseStateConfirmed" $.Language 1 }}</span>
+  {{ else if eq .SubType "postponed" }}
+    <span>{{ localise "ReleaseStatePostponed" $.Language 1 }}</span>
+  {{ else }}
+    <span>{{ localise "ReleaseStateUpcoming" $.Language 1 }}</span>
+  {{ end }}
+{{ else  }}
+  <span>{{ localise "ReleaseStateCancelled" $.Language 1 }}</span>
+{{ end }}

@@ -1,0 +1,47 @@
+{{/*
+  "Sort by" drop-down menu submits all filters and sort order in query parameters.
+
+  With JavaScript enabled:
+    Form submission occurs on change of the drop-down.
+
+  With JavaScript disabled:
+    Form submission occurs on click of the Sort button.
+    The Sort button is hidden when JavaScript is enabled.
+*/}}
+
+<form class="ons-u-pb-s">
+  {{/* Include all other page settings in the form submission */}}
+  {{ template "partials/calendar/hidden-inputs/release-types" . }}
+  {{ template "partials/calendar/hidden-inputs/keywords" . }}
+  {{ template "partials/calendar/hidden-inputs/before-date" . }}
+  {{ template "partials/calendar/hidden-inputs/after-date" . }}
+
+  <div class="ons-field ons-field--inline">
+    <label class="ons-label" for="select-calendar-item-order">
+      {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
+    </label>
+    <select
+      id="select-calendar-item-order"
+      name="sort"
+      class="ons-input ons-input--select ons-u-wa--@xxs"
+      onchange="this.form.submit()"
+    >
+      {{ $sortMode := .Sort.Mode }}
+      {{ range .Sort.Options }}
+        <option
+          value="{{ .Value }}"
+          {{ if eq .Value $sortMode }}selected{{ end }}
+          {{ if .Disabled }}disabled{{ end }}
+        >
+          {{- localise .LocaleKey $.Language .Plural -}}
+        </option>
+      {{ end }}
+    </select>
+    <button
+      type="submit"
+      class="ons-btn btn btn--primary btn--thin btn--small js--hide font-size--16 ons-u-ml-s"
+    >
+      {{- localise "ReleaseCalendarSortBySubmit" .Language 1 -}}
+    </button>
+  </div>
+</form>

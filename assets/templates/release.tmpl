@@ -1,0 +1,25 @@
+<div class="ons-page__container ons-container release">
+  {{ template "partials/breadcrumb" . }}
+
+  <div class="ons-u-fs-m ons-u-mt-s ons-u-pb-xxs release__document-type">
+    {{- localise "ReleasePageType" .Language 1 -}}
+  </div>
+  <h1 class="ons-u-fs-xxxl ons-u-mb-m">
+    <span>{{- .Page.Metadata.Title -}}</span>
+    {{ if .Description.NationalStatistic }}
+      <a
+        href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/"
+        class="national-statistics__link ons-u-ml-s"
+      >
+        <img
+          src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+          alt="UK Statistics Authority kitemark"
+          class="national-statistics__logo"
+        >
+      </a>
+    {{ end }}
+  </h1>
+
+  {{ template "partials/release/status-header" . }}
+  {{ template "partials/release/contents" . }}
+</div>

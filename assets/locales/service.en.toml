@@ -1,0 +1,281 @@
+ #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Notes
+# - Documentation: https://github.com/nicksnyder/go-i18n/blob/master/README.md
+# - Description should be the English version of the text, unless English version is a shorthand e.g. Home button is shorthand in English for Homepage
+# - Arguments can be added via {{.argN}} where N is integer index starting at 0 e.g. {{.arg0}} {{.arg1}}
+# - To inject HTML (Avoid where possible as it is messy) use "| safeHTML" e.g. {{ localise Foo .Language 1 | safeHTML }} where Foo might be "<strong>test</strong>"
+# count - 0 = zero
+# count - 1 = one
+# count - 2 = two; useful for languages with mutations like welsh (radical) 'brother'=brawd, two (soft) 'brothers'=frawd, three or more (nasal) 'brothers'=brodyr
+# count - 3 = few
+# count - 6 = many
+# count - 4 = other; 4,5 & >6
+# Plural rules can be found here: http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[ReleaseCalendarPageTitle]
+description = "Release Calendar Title"
+one = "Release calendar"
+
+[ReleaseCalendarPageSearchKeywords]
+description = "Release Calendar Page Search Keywords"
+one = "Search keywords"
+
+[SubscriptionLinkRSS]
+description = "RSS feed"
+one = "RSS feed"
+
+[SubscriptionLinkEmail]
+description = "Email alerts"
+one = "Email alerts"
+
+[SubscriptionLinkICS]
+description = "Add to your calendar (ICS)"
+one = "Add to your calendar (ICS)"
+
+[ApplyDateFilters]
+description = "Apply date filters"
+one = "Apply date filters"
+
+[ReleasedBefore]
+description = "Released before"
+one = "Released before"
+
+[ReleasedAfter]
+description = "Released after"
+one = "Released after"
+
+[DateFilterDescription]
+description = "For example: 2006 or 19/07/2010"
+one = "For example: 2006 or 19/07/2010"
+
+[ReleaseCalendarFiltersTitle]
+description = "Filter results"
+other = "Filter results"
+
+[ReleaseCalendarFilterReleaseType]
+description = "Release type"
+one = "Release type"
+
+[ReleaseCalendarFilterSearch]
+description = "Search"
+one = "Search"
+
+[ReleaseCalendarFilterDate]
+description = "Date"
+one = "Date"
+
+[ReleaseCalendarSortByLabel]
+description = "Sort by"
+one = "Sort by"
+
+[ReleaseCalendarSortBySubmit]
+description = "Sort"
+one = "Sort"
+
+[ReleaseCalendarSortOptionDateNewest]
+description = "Date (newest)"
+one = "Date (newest)"
+
+[ReleaseCalendarSortOptionDateOldest]
+description = "Date (oldest)"
+one = "Date (oldest)"
+
+[ReleaseCalendarSortOptionAlphabeticalAZ]
+description = "Alphabetical (A to Z)"
+one = "Alphabetical (A to Z)"
+
+[ReleaseCalendarSortOptionAlphabeticalZA]
+description = "Alphabetical (Z to A)"
+one = "Alphabetical (Z to A)"
+
+[ReleaseCalendarSortOptionRelevance]
+description = "Relevance"
+one = "Relevance"
+
+[FilterReleaseTypeShowOnly]
+description = "Show only"
+one = "Show only"
+
+[FilterReleaseTypeApplyFilters]
+description = "Apply release type filters"
+one = "Apply release type filters"
+
+[FilterReleaseTypePublished]
+description = "Published"
+one = "Published"
+
+[FilterReleaseTypeUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[FilterReleaseTypeCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[ReleaseSectionSummary]
+description = "Summary"
+one = "Summary"
+
+[ReleaseSectionPublications]
+description = "Publications"
+one = "Publications"
+
+[ReleaseSectionData]
+description = "Data"
+one = "Data"
+
+[ReleaseSectionContactDetails]
+description = "Contact details"
+one = "Contact details"
+
+[ReleaseSectionDateChanges]
+description = "Changes to this release date"
+one = "Changes to this release date"
+
+[ReleaseSectionReleaseHistory]
+description = "Release history"
+one = "Release history"
+
+[ReleaseSectionAboutTheData]
+description = "About the data"
+one = "About the data"
+
+[ReleaseSubsectionName]
+description = "Name"
+one = "Name"
+
+[ReleaseSubsectionEmail]
+description = "Email"
+one = "Email"
+
+[ReleaseSubsectionPhone]
+description = "Phone"
+one = "Phone"
+
+[ReleaseSubsectionPreviousDate]
+description = "Previous date"
+one = "Previous date"
+
+[ReleaseSubsectionReasonForChange]
+description = "Reason for change"
+one = "Reason for change"
+
+[ReleaseHistoryReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseHistoryReasonForUpdate]
+description = "Reason for update"
+one = "Reason for update"
+
+[ReleaseHistoryLatest]
+description = "LATEST"
+one = "LATEST"
+
+[ReleaseHistoryAllPrevious]
+description = "See all previous releases"
+one = "See all previous releases"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Home"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Release calendar"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Published"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[ReleasePageType]
+description = "Release"
+one = "Release"
+
+[ReleaseStatusLineProvisionalReleaseDate]
+description = "Provisional release date"
+one = "Provisional release date"
+
+[ReleaseStatusLineReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseStatusLineCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[ReleaseStatusLineReleased]
+description = "Released"
+one = "Released"
+
+[ReleaseStatusLineNextRelease]
+description = "Next release"
+one = "Next release"
+
+[ReleaseDate]
+description = "Release date"
+one = "Release date"
+
+[ReleaseStatePublished]
+description = "Published"
+one = "Published"
+
+[ReleaseStateUpcoming]
+description = "Upcoming"
+one = "Upcoming"
+
+[ReleaseStateConfirmed]
+description = "Confirmed"
+one = "Confirmed"
+
+[ReleaseStateProvisional]
+description = "Provisional"
+one = "Provisional"
+
+[ReleaseStatePostponed]
+description = "Postponed"
+one = "Postponed"
+
+[ReleaseStateCancelled]
+description = "Cancelled"
+one = "Cancelled"
+
+[NoReleasesFound]
+description = "No releases found"
+one = "No releases found"
+
+[NoReleasesFoundDescriptionPublished]
+description = "No Releases Found Description Published"
+one = "There are no published releases. Try selecting a different type of release."
+
+[NoReleasesFoundDescriptionUpcoming]
+description = "No Releases Found Description Upcoming"
+one = "There are no upcoming releases. Try selecting a different type of release."
+
+[NoReleasesFoundDescriptionCancelled]
+description = "No Releases Found Description Cancelled"
+one = "There are no cancelled releases. Try selecting a different type of release."
+
+[StatusBannerImportantInformation]
+description = "Important information"
+one = "Important information"
+
+[StatusBannerReleaseNotYetPublished]
+description = "This release is not yet published"
+one = "This release is not yet published"
+
+[StatusBannerReleasePostponed]
+description = "This release has been postponed"
+one = "This release has been postponed"
+
+[StatusBannerReleaseCancelled]
+description = "This release has been cancelled"
+one = "This release has been cancelled"

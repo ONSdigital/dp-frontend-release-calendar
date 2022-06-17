@@ -1,0 +1,11 @@
+{{ if .BeforeDate }}
+  {{ if .BeforeDate.InputValueDay }}
+    <input type="hidden" name="before-day" value="{{ .BeforeDate.InputValueDay }}">
+  {{ end }}
+  {{ if .BeforeDate.InputValueMonth }}
+    <input type="hidden" name="before-month" value="{{ .BeforeDate.InputValueMonth }}">
+  {{ end }}
+  {{ if .BeforeDate.InputValueYear }}
+    <input type="hidden" name="before-year" value="{{ .BeforeDate.InputValueYear }}">
+  {{ end }}
+{{ end }}

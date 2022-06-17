@@ -1,0 +1,281 @@
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Notes
+# - Documentation: https://github.com/nicksnyder/go-i18n/blob/master/README.md
+# - Description should be the English version of the text, unless English version is a shorthand e.g. Home button is shorthand in English for Homepage
+# - Arguments can be added via {{.argN}} where N is integer index starting at 0 e.g. {{.arg0}} {{.arg1}}
+# - To inject HTML (Avoid where possible as it is messy) use "| safeHTML" e.g. {{ localise Foo .Language 1 | safeHTML }} where Foo might be "<strong>test</strong>"
+# count - 0 = zero
+# count - 1 = one
+# count - 2 = two; useful for languages with mutations like welsh (radical) 'brother'=brawd, two (soft) 'brothers'=frawd, three or more (nasal) 'brothers'=brodyr
+# count - 3 = few
+# count - 6 = many
+# count - 4 = other; 4,5 & >6
+# Plural rules can be found here: http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+[ReleaseCalendarPageTitle]
+description = "Release Calendar Title"
+one = "Calendr datganiadau"
+
+[ReleaseCalendarPageSearchKeywords]
+description = "Release Calendar Page Search Keywords"
+one = "Chwilio am eiriau allweddol"
+
+[SubscriptionLinkRSS]
+description = "RSS feed"
+one = "Ffrwd RSS"
+
+[SubscriptionLinkEmail]
+description = "Email alerts"
+one = "Hysbysiadau e-bost"
+
+[SubscriptionLinkICS]
+description = "Add to your calendar (ICS)"
+one = "Ychwanegu at eich calendr (ICS) Amserlennu<br>Calendr ar y Rhyngrwyd"
+
+[ApplyDateFilters]
+description = "Apply date filters"
+one = "Rhoi'r hidlyddion dyddiad ar waith"
+
+[ReleasedBefore]
+description = "Released before"
+one = "Cyhoeddwyd cyn"
+
+[ReleasedAfter]
+description = "Released after"
+one = "Cyhoeddwyd ar ôl"
+
+[DateFilterDescription]
+description = "For example: 2006 or 19/07/2010"
+one = "Er enghraifft: 2006 neu 19/07/2010"
+
+[ReleaseCalendarFiltersTitle]
+description = "Filter results"
+other = "Hidlo'r canlyniadau"
+
+[ReleaseCalendarFilterReleaseType]
+description = "Release type"
+one = "Math o ddatganiad"
+
+[ReleaseCalendarFilterSearch]
+description = "Search"
+one = "Chwilio"
+
+[ReleaseCalendarFilterDate]
+description = "Date"
+one = "Dyddiad"
+
+[ReleaseCalendarSortByLabel]
+description = "Sort by"
+one = "Trefnu yn ôl"
+
+[ReleaseCalendarSortBySubmit]
+description = "Sort"
+one = "Didoli"
+
+[ReleaseCalendarSortOptionDateNewest]
+description = "Date (newest)"
+one = "Dyddiad (diweddaraf)"
+
+[ReleaseCalendarSortOptionDateOldest]
+description = "Date (oldest)"
+one = "Dyddiad (hynaf)"
+
+[ReleaseCalendarSortOptionAlphabeticalAZ]
+description = "Alphabetical (A to Z)"
+one = "Yn nhrefn yr wyddor (A i Y)"
+
+[ReleaseCalendarSortOptionAlphabeticalZA]
+description = "Alphabetical (Z to A)"
+one = "Yn nhrefn yr wyddor (Y i A)"
+
+[ReleaseCalendarSortOptionRelevance]
+description = "Relevance"
+one = "Perthnasedd"
+
+[FilterReleaseTypeShowOnly]
+description = "Show only"
+one = "Dangos hyn yn unig"
+
+[FilterReleaseTypeApplyFilters]
+description = "Apply release type filters"
+one = "Cymhwyso hidlyddion o ran math o ddatganiad"
+
+[FilterReleaseTypePublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[FilterReleaseTypeUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[FilterReleaseTypeCancelled]
+description = "Cancelled"
+one = "Canslwyd"
+
+[ReleaseSectionSummary]
+description = "Summary"
+one = "Crynodeb"
+
+[ReleaseSectionPublications]
+description = "Publications"
+one = "Cyhoeddiadau"
+
+[ReleaseSectionData]
+description = "Data"
+one = "Data"
+
+[ReleaseSectionContactDetails]
+description = "Contact details"
+one = "Manylion cyswllt"
+
+[ReleaseSectionDateChanges]
+description = "Changes to this release date"
+one = "Newidiadau i ddyddiad y datganiad hwn"
+
+[ReleaseSectionReleaseHistory]
+description = "Release history"
+one = "Hanes datganiadau"
+
+[ReleaseSectionAboutTheData]
+description = "About the data"
+one = "Ynglŷn â'r data"
+
+[ReleaseSubsectionName]
+description = "Name"
+one = "Enw"
+
+[ReleaseSubsectionEmail]
+description = "Email"
+one = "E-bost"
+
+[ReleaseSubsectionPhone]
+description = "Phone"
+one = "Ffôn"
+
+[ReleaseSubsectionPreviousDate]
+description = "Previous date"
+one = "Dyddiad blaenorol"
+
+[ReleaseSubsectionReasonForChange]
+description = "Reason for change"
+one = "Rheswm dros newid"
+
+[ReleaseHistoryReleaseDate]
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseHistoryReasonForUpdate]
+description = "Reason for update"
+one = "Rheswm dros ddiweddaru"
+
+[ReleaseHistoryLatest]
+description = "LATEST"
+one = "DIWEDDARAF"
+
+[ReleaseHistoryAllPrevious]
+description = "See all previous releases"
+one = "Gweld pob datganiad blaenorol"
+
+[BreadcrumbHome]
+description = "Home"
+one = "Hafan"
+
+[BreadcrumbReleaseCalendar]
+description = "Release calendar"
+one = "Calendr datganiadau"
+
+[BreadcrumbPublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[BreadcrumbUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[BreadcrumbCancelled]
+description = "Cancelled"
+one = "Canslwyd"
+
+[ReleasePageType]
+description = "Release"
+one = "Datganiad"
+
+[ReleaseStatusLineProvisionalReleaseDate]
+description = "Provisional release date"
+one = "Dyddiad dros dro'r datganiad"
+
+[ReleaseStatusLineReleaseDate]
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseStatusLineCancelled]
+description = "Cancelled"
+one = "Canslwyd"
+
+[ReleaseStatusLineReleased]
+description = "Released"
+one = "Rhyddhawyd"
+
+[ReleaseStatusLineNextRelease]
+description = "Next release"
+one = "Datganiad nesaf"
+
+[ReleaseDate]
+description = "Release date"
+one = "Dyddiad y datganiad"
+
+[ReleaseStatePublished]
+description = "Published"
+one = "Cyhoeddwyd"
+
+[ReleaseStateUpcoming]
+description = "Upcoming"
+one = "Ar ddod"
+
+[ReleaseStateConfirmed]
+description = "Confirmed"
+one = "Cadarnhawyd"
+
+[ReleaseStateProvisional]
+description = "Provisional"
+one = "Dros dro"
+
+[ReleaseStatePostponed]
+description = "Postponed"
+one = "Gohiriwyd"
+
+[ReleaseStateCancelled]
+description = "Cancelled"
+one = "Canslwyd"
+
+[NoReleasesFound]
+description = "No releases found"
+one = "Heb ddod o hyd i unrhyw ddatganiadau"
+
+[NoReleasesFoundDescriptionPublished]
+description = "No Releases Found Description Published"
+one = "Nid oes unrhyw ddatganiadau cyhoeddedig. Ceisiwch ddewis math gwahanol o ddatganiad."
+
+[NoReleasesFoundDescriptionUpcoming]
+description = "No Releases Found Description Upcoming"
+one = "Nid oes unrhyw ddatganiadau sydd ar ddod. Ceisiwch ddewis math gwahanol o ddatganiad."
+
+[NoReleasesFoundDescriptionCancelled]
+description = "No Releases Found Description Cancelled"
+one = "Nid oes unrhyw ddatganiadau a ganslwyd. Ceisiwch ddewis math gwahanol o ddatganiad."
+
+[StatusBannerImportantInformation]
+description = "Important information"
+one = "Gwybodaeth pwysig"
+
+[StatusBannerReleaseNotYetPublished]
+description = "This release is not yet published"
+one = "Nid yw'r datganiad hwn wedi'i gyhoeddi eto"
+
+[StatusBannerReleasePostponed]
+description = "This release has been postponed"
+one = "Mae'r datganiad hwn wedi cael ei ohirio"
+
+[StatusBannerReleaseCancelled]
+description = "This release has been cancelled"
+one = "Mae'r datganiad hwn wedi cael ei ganslo"

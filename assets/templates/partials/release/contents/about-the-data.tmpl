@@ -1,0 +1,55 @@
+<div class="about-the-data">
+  {{ if .Description.Census2021 }}
+    <div class="ons-u-mb-l census-2021">
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-census-2021-purple-landscape.svg"
+        alt="Census 2021 logo"
+        class="ons-u-mb-xs"
+      >
+      <p>This release includes data from Census 2021.</p>
+    </div>
+  {{ end }}
+  {{ if .Description.WelshStatistic }}
+    <div class="ons-u-mb-l welsh-statistic">
+      <img
+        src="https://cdn.ons.gov.uk/assets/images/government/welsh-government.svg"
+        alt="Welsh Government logo"
+        class="ons-u-mb-xs ons-u-d-b"
+      >
+      <p>
+        This release has been written with contributions of analysis and data
+        supplied by the Welsh Government.
+      </p>
+    </div>
+  {{ end }}
+  {{ if .Description.NationalStatistic }}
+    <div class="ons-u-mb-l national-statistics">
+      <h2 class="ons-u-fs-m ons-u-flex-ai-c">
+        <span>National Statistics</span>
+        <a
+          href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/"
+          class="national-statistics__link ons-u-ml-s"
+        >
+          <img
+            src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+            alt="UK Statistics Authority kitemark"
+            class="national-statistics__logo"
+          >
+        </a>
+      </h2>
+      <p>
+        These statistics have been given National Statistics status by the
+        Office for Statistics Regulation. They have been produced by following
+        the standards set out in the <a href="https://code.statisticsauthority.gov.uk/the-code/">Code of Practice for Statistics</a>.
+        They meet the highest standards of trustworthiness, quality and public
+        value. This means that they:
+      </p>
+      <ul>
+        <li>meet identified user needs</li>
+        <li>are well explained and easily accessible</li>
+        <li>are produced based on appropriate data and methods</li>
+        <li>are managed impartially and objectively in the public interest</li>
+      </ul>
+    </div>
+  {{ end }}
+</div>
