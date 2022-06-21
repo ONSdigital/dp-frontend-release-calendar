@@ -1,4 +1,16 @@
-<div class="ons-page__container ons-container release">
+<div class="ons-page__container ons-container release" 
+    {{ if .Description.Published }}
+      data-gtm-release-status="published"
+    {{ end }}
+    {{ if .Description.Cancelled }}
+      data-gtm-release-status="cancelled"
+    {{ end }}
+  data-gtm-release-date="{{- .Description.ReleaseDate -}}"
+  data-gtm-release-time="{{- .Description.ReleaseDate -}}"
+  data-gtm-release-date-status="{{- .Description.ReleaseDate -}}"
+  data-gtm-next-release-date="{{- .Description.ProvisionalDate -}}"
+  data-gtm-contact-name="{{- .Description.Contact.Name -}}"
+>
   {{ template "partials/breadcrumb" . }}
 
   <div class="ons-u-fs-m ons-u-mt-s">
@@ -22,19 +34,4 @@
 
   {{ template "partials/release/status-header" . }}
   {{ template "partials/release/contents" . }}
-
-  <!-- This hidden div it important to Google Tracking  -->
-  <div class="hidden"> 
-    {{ if .Description.Published }}
-    <p class="release-status">published</p> 
-    {{ end }}
-    {{ if .Description.Cancelled }}
-    <p class="release-status">cancelled</p> 
-    {{ end }}
-    <p class="release-date">{{- .Description.ReleaseDate -}}</p> 
-    <p class="release-time">{{- .Description.ReleaseDate -}}</p> 
-    <p class="release-date-status">{{- .Description.ReleaseDate -}}</p> 
-    <p class="next-release-date">{{- .Description.ProvisionalDate -}}</p> 
-    <p class="contact-name">{{- .Description.Contact.Name -}}</p> 
-  </div>
 </div>
