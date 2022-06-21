@@ -1,14 +1,13 @@
 <div class="ons-page__container ons-container release" 
-    {{ if .Description.Published }}
-      data-gtm-release-status="published"
-    {{ end }}
-    {{ if .Description.Cancelled }}
-      data-gtm-release-status="cancelled"
-    {{ end }}
-  data-gtm-release-date="{{- .Description.ReleaseDate -}}"
-  data-gtm-release-time="{{- .Description.ReleaseDate -}}"
-  data-gtm-release-date-status="{{- .Description.ReleaseDate -}}"
-  data-gtm-next-release-date="{{- .Description.ProvisionalDate -}}"
+  {{ if .Description.Published }}
+    data-gtm-release-status="published"
+  {{ else }}
+    data-gtm-release-status="cancelled"
+  {{ end }}
+  data-gtm-release-date="{{dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate}}"
+  data-gtm-release-time="{{dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
+  data-gtm-release-date-status="{{- .Description.ProvisionalDate -}}"
+  data-gtm-next-release-date="{{- .Description.NextRelease -}}"
   data-gtm-contact-name="{{- .Description.Contact.Name -}}"
 >
   {{ template "partials/breadcrumb" . }}
