@@ -103,6 +103,7 @@ func TestUnitMapper(t *testing.T) {
 					Telephone: "029",
 				},
 				NationalStatistic:  true,
+				Survey:             "census",
 				ReleaseDate:        "2020-07-08T23:00:00.000Z",
 				NextRelease:        "January 2021",
 				Published:          true,
@@ -138,6 +139,8 @@ func TestUnitMapper(t *testing.T) {
 			So(release.Description.Contact.Email, ShouldEqual, releaseResponse.Description.Contact.Email)
 			So(release.Description.Contact.Telephone, ShouldEqual, releaseResponse.Description.Contact.Telephone)
 			So(release.Description.NationalStatistic, ShouldEqual, releaseResponse.Description.NationalStatistic)
+			So(release.Description.WelshStatistic, ShouldEqual, releaseResponse.Description.WelshStatistic)
+			So(release.Description.Census2021, ShouldEqual, releaseResponse.Census())
 			So(release.Description.ReleaseDate, ShouldEqual, releaseResponse.Description.ReleaseDate)
 			So(release.Description.Published, ShouldEqual, releaseResponse.Description.Published)
 			So(release.Description.Finalised, ShouldEqual, releaseResponse.Description.Finalised)

@@ -1,9 +1,9 @@
-<div class="ons-u-mb-xl">
+<div>
   {{ if .Description.ProvisionalDate }}
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
       {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
-      <span>{{ .Description.ProvisionalDate }}</span>
+      <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
     </div>
   {{ else if .Description.Cancelled }}
     <div>
@@ -11,84 +11,59 @@
       <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
     </div>
   {{ else if .Description.NextRelease }}
-    <div class="ons-grid ons-u-ml-no">
-      <!-- Left column -->
-      <div class="ons-grid__col ons-col-4@m ons-u-p-no">
-        <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
-          <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
-        </div>
-      </div>
-
-      <!-- Right column -->
-      <div class="ons-grid__col ons-col-8@m">
-        <div class="ons-pl-grid-col">
-          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-          <span>{{ dateTimeOnsDatePatternFormat .Description.NextRelease }}</span>
-        </div>
-      </div>
-    </div>
+    <ul class="ons-list ons-list--bare ons-list--inline">
+      <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
+        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
+      </li>
+      <li class="ons-list__item ons-u-mr-xl@xs">
+        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
+        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
+      </li>
+    </ul>
   {{ else }}
     <div>
       <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate }}</span>
+      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
     </div>
   {{ end }}
-
-  {{ if not .Description.Published }}
-    <div class="ons-panel ons-panel--info ons-panel--no-title">
-      <span class="ons-u-vh">Important information: </span>
-      <div class="ons-panel__body">
-        <p>
-          This release is not yet published
-        </p>
-      </div>
-    </div>
-  {{ end }}
-
-  {{ if and .Description.Cancelled .Description.CancellationNotice }}
-    <div class="ons-panel ons-panel--info ons-panel--no-title">
-      <span class="ons-u-vh">Important information: </span>
-      <div class="ons-panel__body">
-        {{ range .Description.CancellationNotice }}
-          <p>{{ . }}</p>
-        {{ end }}
-      </div>
-    </div>
-  {{ end }}
-
-  {{/* TODO How is 'postponed' represented in the Release model?
-    {{ if .StatusFlags.InsufficientDataPostponed }}
+  <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
+    {{ if eq .PublicationState.Type "upcoming" }}
+      {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
+        <div class="ons-panel ons-panel--info ons-panel--no-title">
+          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
+          <div class="ons-panel__body">
+            <p>{{ localise "StatusBannerReleaseNotYetPublished" .Language 1 }}</p>
+          </div>
+        </div>
+      {{ else if eq .PublicationState.SubType "postponed" }}
+        <div class="ons-panel ons-panel--info ons-panel--no-title">
+          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
+          <div class="ons-panel__body">
+            {{ $reason := .FuncGetPostponementReason }}
+            {{ if $reason }}
+              {{- markdown $reason -}}
+            {{ else }}
+              <p>{{ localise "StatusBannerReleasePostponed" .Language 1 }}</p>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    {{ else if eq .PublicationState.Type "cancelled" }}
       <div class="ons-panel ons-panel--info ons-panel--no-title">
-        <span class="ons-u-vh">Important information: </span>
+        <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
         <div class="ons-panel__body">
-          <p>
-            This release has been postponed as there is not enough
-            personal well-being data collected to provide robust
-            quarterly estimates.
-          </p>
+          {{ if .Description.CancellationNotice }}
+            {{ range .Description.CancellationNotice }}
+              {{- markdown . -}}
+            {{ end }}
+          {{ else }}
+            <p>{{ localise "StatusBannerReleaseCancelled" .Language 1 }}</p>
+          {{ end }}
         </div>
       </div>
     {{ end }}
-  */}}
-
-  {{/* TODO How can a cancellation notice containing a link be supported?
-    {{ if .StatusFlags.MergeCancelled }}
-      <div class="ons-panel ons-panel--info ons-panel--no-title">
-        <span class="ons-u-vh">Important information: </span>
-        <div class="ons-panel__body">
-          <p>
-            This release has been cancelled as the publication is
-            being merged into one headline release titled
-            <a href="{{ .StatusFlags.MergeCancelled.URI }}">
-              {{ .StatusFlags.MergeCancelled.Title }}
-            </a>.
-          </p>
-        </div>
-      </div>
-    {{ end }}
-  */}}
-
+  </div>
   {{ if .Description.Census2021 }}
     <div class="ons-u-mt-l">
       <img
