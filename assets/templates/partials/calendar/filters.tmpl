@@ -8,6 +8,7 @@
   <div class="ons-accordion">
     <div
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+      id="filter-release-type"
       data-btn-close="Hide"
       data-group="accordion"
       data-open="true"
@@ -29,6 +30,7 @@
     </div>
     <div
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+      id="filter-search"
       data-btn-close="Hide"
       data-group="accordion"
       {{ if .FuncIsFilterSearchPresent }}
@@ -55,6 +57,7 @@
 
     <div
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+      id="filter-date"
       data-btn-close="Hide"
       data-group="accordion"
       {{ if .FuncIsFilterDatePresent }}
