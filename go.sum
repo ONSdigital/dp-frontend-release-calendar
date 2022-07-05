@@ -65,6 +65,8 @@ github.com/ONSdigital/dp-net/v2 v2.2.0 h1:EHh7n6pdI82F7Ejmbt30d47NC+hzA/RgD9g8i3
 github.com/ONSdigital/dp-net/v2 v2.2.0/go.mod h1:Pv/35rM5tCLYdVdIZ5KoGu2EUXv/87fWTptlVTlS5MY=
 github.com/ONSdigital/dp-renderer v1.32.1 h1:OMtq8006DLiRVV2qHkMU1FOVyEYSdBMyN/po2IjTOgE=
 github.com/ONSdigital/dp-renderer v1.32.1/go.mod h1:odKmVudLXN9WaenfrKgGGrfmZARZFemSNtSy6gxTue8=
+github.com/ONSdigital/dp-renderer v1.37.0 h1:MbkRoQBeValu6qrDDdXp2N9SvFnsLm8pQRUXzya0Tmg=
+github.com/ONSdigital/dp-renderer v1.37.0/go.mod h1:odKmVudLXN9WaenfrKgGGrfmZARZFemSNtSy6gxTue8=
 github.com/ONSdigital/go-ns v0.0.0-20191104121206-f144c4ec2e58/go.mod h1:iWos35il+NjbvDEqwtB736pyHru0MPFE/LqcwkV1wDc=
 github.com/ONSdigital/log.go v1.0.0/go.mod h1:UnGu9Q14gNC+kz0DOkdnLYGoqugCvnokHBRBxFRpVoQ=
 github.com/ONSdigital/log.go v1.0.1-0.20200805084515-ee61165ea36a/go.mod h1:dDnQATFXCBOknvj6ZQuKfmDhbOWf3e8mtV+dPEfWJqs=

@@ -5,7 +5,7 @@
     data-gtm-release-status="cancelled"
   {{ end }}
   data-gtm-release-date="{{dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate}}"
-  data-gtm-release-time="{{dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
+  data-gtm-release-time="{{timeFormat24h .Description.ReleaseDate}}"
   data-gtm-release-date-status="{{- .Description.ProvisionalDate -}}"
   data-gtm-next-release-date="{{- .Description.NextRelease -}}"
   data-gtm-contact-name="{{- .Description.Contact.Name -}}"

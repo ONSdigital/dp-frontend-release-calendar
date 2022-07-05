@@ -8,7 +8,7 @@ require (
 	github.com/ONSdigital/dp-healthcheck v1.2.3
 	github.com/ONSdigital/dp-net v1.2.0
 	github.com/ONSdigital/dp-net/v2 v2.2.0
-	github.com/ONSdigital/dp-renderer v1.32.1
+	github.com/ONSdigital/dp-renderer v1.37.0
 	github.com/ONSdigital/log.go/v2 v2.1.0
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.0
