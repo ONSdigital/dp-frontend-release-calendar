@@ -4,12 +4,22 @@
   tag designed for the purpose:
     <em class="ons-highlight">keyword</em>
 */}}
+{{ $currentPage := .Pagination.CurrentPage }}
+{{ $itemsPerPage := .Pagination.Limit }}
+{{ $totalSearchPosition := multiply (subtract $currentPage 1) $itemsPerPage }}
+
 <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
-  {{range .Entries }}
+  {{range $i, $item := .Entries }}
+    {{ $currentPosition := add $i 1 }}
     <li class="ons-list__item ons-u-mt-l">
       <a
         href="{{ .URI }}"
         class="ons-u-fs-m ons-u-td-no ons-u-d-b"
+        data-gtm-release-url="{{ .URI }}"
+        data-gtm-release-date="{{ dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
+        data-gtm-release-time="{{ timeFormat24h .Description.ReleaseDate }}"
+        data-gtm-release-calendar-page="{{ $currentPage }}"
+        data-gtm-release-calendar-position="{{ add $totalSearchPosition $currentPosition }}"
       >
         {{- .Description.Title | safeHTML -}}
       </a>
