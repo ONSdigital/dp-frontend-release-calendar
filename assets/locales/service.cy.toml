@@ -281,37 +281,37 @@ description = "This release has been cancelled"
 one = "Mae'r datganiad hwn wedi cael ei ganslo"
 
 [CensusPhrasingNationalStatistic]
-description = "Mae'r datganiad hwn yn cynnwys data o Gyfrifiad 2021."
+description = "This release includes data from Census 2021."
 one = "Mae'r datganiad hwn yn cynnwys data o Gyfrifiad 2021."
 
 [CensusPhrasingWelshStatistic]
-description = "Mae'r datganiad hwn wedi cael ei ysgrifennu â chyfraniadau o waith dadansoddi a data a ddarparwyd gan Lywodraeth Cymru."
+description = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 one = "Mae'r datganiad hwn wedi cael ei ysgrifennu â chyfraniadau o waith dadansoddi a data a ddarparwyd gan Lywodraeth Cymru."
 
 [NationalStatisticsBody1]
-description = "Mae'r ystadegau hyn wedi cael statws Ystadegau Gwladol gan y Swyddfa Rheoleiddio Ystadegau. Maent wedi cael eu cynhyrchu yn unol â'r safonau a nodir yn y"
+description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
 one = "Mae'r ystadegau hyn wedi cael statws Ystadegau Gwladol gan y Swyddfa Rheoleiddio Ystadegau. Maent wedi cael eu cynhyrchu yn unol â'r safonau a nodir yn y "
 
 [NationalStatisticsBody2]
-description = "Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus, sy'n golygu eu bod:"
+description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
 one = "Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus, sy'n golygu eu bod:"
 
 [NationalStatisticsBodyLink]
-description = "Cod Ymarfer ar gyfer Ystadegau."
+description = "Code of Practice for Statistics"
 one = "Cod Ymarfer ar gyfer Ystadegau."
 
 [NationalStatisticsIdentified]
-description = "yn diwallu anghenion defnyddwyr a nodwyd "
+description = "meet identified user needs"
 one = "yn diwallu anghenion defnyddwyr a nodwyd "
 
 [NationalStatisticsExplained]
-description = "wedi'u hesbonio'n dda ac ar gael yn hawdd "
+description = "are well explained and easily accessible"
 one = "wedi'u hesbonio'n dda ac ar gael yn hawdd "
 
 [NationalStatisticsProduce]
-description = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol "
+description = "are produced based on appropriate data and methods"
 one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol "
 
 [NationalStatisticsManaged]
-description = "yn cael eu rheoli mewn modd diduedd a gwrthrychol er budd y cyhoedd"
+description = "are managed impartially and objectively in the public interest"
 one = "yn cael eu rheoli mewn modd diduedd a gwrthrychol er budd y cyhoedd"

@@ -289,18 +289,12 @@ description = "This release has been written with contributions of analysis and 
 one = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 
 [NationalStatisticsBody1]
-description = "These statistics have been given National Statistics status by the
-        Office for Statistics Regulation. They have been produced by following
-        the standards set out in the"
-one = "These statistics have been given National Statistics status by the
-        Office for Statistics Regulation. They have been produced by following
-        the standards set out in the"
+description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
+one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
 
 [NationalStatisticsBody2]
-description = "They meet the highest standards of trustworthiness, quality and public
-        value. This means that they:"
-one = "They meet the highest standards of trustworthiness, quality and public
-        value. This means that they:"
+description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
+one = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
 
 [NationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
