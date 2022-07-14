@@ -39,13 +39,14 @@ type Sort struct {
 type Calendar struct {
 	coreModel.Page
 
-	ReleaseTypes  map[string]ReleaseType  `json:"release_types"`
-	Sort          Sort                    `json:"sort"`
-	Keywords      string                  `json:"keywords"`
-	BeforeDate    coreModel.InputDate     `json:"before_date"`
-	AfterDate     coreModel.InputDate     `json:"after_date"`
-	Entries       []CalendarEntry         `json:"entries"`
-	KeywordSearch coreModel.CompactSearch `json:"keyword_search"`
+	ReleaseTypes        map[string]ReleaseType  `json:"release_types"`
+	Sort                Sort                    `json:"sort"`
+	Keywords            string                  `json:"keywords"`
+	BeforeDate          coreModel.InputDate     `json:"before_date"`
+	AfterDate           coreModel.InputDate     `json:"after_date"`
+	Entries             []CalendarEntry         `json:"entries"`
+	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
+	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
 }
 
 func (calendar Calendar) FuncIsFilterSearchPresent() bool {

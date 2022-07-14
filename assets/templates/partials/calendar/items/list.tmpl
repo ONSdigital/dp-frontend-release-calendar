@@ -5,8 +5,7 @@
     <em class="ons-highlight">keyword</em>
 */}}
 {{ $currentPage := .Pagination.CurrentPage }}
-{{ $itemsPerPage := .Pagination.Limit }}
-{{ $totalSearchPosition := multiply (subtract $currentPage 1) $itemsPerPage }}
+{{ $totalSearchPositon := .TotalSearchPosition }}
 
 <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
   {{range $i, $item := .Entries }}
@@ -19,7 +18,7 @@
         data-gtm-release-date="{{ dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
         data-gtm-release-time="{{ timeFormat24h .Description.ReleaseDate }}"
         data-gtm-release-calendar-page="{{ $currentPage }}"
-        data-gtm-release-calendar-position="{{ add $totalSearchPosition $currentPosition }}"
+        data-gtm-release-calendar-position="{{ add $totalSearchPositon $currentPosition }}"
       >
         {{- .Description.Title | safeHTML -}}
       </a>

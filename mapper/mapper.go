@@ -287,12 +287,16 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	if totalResults > response.Breakdown.Total {
 		totalResults = response.Breakdown.Total
 	}
+	var currentPage int = queryparams.CalculatePageNumber(params.Offset, params.Limit)
+	var itemsPerPage int = params.Limit
+
 	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, params.Limit)
-	calendar.Pagination.CurrentPage = queryparams.CalculatePageNumber(params.Offset, params.Limit)
-	calendar.Pagination.Limit = params.Limit
+	calendar.Pagination.CurrentPage = currentPage
+	calendar.Pagination.Limit = itemsPerPage
 	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, cfg.CalendarPath(), calendar.Pagination.TotalPages, defaultWindowSize)
 	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
 	calendar.Pagination.LimitOptions = []int{10, 25}
+	calendar.TotalSearchPosition = (currentPage - 1) * itemsPerPage
 
 	for _, release := range response.Releases {
 		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
