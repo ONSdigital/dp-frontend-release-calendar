@@ -280,38 +280,38 @@ one = "This release has been postponed"
 description = "This release has been cancelled"
 one = "This release has been cancelled"
 
-[CensusPhrasingNationalStatistic]
+[AboutDataCensus]
 description = "This release includes data from Census 2021."
 one = "This release includes data from Census 2021."
 
-[CensusPhrasingWelshStatistic]
+[AboutDataWelshStatistic]
 description = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 one = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 
-[NationalStatisticsBody1]
+[AboutDataNationalStatisticsBody1]
 description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
 one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
 
-[NationalStatisticsBody2]
+[AboutDataNationalStatisticsBody2]
 description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
 one = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
 
-[NationalStatisticsBodyLink]
+[AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
 one = "Code of Practice for Statistics"
 
-[NationalStatisticsIdentified]
+[AboutDataNationalStatisticsIdentified]
 description = "meet identified user needs"
 one = "meet identified user needs"
 
-[NationalStatisticsExplained]
+[AboutDataNationalStatisticsExplained]
 description = "are well explained and easily accessible"
 one = "are well explained and easily accessible"
 
-[NationalStatisticsProduce]
+[AboutDataNationalStatisticsProduced]
 description = "are produced based on appropriate data and methods"
 one = "are produced based on appropriate data and methods"
 
-[NationalStatisticsManaged]
+[AboutDataNationalStatisticsManaged]
 description = "are managed impartially and objectively in the public interest"
 one = "are managed impartially and objectively in the public interest"
