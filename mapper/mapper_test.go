@@ -410,6 +410,26 @@ func TestGetStartEndPage(t *testing.T) {
 	})
 }
 
+func TestTotalSearchPositions(t *testing.T) {
+	Convey("Given a set of parameters expressing: the 'current page number', items per page ", t, func() {
+		testcases := []struct{ currentPageNumber, itemsPerPage, exTotalSearchPosition int }{
+			{currentPageNumber: 1, itemsPerPage: 10, exTotalSearchPosition: 0},
+			{currentPageNumber: 2, itemsPerPage: 10, exTotalSearchPosition: 10},
+			{currentPageNumber: 3, itemsPerPage: 10, exTotalSearchPosition: 20},
+			{currentPageNumber: 4, itemsPerPage: 10, exTotalSearchPosition: 30},
+			{currentPageNumber: 5, itemsPerPage: 10, exTotalSearchPosition: 40},
+			{currentPageNumber: 6, itemsPerPage: 10, exTotalSearchPosition: 50},
+			{currentPageNumber: 7, itemsPerPage: 10, exTotalSearchPosition: 60},
+		}
+		Convey("check the generated start and end page numbers are correct", func() {
+			for _, tc := range testcases {
+				sp := getTotalSearchPosition(tc.currentPageNumber, tc.itemsPerPage)
+				So(sp, ShouldEqual, tc.exTotalSearchPosition)
+			}
+		})
+	})
+}
+
 func TestGetPageURL(t *testing.T) {
 	Convey("Given a set of Validated parameters, and a route path", t, func() {
 		testcases := []struct {

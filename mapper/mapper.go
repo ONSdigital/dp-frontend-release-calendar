@@ -281,22 +281,23 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		},
 	}
 
+	itemsPerPage := params.Limit
+
 	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
 
 	totalResults := cfg.DefaultMaximumSearchResults
 	if totalResults > response.Breakdown.Total {
 		totalResults = response.Breakdown.Total
 	}
-	var currentPage int = queryparams.CalculatePageNumber(params.Offset, params.Limit)
-	var itemsPerPage int = params.Limit
+	currentPage := queryparams.CalculatePageNumber(params.Offset, itemsPerPage)
 
-	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, params.Limit)
+	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, itemsPerPage)
 	calendar.Pagination.CurrentPage = currentPage
 	calendar.Pagination.Limit = itemsPerPage
 	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, cfg.CalendarPath(), calendar.Pagination.TotalPages, defaultWindowSize)
 	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
 	calendar.Pagination.LimitOptions = []int{10, 25}
-	calendar.TotalSearchPosition = (currentPage - 1) * itemsPerPage
+	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
 
 	for _, release := range response.Releases {
 		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
@@ -319,6 +320,11 @@ func getPagesToDisplay(params queryparams.ValidatedParams, path string, totalPag
 	}
 
 	return pagesToDisplay
+}
+
+func getTotalSearchPosition(currentPage, itemsPerPage int) int {
+	totalSearchPosition := (currentPage - 1) * itemsPerPage
+	return totalSearchPosition
 }
 
 func getFirstAndLastPages(params queryparams.ValidatedParams, path string, totalPages int) []coreModel.PageToDisplay {
