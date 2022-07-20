@@ -6,7 +6,7 @@
         alt="Census 2021 logo"
         class="ons-u-mb-xs"
       >
-      <p>This release includes data from Census 2021.</p>
+      <p>{{- localise "AboutDataCensus" $.Language 1 -}}</p>
     </div>
   {{ end }}
   {{ if .Description.WelshStatistic }}
@@ -16,10 +16,7 @@
         alt="Welsh Government logo"
         class="ons-u-mb-xs ons-u-d-b"
       >
-      <p>
-        This release has been written with contributions of analysis and data
-        supplied by the Welsh Government.
-      </p>
+      <p>{{- localise "AboutDataWelshStatistic" $.Language 1 -}}</p>
     </div>
   {{ end }}
   {{ if .Description.NationalStatistic }}
@@ -38,17 +35,14 @@
         </a>
       </h2>
       <p>
-        These statistics have been given National Statistics status by the
-        Office for Statistics Regulation. They have been produced by following
-        the standards set out in the <a href="https://code.statisticsauthority.gov.uk/the-code/">Code of Practice for Statistics</a>.
-        They meet the highest standards of trustworthiness, quality and public
-        value. This means that they:
+        {{- localise "AboutDataNationalStatisticsBody1" $.Language 1 -}} <a href="https://code.statisticsauthority.gov.uk/the-code/">{{- localise "AboutDataNationalStatisticsBodyLink" $.Language 1 -}}</a>.
+        {{- localise "AboutDataNationalStatisticsBody2" $.Language 1 -}}
       </p>
       <ul>
-        <li>meet identified user needs</li>
-        <li>are well explained and easily accessible</li>
-        <li>are produced based on appropriate data and methods</li>
-        <li>are managed impartially and objectively in the public interest</li>
+        <li>{{- localise "AboutDataNationalStatisticsIdentified" $.Language 1 -}}</li>
+        <li>{{- localise "AboutDataNationalStatisticsExplained" $.Language 1 -}}</li>
+        <li>{{- localise "AboutDataNationalStatisticsProduced" $.Language 1 -}}</li>
+        <li>{{- localise "AboutDataNationalStatisticsManaged" $.Language 1 -}}</li>
       </ul>
     </div>
   {{ end }}
