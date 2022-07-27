@@ -1,21 +1,21 @@
 <div class="about-the-data">
   {{ if .Description.Census2021 }}
     <div class="ons-u-mb-l census-2021">
-      {{ if eq .Language "en" }}    
-          <img
-            src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-census-2021-purple-landscape.svg"
-            alt="Census 2021 logo"
-            class="ons-u-mb-xs"
-            width="171"
-          >
-        {{ else }}
-          <img
-            src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-cyfrifiad-2021-purple-landscape.svg"
-            alt="Census 2021 logo"
-            class="ons-u-mb-xs"
-            width="171"
-          >
-        {{ end }}
+      {{ if eq .Language "cy" }}
+        <img
+          src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-cyfrifiad-2021-purple-landscape.svg"
+          alt="Census 2021 logo"
+          class="ons-u-mb-xs"
+          width="171"
+        >
+      {{ else }}
+        <img
+          src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-census-2021-purple-landscape.svg"
+          alt="Census 2021 logo"
+          class="ons-u-mb-xs"
+          width="171"
+        >
+      {{ end }}
       <p>{{- localise "AboutDataCensus" $.Language 1 -}}</p>
     </div>
   {{ end }}
