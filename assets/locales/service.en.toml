@@ -56,6 +56,10 @@ other = "Filter results"
 description = "Release type"
 one = "Release type"
 
+[ReleaseCalendarFilterCensus]
+description = "Census"
+one = "Census"
+
 [ReleaseCalendarFilterSearch]
 description = "Search"
 one = "Search"

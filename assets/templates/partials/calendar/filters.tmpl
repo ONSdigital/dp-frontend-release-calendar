@@ -30,6 +30,28 @@
     </div>
     <div
       class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+      id="filter-release-type"
+      data-btn-close="Hide"
+      data-group="accordion"
+      data-open="false"
+    >
+      <div
+        class="ons-collapsible__heading ons-js-collapsible-heading"
+        tabindex="0"
+      >
+        <div class="ons-collapsible__controls">
+          <h2 class="ons-collapsible__title">
+            {{- localise "ReleaseCalendarFilterCensus" .Language 1 -}}
+          </h2>
+          {{ template "icons/collapsible" . }}
+        </div>
+      </div>
+      <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
+        {{ template "partials/calendar/filter/census" . }}
+      </div>
+    </div>
+    <div
+      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
       id="filter-search"
       data-btn-close="Hide"
       data-group="accordion"

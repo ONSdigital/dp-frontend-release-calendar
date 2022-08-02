@@ -56,6 +56,10 @@ other = "Hidlo'r canlyniadau"
 description = "Release type"
 one = "Math o ddatganiad"
 
+[ReleaseCalendarFilterCensus]
+description = "Census"
+one = "Census"
+
 [ReleaseCalendarFilterSearch]
 description = "Search"
 one = "Chwilio"

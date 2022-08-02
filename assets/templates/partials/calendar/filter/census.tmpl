@@ -4,35 +4,7 @@
     <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
       <span class="ons-checkbox ons-checkbox--no-border">
         <input type="checkbox" id="publications" class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children" value="publications" aria-controls="publications-other-wrap" aria-haspopup="true">
-        <label class="ons-checkbox__label" for="publications" id="publications-label">Census (79)</label>
-        <span class="ons-checkbox__other" id="publications-other-wrap">
-          <fieldset class="ons-fieldset ons-js-other-fieldset">
-            <legend class="ons-fieldset__legend ons-u-vh ons-u-mb-xs">Census year</legend>
-            <p class="ons-checkboxes__label"></p>
-            <div class="ons-checkboxes__items">
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="datasets" class="ons-checkbox__input ons-js-checkbox" value="datasets">
-                  <label class="ons-checkbox__label" for="datasets" id="datasets-label">2021 (50)</label>
-                </span>
-              </span>
-              <br>
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="timeseries" class="ons-checkbox__input ons-js-checkbox" value="timeseries">
-                  <label class="ons-checkbox__label" for="timeseries" id="timeseries-label">2011 (19)</label>
-                </span>
-              </span>
-              <br>
-              <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-                <span class="ons-checkbox ons-checkbox--no-border">
-                  <input type="checkbox" id="requested" class="ons-checkbox__input ons-js-checkbox" value="requested">
-                  <label class="ons-checkbox__label" for="requested" id="requested-label">2001 (0)</label>
-                </span>
-              </span>
-            </div>
-          </fieldset>
-        </span>
+        <label class="ons-checkbox__label" for="publications" id="publications-label">{{- localise "ReleaseCalendarFilterCensus" .Language 1 -}}(79)</label>
       </span>
     </span>
   </div>

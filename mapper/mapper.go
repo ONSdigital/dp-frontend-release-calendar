@@ -459,6 +459,16 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:     response.Breakdown.Cancelled,
 		},
+		"type-census": {
+			Name:      "release-type",
+			Value:     "type-census",
+			Id:        "release-type-census",
+			LocaleKey: "FilterReleaseTypeCensus",
+			Plural:    1,
+			Language:  language,
+			Checked:   checkType(params.ReleaseType, queryparams.Census),
+			Count:     response.Breakdown.Census,
+		},
 	}
 }
 
