@@ -58,7 +58,7 @@ one = "Math o ddatganiad"
 
 [ReleaseCalendarFilterCensus]
 description = "Census"
-one = "Census"
+one = "cyfrifiad"
 
 [ReleaseCalendarFilterSearch]
 description = "Search"
@@ -115,6 +115,10 @@ one = "Ar ddod"
 [FilterReleaseTypeCancelled]
 description = "Cancelled"
 one = "Canslwyd"
+
+[FilterReleaseTypeCensus]
+description = "Census"
+one = "cyfrifiad"
 
 [ReleaseSectionSummary]
 description = "Summary"

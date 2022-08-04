@@ -1,14 +1,21 @@
-<form>
+<form class="filters__release-census">
+  {{ template "partials/calendar/hidden-inputs/keywords" . }}
+  {{ template "partials/calendar/hidden-inputs/release-types" . }}
+  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
+  {{ template "partials/calendar/hidden-inputs/before-date" . }}
+  {{ template "partials/calendar/hidden-inputs/after-date" . }}
+
   <!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
-  <div class="ons-checkboxes__items">
-    <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-      <span class="ons-checkbox ons-checkbox--no-border">
-        <input type="checkbox" id="publications" class="ons-checkbox__input ons-js-checkbox ons-js-other ons-js-select-all-children" value="publications" aria-controls="publications-other-wrap" aria-haspopup="true">
-        <label class="ons-checkbox__label" for="publications" id="publications-label">{{- localise "ReleaseCalendarFilterCensus" .Language 1 -}}(79)</label>
+  {{ with index .ReleaseTypes "type-census" }}
+    <div class="ons-checkboxes__items">
+      <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+        <span class="ons-checkbox ons-checkbox--no-border">
+          {{ template "partials/inputs/input-checkbox" . }}
+        </span>
       </span>
-    </span>
-  </div>
-  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s">
+    </div>
+  {{ end }}
+  <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s text-wrap js--hide">
     <span class="ons-btn__inner">Apply census filters</span>
   </button>
 </form>

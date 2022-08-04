@@ -76,4 +76,11 @@ func TestUnitMapper(t *testing.T) {
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 	})
+
+	Convey("FuncIsFilterCensusPresent should detect if census is checked", t, func() {
+		Convey("When census is not checked", func() {
+			calendar := model.Calendar{}
+			So(calendar.FuncIsFilterCensusPresent(), ShouldBeFalse)
+		})
+	})
 }

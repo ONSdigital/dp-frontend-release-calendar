@@ -116,6 +116,10 @@ one = "Upcoming"
 description = "Cancelled"
 one = "Cancelled"
 
+[FilterReleaseTypeCensus]
+description = "Census"
+one = "Census"
+
 [ReleaseSectionSummary]
 description = "Summary"
 one = "Summary"

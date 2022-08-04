@@ -53,6 +53,15 @@ func (calendar Calendar) FuncIsFilterSearchPresent() bool {
 	return calendar.KeywordSearch.SearchTerm != ""
 }
 
+func (calendar Calendar) FuncIsFilterCensusPresent() bool {
+	for _, releaseType := range calendar.ReleaseTypes {
+		if releaseType.Name == "census" {
+			return releaseType.Checked
+		}
+	}
+	return false
+}
+
 func (calendar Calendar) FuncIsFilterDatePresent() bool {
 	isBeforeDatePresent := func() bool {
 		return calendar.BeforeDate.InputValueDay != "" &&

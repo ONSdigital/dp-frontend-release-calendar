@@ -33,7 +33,11 @@
       id="filter-release-type"
       data-btn-close="Hide"
       data-group="accordion"
-      data-open="false"
+      {{ if .FuncIsFilterCensusPresent }}
+        data-open="true"
+      {{ else }}
+        data-open="false"
+      {{ end }}
     >
       <div
         class="ons-collapsible__heading ons-js-collapsible-heading"
