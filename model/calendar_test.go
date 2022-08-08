@@ -82,5 +82,22 @@ func TestUnitMapper(t *testing.T) {
 			calendar := model.Calendar{}
 			So(calendar.FuncIsFilterCensusPresent(), ShouldBeFalse)
 		})
+
+		Convey("When census is checked", func() {
+			calendar := model.Calendar{}
+			calendar.ReleaseTypes = map[string]model.ReleaseType{
+				"type-census": {
+					Name:      "census",
+					Value:     "type-census",
+					Id:        "release-type-census",
+					LocaleKey: "FilterReleaseTypeCensus",
+					Plural:    1,
+					Language:  "en",
+					Checked:   true,
+					Count:     2,
+				},
+			}
+			So(calendar.FuncIsFilterCensusPresent(), ShouldBeTrue)
+		})
 	})
 }

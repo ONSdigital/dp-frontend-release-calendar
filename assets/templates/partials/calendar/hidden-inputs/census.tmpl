@@ -1,0 +1,14 @@
+{{ range $type, $value := .ReleaseTypes }}
+  {{ if eq $value.Name "census" }}
+    <input 
+      type="hidden" 
+      id="{{ $value.Id }}" 
+      name="{{ $value.Name}}" 
+      {{ if $value.Checked }}
+        value="true" 
+        checked
+      {{ else}}
+        value="" 
+      {{ end }}>
+  {{ end }}
+{{ end }}

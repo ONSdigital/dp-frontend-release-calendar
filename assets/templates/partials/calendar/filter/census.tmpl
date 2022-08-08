@@ -5,16 +5,20 @@
   {{ template "partials/calendar/hidden-inputs/before-date" . }}
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
 
-  <!-- TODO accessibility requirement? <p class="ons-checkboxes__label">Show only:</p> -->
-  {{ with index .ReleaseTypes "type-census" }}
-    <div class="ons-checkboxes__items">
-      <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
-        <span class="ons-checkbox ons-checkbox--no-border">
-          {{ template "partials/inputs/input-checkbox" . }}
+  <p class="ons-radios__label ons-u-mb-s">
+    {{- localise "FilterReleaseTypeShowOnly" .Language 1 -}}:
+  </p>
+  <fieldset class="ons-fieldset">
+    {{ with index .ReleaseTypes "type-census" }}
+      <div class="ons-checkboxes__items">
+        <span class="ons-checkboxes__item ons-checkboxes__item--no-border">
+          <span class="ons-checkbox ons-checkbox--no-border">
+            {{ template "partials/inputs/input-checkbox" . }}
+          </span>
         </span>
-      </span>
-    </div>
-  {{ end }}
+      </div>
+    {{ end }}
+  </fieldset>  
   <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s text-wrap js--hide">
     <span class="ons-btn__inner">Apply census filters</span>
   </button>
