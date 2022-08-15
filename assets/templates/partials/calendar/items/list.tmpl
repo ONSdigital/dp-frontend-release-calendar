@@ -14,6 +14,7 @@
       <a
         href="{{ .URI }}"
         class="ons-u-fs-m ons-u-td-no ons-u-d-b"
+        data-gtm-release-title = "{{ .Description.Title }}"
         data-gtm-release-url="{{ .URI }}"
         data-gtm-release-date="{{ dateFormatYYYYMMDDNoSlashes .Description.ReleaseDate }}"
         data-gtm-release-time="{{ timeFormat24h .Description.ReleaseDate }}"
