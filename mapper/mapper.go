@@ -20,6 +20,7 @@ func createTableOfContents(
 	dateChanges []model.DateChange,
 	releaseHistory []model.Link,
 	aboutTheData bool,
+	relatedArticleDatasets []model.Link,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -111,6 +112,16 @@ func createTableOfContents(
 		}
 		displayOrder = append(displayOrder, "aboutthedata")
 	}
+	if len(relatedArticleDatasets) > 0 {
+		sections["moreonthistopic"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleaseSectionMoreOnThisTopic",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "moreonthistopic")
+	}
 
 	toc.Sections = sections
 	toc.DisplayOrder = displayOrder
@@ -144,6 +155,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	}
 	result.Language = lang
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
+	result.RelatedArticleDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
 	result.RelatedMethodologyArticle = mapLink(release.RelatedMethodologyArticle)
@@ -172,6 +184,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.DateChanges,
 		result.ReleaseHistory,
 		result.AboutTheData,
+		result.RelatedArticleDatasets,
 	)
 
 	return result

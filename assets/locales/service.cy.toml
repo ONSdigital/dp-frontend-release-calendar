@@ -148,6 +148,10 @@ one = "Hanes datganiadau"
 description = "About the data"
 one = "Ynglŷn â'r data"
 
+[ReleaseSectionMoreOnThisTopic]
+description = "More on this topic"
+one = "Mwy am y pwnc hwn"
+
 [ReleaseSubsectionName]
 description = "Name"
 one = "Enw"

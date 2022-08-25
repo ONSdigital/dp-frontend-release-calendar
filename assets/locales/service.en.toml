@@ -148,6 +148,10 @@ one = "Release history"
 description = "About the data"
 one = "About the data"
 
+[ReleaseSectionMoreOnThisTopic]
+description = "More on this topic"
+one = "More on this topic"
+
 [ReleaseSubsectionName]
 description = "Name"
 one = "Name"

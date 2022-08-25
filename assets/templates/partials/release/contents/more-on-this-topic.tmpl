@@ -1,0 +1,30 @@
+<div class="more-on-this-topic">
+    <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
+        {{ range .RelatedArticleDatasets }}
+            <li class="ons-list__item ons-u-mt-l">
+                {{ if and .URI .Title }}
+                  <a href="{{ .URI }}">{{ .Title }}</a>
+                {{ else }}
+                  <a href="{{ .URI }}">{{ .URI }}</a>
+                {{ end }}
+
+                <div class="ons-u-mt-xs">
+                    <span class="ons-u-fs-r--b">{{ localise "ReleaseDate" $.Language 1 }}:</span>
+                    <span>12 August 2013 [[TODO!!]]</span>
+                    <span>|</span>
+                    <span class="ons-u-fs-r--b">Published [[TODO!!]]</span>
+                    {{/*
+                        {{ dateTimeOnsDatePatternFormat .Description.ReleaseDate $.Language }}</span>
+                    */}}
+                </div>
+                <div class="ons-u-mt-xs">
+                    {{ if .Summary }}
+                        <p>
+                          {{ .Summary }}
+                        </p>
+                    {{ end }}
+                </div>
+            </li>
+        {{ end }}
+    </ol>
+</div>
