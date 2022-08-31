@@ -154,9 +154,7 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 
 	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
 	if err != nil {
-		if err != nil {
-			return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Limit)
-		}
+		return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Limit)
 	}
 	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
 	validatedParams.Limit = pageSize
