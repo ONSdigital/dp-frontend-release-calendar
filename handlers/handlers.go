@@ -21,6 +21,11 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
+const (
+	iCalDateFormat = "20060102T150405Z"
+	defaultMaxAge  = 5 // 5 seconds
+)
+
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
 	if err, ok := err.(ClientError); ok {
@@ -36,8 +41,10 @@ func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageA
 	maxAge, err := babbage.GetMaxAge(ctx, uri, key)
 	if err != nil {
 		// Do not cache
-		maxAge = 0
-		log.Warn(ctx, "Couldn't find max age from Babbage, using default 0", log.Data{"uri": uri, "err": err.Error()})
+		maxAge = defaultMaxAge
+		log.Warn(ctx,
+			fmt.Sprintf("Couldn't find max age from Babbage, using default %d sec", maxAge),
+			log.Data{"uri": uri, "err": err.Error()})
 	}
 	w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
 }
@@ -296,8 +303,6 @@ func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err
 
 	return nil
 }
-
-const iCalDateFormat = "20060102T150405Z"
 
 func iCalDate(ctx context.Context, dateRFC3339 string) string {
 	dateiCal, err := time.Parse(time.RFC3339, dateRFC3339)
