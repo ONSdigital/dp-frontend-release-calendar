@@ -34,6 +34,8 @@ func TestConfig(t *testing.T) {
 				So(cfg.DefaultMaximumLimit, ShouldEqual, 100)
 				So(cfg.DefaultSort, ShouldEqual, "date-newest")
 				So(cfg.DefaultMaximumSearchResults, ShouldEqual, 1000)
+				So(cfg.SiteDomain, ShouldEqual, "localhost")
+				So(cfg.RoutingPrefix, ShouldEqual, "")
 			})
 
 			Convey("Then a second call to config should return the same config", func() {

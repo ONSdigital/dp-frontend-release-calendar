@@ -141,7 +141,7 @@ func TestUnitHandlers(t *testing.T) {
 								router.ServeHTTP(w, req)
 
 								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 							})
 						})
 					})
@@ -167,7 +167,7 @@ func TestUnitHandlers(t *testing.T) {
 								router.ServeHTTP(w, req)
 
 								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 							})
 						})
 					})
@@ -295,7 +295,7 @@ func TestUnitHandlers(t *testing.T) {
 									router.ServeHTTP(w, req)
 
 									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 								})
 							})
 						})
@@ -322,7 +322,7 @@ func TestUnitHandlers(t *testing.T) {
 									router.ServeHTTP(w, req)
 
 									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 								})
 							})
 						})
