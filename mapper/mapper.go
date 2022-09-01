@@ -306,6 +306,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	return calendar
 }
 
+/// defaultWindowSize is referring to pagination active link. Any links to the left or right of activeLink should not be grater than 5
 const defaultWindowSize = 5
 
 func getPagesToDisplay(params queryparams.ValidatedParams, path string, totalPages, windowSize int) []coreModel.PageToDisplay {
@@ -345,7 +346,7 @@ func getFirstAndLastPages(params queryparams.ValidatedParams, path string, total
 // It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
 func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
-		panic("invalid parameters for getWindowStartEndPage - see documentation")
+		return 1, 1
 	}
 	switch {
 	case windowSize == 1:
