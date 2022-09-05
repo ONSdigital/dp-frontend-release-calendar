@@ -306,7 +306,12 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	return calendar
 }
 
-/// defaultWindowSize is referring to pagination active link. Any links to the left or right of activeLink should not be grater than 5
+// The current page number sits within a window, and the window size determines the
+// number of pages around the current page. For example a window size of 3 with the
+// current page shown in () would give:
+// - (1) 2 3 at the start of the page range
+// - 8 9 (10) at the end of the page range
+// - 1 ... 5 (6) 7 ... 10 in the middle of the page range
 const defaultWindowSize = 5
 
 func getPagesToDisplay(params queryparams.ValidatedParams, path string, totalPages, windowSize int) []coreModel.PageToDisplay {
