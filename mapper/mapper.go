@@ -346,7 +346,7 @@ func getFirstAndLastPages(params queryparams.ValidatedParams, path string, total
 // It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
 func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
-		return 1, 1
+		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
 	switch {
 	case windowSize == 1:
