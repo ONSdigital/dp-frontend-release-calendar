@@ -310,15 +310,15 @@ one = "Cod Ymarfer ar gyfer Ystadegau"
 
 [AboutDataNationalStatisticsIdentified]
 description = "meet identified user needs"
-one = "yn diwallu anghenion defnyddwyr a nodwyd "
+one = "yn diwallu anghenion defnyddwyr a nodwyd"
 
 [AboutDataNationalStatisticsExplained]
 description = "are well explained and easily accessible"
-one = "wedi'u hesbonio'n dda ac ar gael yn hawdd "
+one = "wedi'u hesbonio'n dda ac ar gael yn hawdd"
 
 [AboutDataNationalStatisticsProduced]
 description = "are produced based on appropriate data and methods"
-one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol "
+one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol"
 
 [AboutDataNationalStatisticsManaged]
 description = "are managed impartially and objectively in the public interest"
