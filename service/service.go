@@ -105,7 +105,6 @@ func (svc *Service) Close(ctx context.Context) error {
 		log.Info(ctx, "stop health checkers")
 		svc.HealthCheck.Stop()
 
-		// stop any incoming requests
 		if err := svc.Server.Shutdown(ctx); err != nil {
 			log.Error(ctx, "failed to shutdown http server", err)
 			hasShutdownError = true
