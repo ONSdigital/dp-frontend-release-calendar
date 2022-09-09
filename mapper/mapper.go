@@ -13,6 +13,14 @@ import (
 	coreModel "github.com/ONSdigital/dp-renderer/model"
 )
 
+var queenElizabethIIDeathAnnouncement = coreModel.EmergencyBanner{
+	Type:        "notable-death",
+	Title:       "Her Majesty Queen Elizabeth II",
+	Description: "21 April 1926 to 8 September 2022",
+	URI:         "https://www.gov.uk/government/topical-events/her-majesty-queen-elizabeth-ii",
+	LinkText:    "Read about the arrangements following The Queen’s death",
+}
+
 func createTableOfContents(
 	description model.ReleaseDescription,
 	relatedDocuments []model.Link,
@@ -159,6 +167,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	result.PublicationState = GetPublicationState(result.Description, result.DateChanges)
 
 	result.BetaBannerEnabled = true
+	result.EmergencyBanner = queenElizabethIIDeathAnnouncement
 	result.Metadata.Title = release.Description.Title
 	result.URI = release.URI
 	result.AboutTheData = result.Description.NationalStatistic || result.Description.WelshStatistic || result.Description.Census2021
@@ -226,6 +235,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	}
 	calendar.Language = lang
 	calendar.BetaBannerEnabled = true
+	calendar.EmergencyBanner = queenElizabethIIDeathAnnouncement
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
 		ElementId: "keyword-search",
