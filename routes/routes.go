@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
 
@@ -22,6 +23,7 @@ type Clients struct {
 	ReleaseCalendarAPI *releasecalendar.Client
 	SearchAPI          *search.Client
 	BabbageAPI         *handlers.BabbageClient
+	ZebedeeClient      *zebedee.Client
 }
 
 // Setup registers routes for the service
@@ -29,9 +31,9 @@ func Setup(ctx context.Context, r *mux.Router, cfg *config.Config, c Clients) {
 	log.Info(ctx, "adding routes")
 	r.StrictSlash(true).Path("/health").HandlerFunc(c.HealthCheckHandler)
 
-	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releases/{uri}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI, c.BabbageAPI))
+	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releases/{uri}").Methods("GET").HandlerFunc(handlers.Release(*cfg, c.Render, c.ReleaseCalendarAPI, c.BabbageAPI, c.ZebedeeClient))
 	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releases/{uri}/data").Methods("GET").HandlerFunc(handlers.ReleaseData(*cfg, c.ReleaseCalendarAPI))
-	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI, c.BabbageAPI))
+	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendar(*cfg, c.Render, c.SearchAPI, c.BabbageAPI, c.ZebedeeClient))
 	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/releasecalendar/data").Methods("GET").HandlerFunc(handlers.ReleaseCalendarData(*cfg, c.SearchAPI))
 	r.StrictSlash(true).Path(cfg.RoutingPrefix + "/calendar/releasecalendar").Methods("GET").HandlerFunc(handlers.ReleaseCalendarICSEntries(*cfg, c.SearchAPI))
 }

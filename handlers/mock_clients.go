@@ -12,6 +12,7 @@ import (
 
 	releasecalendar "github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	zebedee "github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	model "github.com/ONSdigital/dp-renderer/model"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -228,4 +229,42 @@ func (m *MockBabbageAPI) GetMaxAge(ctx context.Context, contentUri, key string) 
 func (mr *MockBabbageAPIMockRecorder) GetMaxAge(ctx, contentUri, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxAge", reflect.TypeOf((*MockBabbageAPI)(nil).GetMaxAge), ctx, contentUri, key)
+}
+
+// MockZebedeeClient is a mock of ZebedeeClient interface.
+type MockZebedeeClient struct {
+	ctrl     *gomock.Controller
+	recorder *MockZebedeeClientMockRecorder
+}
+
+// MockZebedeeClientMockRecorder is the mock recorder for MockZebedeeClient.
+type MockZebedeeClientMockRecorder struct {
+	mock *MockZebedeeClient
+}
+
+// NewMockZebedeeClient creates a new mock instance.
+func NewMockZebedeeClient(ctrl *gomock.Controller) *MockZebedeeClient {
+	mock := &MockZebedeeClient{ctrl: ctrl}
+	mock.recorder = &MockZebedeeClientMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockZebedeeClient) EXPECT() *MockZebedeeClientMockRecorder {
+	return m.recorder
+}
+
+// GetHomepageContent mocks base method.
+func (m *MockZebedeeClient) GetHomepageContent(ctx context.Context, userAccessToken, collectionID, lang, path string) (zebedee.HomepageContent, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHomepageContent", ctx, userAccessToken, collectionID, lang, path)
+	ret0, _ := ret[0].(zebedee.HomepageContent)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHomepageContent indicates an expected call of GetHomepageContent.
+func (mr *MockZebedeeClientMockRecorder) GetHomepageContent(ctx, userAccessToken, collectionID, lang, path interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHomepageContent", reflect.TypeOf((*MockZebedeeClient)(nil).GetHomepageContent), ctx, userAccessToken, collectionID, lang, path)
 }
