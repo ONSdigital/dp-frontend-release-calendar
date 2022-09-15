@@ -140,10 +140,6 @@ one = "Contact details"
 description = "Changes to this release date"
 one = "Changes to this release date"
 
-[ReleaseSectionReleaseHistory]
-description = "Release history"
-one = "Release history"
-
 [ReleaseSectionAboutTheData]
 description = "About the data"
 one = "About the data"
@@ -167,22 +163,6 @@ one = "Previous date"
 [ReleaseSubsectionReasonForChange]
 description = "Reason for change"
 one = "Reason for change"
-
-[ReleaseHistoryReleaseDate]
-description = "Release date"
-one = "Release date"
-
-[ReleaseHistoryReasonForUpdate]
-description = "Reason for update"
-one = "Reason for update"
-
-[ReleaseHistoryLatest]
-description = "LATEST"
-one = "LATEST"
-
-[ReleaseHistoryAllPrevious]
-description = "See all previous releases"
-one = "See all previous releases"
 
 [BreadcrumbHome]
 description = "Home"

@@ -15,8 +15,6 @@
         {{ template "partials/release/contents/contact-details" $release }}
       {{ else if eq $id "changestothisreleasedate" }}
         {{ template "partials/release/contents/date-changes" $release }}
-      {{ else if eq $id "releasehistory" }}
-        {{ template "partials/release/contents/release-history" $release }}
       {{ else if eq $id "aboutthedata" }}
         {{ template "partials/release/contents/about-the-data" $release }}
       {{ end }}

@@ -14,9 +14,11 @@ A Release page is constructed from the data drawn from the Release API.
   separate shell with `./run.sh`
 * Run `make debug`
 * In your browser, visit one of:
-  - `http://localhost:27700/calendarsample`
+  - `http://localhost:27700/releasecalendar`
   - `http://localhost:27700/releases/{topic}` where `{topic}` exists in `zebedee/master/releases/`
-  - `http://localhost:27700/previousreleasessample`
+* For document data underlying each page, visit one of:
+  - `http://localhost:27700/releasecalendar/data`
+  - `http://localhost:27700/releases/{topic}/data`
 
 ### Dependencies
 

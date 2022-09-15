@@ -18,7 +18,6 @@ func createTableOfContents(
 	relatedDocuments []model.Link,
 	relatedDatasets []model.Link,
 	dateChanges []model.DateChange,
-	releaseHistory []model.Link,
 	aboutTheData bool,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
@@ -90,17 +89,6 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "changestothisreleasedate")
 	}
 
-	if len(releaseHistory) > 0 {
-		sections["releasehistory"] = coreModel.ContentSection{
-			Current: false,
-			Title: coreModel.Localisation{
-				LocaleKey: "ReleaseSectionReleaseHistory",
-				Plural:    1,
-			},
-		}
-		displayOrder = append(displayOrder, "releasehistory")
-	}
-
 	if aboutTheData {
 		sections["aboutthedata"] = coreModel.ContentSection{
 			Current: false,
@@ -170,7 +158,6 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.RelatedDocuments,
 		result.RelatedDatasets,
 		result.DateChanges,
-		result.ReleaseHistory,
 		result.AboutTheData,
 	)
 
