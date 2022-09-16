@@ -160,6 +160,18 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 
 	result.BetaBannerEnabled = true
 	result.Metadata.Title = release.Description.Title
+	result.Page.Type = "ReleasePage"
+	if release.Description.Published {
+		result.Page.ReleasePageData.ReleaseStatus = "published"
+	} else {
+		result.Page.ReleasePageData.ReleaseStatus = "cancelled"
+	}
+
+	result.Page.ReleasePageData.ReleaseDate = helper.DateFormatYYYYMMDD(release.Description.ReleaseDate)
+	result.Page.ReleasePageData.ReleaseTime = helper.TimeFormat24h(release.Description.ReleaseDate)
+	result.Page.ReleasePageData.ReleaseDateStatus = release.Description.ProvisionalDate
+	result.Page.ReleasePageData.ContactName = release.Description.Contact.Name
+	result.Page.ReleasePageData.NextReleaseDate = release.Description.NextRelease
 	result.URI = release.URI
 	result.AboutTheData = result.Description.NationalStatistic || result.Description.WelshStatistic || result.Description.Census2021
 
