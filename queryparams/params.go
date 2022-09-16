@@ -32,10 +32,10 @@ const (
 	Highlight   = "highlight"
 )
 
-type IntValidator func(valueAsString string) (int, error)
+type intValidator func(valueAsString string) (int, error)
 
-// GetIntValidator returns an IntValidator object using the min and max values provided
-func GetIntValidator(minValue, maxValue int) IntValidator {
+// getIntValidator returns an IntValidator object using the min and max values provided
+func getIntValidator(minValue, maxValue int) intValidator {
 	return func(valueAsString string) (int, error) {
 		value, err := strconv.Atoi(valueAsString)
 		if err != nil {
@@ -53,38 +53,34 @@ func GetIntValidator(minValue, maxValue int) IntValidator {
 }
 
 var (
-	dayValidator   = GetIntValidator(1, 31)
-	monthValidator = GetIntValidator(1, 12)
-	yearValidator  = GetIntValidator(1900, 2150)
+	dayValidator   = getIntValidator(1, 31)
+	monthValidator = getIntValidator(1, 12)
+	yearValidator  = getIntValidator(1900, 2150)
 )
 
-func GetLimit(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
-	var (
-		limit = defaultValue
-		err   error
-	)
-	asString := params.Get(Limit)
-	if asString != "" {
-		limit, err = validator(asString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Limit, "value": asString})
-			return 0, err
-		}
-	}
-
-	return limit, nil
+// GetLimit validates and returns the "limit" parameter
+func GetLimit(ctx context.Context, params url.Values, defaultValue int, maxValue int) (int, error) {
+	validator := getIntValidator(0, maxValue)
+	return validateAndGetIntParam(ctx, params, Limit, defaultValue, validator)
 }
 
-func GetPage(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
+// GetPage validates and returns the "page" parameter
+func GetPage(ctx context.Context, params url.Values, maxPage int) (int, error) {
+	defaultPage := 1
+	validator := getIntValidator(1, maxPage)
+	return validateAndGetIntParam(ctx, params, Page, defaultPage, validator)
+}
+
+func validateAndGetIntParam(ctx context.Context, params url.Values, paramName string, defaultValue int, validator intValidator) (int, error) {
 	var (
 		limit = defaultValue
 		err   error
 	)
-	asString := params.Get(Page)
+	asString := params.Get(paramName)
 	if asString != "" {
 		limit, err = validator(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
+			log.Warn(ctx, err.Error(), log.Data{"param": paramName, "value": asString})
 			return 0, err
 		}
 	}

@@ -152,20 +152,21 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 func validateParams(ctx context.Context, params url.Values, cfg config.Config) (queryparams.ValidatedParams, error) {
 	validatedParams := queryparams.ValidatedParams{}
 
-	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
+	limit, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, cfg.DefaultMaximumLimit)
 	if err != nil {
-		return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Limit)
+		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Limit, err.Error())
 	}
-	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
-	validatedParams.Limit = pageSize
+	params.Set(queryparams.Limit, strconv.Itoa(limit))
+	validatedParams.Limit = limit
 
-	pageNumber, err := queryparams.GetPage(ctx, params, 1, queryparams.GetIntValidator(1, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit))
+	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
 	if err != nil {
-		return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Page)
+		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Page, err.Error())
 	}
 	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
 	validatedParams.Page = pageNumber
-	offset := queryparams.CalculateOffset(pageNumber, pageSize)
+
+	offset := queryparams.CalculateOffset(pageNumber, limit)
 	params.Set(queryparams.Offset, strconv.Itoa(offset))
 	validatedParams.Offset = offset
 

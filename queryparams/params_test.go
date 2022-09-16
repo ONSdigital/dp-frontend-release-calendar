@@ -5,14 +5,15 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strconv"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestIntValidator(t *testing.T) {
-	Convey("given an IntValidator parameterised with a maximum and minimum value", t, func() {
-		validator := GetIntValidator(0, 1000)
+func TestGetIntValidator(t *testing.T) {
+	Convey("given an intValidator parameterised with a maximum and minimum value", t, func() {
+		validator := getIntValidator(0, 1000)
 
 		Convey("and a set of int values as strings", func() {
 
@@ -42,54 +43,144 @@ func TestIntValidator(t *testing.T) {
 }
 
 func TestGetLimit(t *testing.T) {
-	Convey("given an IntValidator for a limit, and a set of limits as strings", t, func() {
-		validator := GetIntValidator(0, 1000)
-		limits := []struct {
-			given   string
-			exValue int
-			exError error
-		}{
-			{given: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
-			{given: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (0)")},
-			{given: "1001", exValue: 0, exError: fmt.Errorf("Value is above the maximum value (1000)")},
-			{given: "0", exValue: 0, exError: nil},
-			{given: "1000", exValue: 1000, exError: nil},
-		}
-
-		Convey("check that the validator correctly validates the limit", func() {
-			for _, ls := range limits {
-				v, e := validator(ls.given)
-
-				So(v, ShouldEqual, ls.exValue)
-				So(e, ShouldResemble, ls.exError)
-			}
+	Convey("Given a list of params", t, func() {
+		ctx := context.Background()
+		params := make(url.Values)
+		defaultValue := 8
+		maxValue := 55
+		Convey("And it does not include a limit param", func() {
+			Convey("When we call GetLimit", func() {
+				res, err := GetLimit(ctx, params, defaultValue, maxValue)
+				Convey("Then the default value is returned", func() {
+					So(err, ShouldBeNil)
+					So(res, ShouldEqual, defaultValue)
+				})
+			})
+		})
+		Convey("And it includes a limit param", func() {
+			Convey("And it is empty", func() {
+				params.Set("limit", "")
+				Convey("When we call GetLimit", func() {
+					res, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then the default value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, defaultValue)
+					})
+				})
+			})
+			Convey("And it is valid", func() {
+				limit := 0
+				params.Set("limit", strconv.Itoa(limit))
+				Convey("When we call GetLimit", func() {
+					res, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then the value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, limit)
+					})
+				})
+			})
+			Convey("And it is lower than 0", func() {
+				params.Set("limit", "-1")
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value is below the minimum value (0)")
+					})
+				})
+			})
+			Convey("And it is higher than the maximum", func() {
+				limit := maxValue + 1
+				params.Set("limit", strconv.Itoa(limit))
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value is above the maximum value (55)")
+					})
+				})
+			})
+			Convey("And it is not a number", func() {
+				params.Set("limit", "seven")
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value contains non numeric characters")
+					})
+				})
+			})
 		})
 	})
 }
 
-func TestPageValidator(t *testing.T) {
-	Convey("given a page validator, and a set of page numbers as strings", t, func() {
-		validator := GetIntValidator(1, 100)
-		offsets := []struct {
-			given   string
-			exValue int
-			exError error
-		}{
-			{given: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
-			{given: "0", exValue: 0, exError: errors.New("Value is below the minimum value (1)")},
-			{given: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (1)")},
-			{given: "101", exValue: 0, exError: errors.New("Value is above the maximum value (100)")},
-			{given: "1", exValue: 1, exError: nil},
-			{given: "100", exValue: 100, exError: nil},
-		}
-
-		Convey("check that the validator correctly validates the page number", func() {
-			for _, ps := range offsets {
-				v, e := validator(ps.given)
-
-				So(v, ShouldEqual, ps.exValue)
-				So(e, ShouldResemble, ps.exError)
-			}
+func TestGetPage(t *testing.T) {
+	Convey("Given a list of params", t, func() {
+		ctx := context.Background()
+		params := make(url.Values)
+		maxPage := 10
+		Convey("And it does not include a page param", func() {
+			Convey("When we call GetPage", func() {
+				res, err := GetPage(ctx, params, maxPage)
+				Convey("Then the default value is returned", func() {
+					So(err, ShouldBeNil)
+					So(res, ShouldEqual, 1)
+				})
+			})
+		})
+		Convey("And it includes a page param", func() {
+			Convey("And it is empty", func() {
+				params.Set("page", "")
+				Convey("When we call GetPage", func() {
+					res, err := GetPage(ctx, params, maxPage)
+					Convey("Then the default value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, 1)
+					})
+				})
+			})
+			Convey("And it is valid", func() {
+				limit := 1
+				params.Set("page", strconv.Itoa(limit))
+				Convey("When we call GetPage", func() {
+					res, err := GetPage(ctx, params, maxPage)
+					Convey("Then the value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, limit)
+					})
+				})
+			})
+			Convey("And it is lower than 1", func() {
+				params.Set("page", "0")
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value is below the minimum value (1)")
+					})
+				})
+			})
+			Convey("And it is higher than the maximum", func() {
+				page := maxPage + 1
+				params.Set("page", strconv.Itoa(page))
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value is above the maximum value (10)")
+					})
+				})
+			})
+			Convey("And it is not a number", func() {
+				params.Set("page", "three")
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "Value contains non numeric characters")
+					})
+				})
+			})
 		})
 	})
 }
