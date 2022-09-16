@@ -32,19 +32,20 @@ const (
 	Highlight   = "highlight"
 )
 
-type IntValidator func(name string, valueAsString string) (int, error)
+type IntValidator func(valueAsString string) (int, error)
 
+// GetIntValidator returns an IntValidator object using the min and max values provided
 func GetIntValidator(minValue, maxValue int) IntValidator {
-	return func(name string, valueAsString string) (int, error) {
+	return func(valueAsString string) (int, error) {
 		value, err := strconv.Atoi(valueAsString)
 		if err != nil {
-			return 0, fmt.Errorf("%s search parameter provided with non numeric characters", name)
+			return 0, fmt.Errorf("Value contains non numeric characters")
 		}
 		if value < minValue {
-			return 0, fmt.Errorf("%s search parameter provided with a value that is below the minimum value", name)
+			return 0, fmt.Errorf("Value is below the minimum value (%d)", minValue)
 		}
 		if value > maxValue {
-			return 0, fmt.Errorf("%s search parameter provided with a value that is above the maximum value", name)
+			return 0, fmt.Errorf("Value is above the maximum value (%d)", maxValue)
 		}
 
 		return value, nil
@@ -64,7 +65,7 @@ func GetLimit(ctx context.Context, params url.Values, defaultValue int, validato
 	)
 	asString := params.Get(Limit)
 	if asString != "" {
-		limit, err = validator(Limit, asString)
+		limit, err = validator(asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Limit, "value": asString})
 			return 0, err
@@ -81,7 +82,7 @@ func GetPage(ctx context.Context, params url.Values, defaultValue int, validator
 	)
 	asString := params.Get(Page)
 	if asString != "" {
-		limit, err = validator(Page, asString)
+		limit, err = validator(asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
 			return 0, err
@@ -165,17 +166,17 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 
 	yearString, monthString, dayString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
 	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(YearAfter, yearString)
+		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
 			return Date{}, Date{}, err
 		}
-		month, err := monthValidator(MonthAfter, monthString)
+		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
 			return Date{}, Date{}, err
 		}
-		day, err := dayValidator(DayAfter, dayString)
+		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
 			return Date{}, Date{}, err
@@ -191,17 +192,17 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 
 	yearString, monthString, dayString = params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
 	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(YearBefore, yearString)
+		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
 			return Date{}, Date{}, err
 		}
-		month, err := monthValidator(MonthBefore, monthString)
+		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
 			return Date{}, Date{}, err
 		}
-		day, err := dayValidator(DayBefore, dayString)
+		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
 			return Date{}, Date{}, err

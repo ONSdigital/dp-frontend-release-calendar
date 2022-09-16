@@ -14,25 +14,24 @@ func TestIntValidator(t *testing.T) {
 	Convey("given an IntValidator parameterised with a maximum and minimum value", t, func() {
 		validator := GetIntValidator(0, 1000)
 
-		Convey("and a set of int values as strings representing a given parameter name", func() {
+		Convey("and a set of int values as strings", func() {
 
 			limits := []struct {
-				name    string
 				value   string
 				exValue int
 				exError error
 			}{
-				{name: "limit", value: "XXX", exValue: 0, exError: errors.New("limit search parameter provided with non numeric characters")},
-				{name: "limit", value: "-1", exValue: 0, exError: errors.New("limit search parameter provided with a value that is below the minimum value")},
-				{name: "limit", value: "1001", exValue: 0, exError: fmt.Errorf("limit search parameter provided with a value that is above the maximum value")},
-				{name: "limit", value: "0", exValue: 0, exError: nil},
-				{name: "limit", value: "123", exValue: 123, exError: nil},
-				{name: "limit", value: "1000", exValue: 1000, exError: nil},
+				{value: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
+				{value: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (0)")},
+				{value: "1001", exValue: 0, exError: fmt.Errorf("Value is above the maximum value (1000)")},
+				{value: "0", exValue: 0, exError: nil},
+				{value: "123", exValue: 123, exError: nil},
+				{value: "1000", exValue: 1000, exError: nil},
 			}
 
 			Convey("check that the validator correctly validates the limit, giving the expected results", func() {
 				for _, ls := range limits {
-					v, e := validator(ls.name, ls.value)
+					v, e := validator(ls.value)
 
 					So(v, ShouldEqual, ls.exValue)
 					So(e, ShouldResemble, ls.exError)
@@ -50,16 +49,16 @@ func TestGetLimit(t *testing.T) {
 			exValue int
 			exError error
 		}{
-			{given: "XXX", exValue: 0, exError: errors.New("limit search parameter provided with non numeric characters")},
-			{given: "-1", exValue: 0, exError: errors.New("limit search parameter provided with a value that is below the minimum value")},
-			{given: "1001", exValue: 0, exError: fmt.Errorf("limit search parameter provided with a value that is above the maximum value")},
+			{given: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
+			{given: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (0)")},
+			{given: "1001", exValue: 0, exError: fmt.Errorf("Value is above the maximum value (1000)")},
 			{given: "0", exValue: 0, exError: nil},
 			{given: "1000", exValue: 1000, exError: nil},
 		}
 
 		Convey("check that the validator correctly validates the limit", func() {
 			for _, ls := range limits {
-				v, e := validator(Limit, ls.given)
+				v, e := validator(ls.given)
 
 				So(v, ShouldEqual, ls.exValue)
 				So(e, ShouldResemble, ls.exError)
@@ -76,17 +75,17 @@ func TestPageValidator(t *testing.T) {
 			exValue int
 			exError error
 		}{
-			{given: "XXX", exValue: 0, exError: errors.New("page search parameter provided with non numeric characters")},
-			{given: "0", exValue: 0, exError: errors.New("page search parameter provided with a value that is below the minimum value")},
-			{given: "-1", exValue: 0, exError: errors.New("page search parameter provided with a value that is below the minimum value")},
-			{given: "101", exValue: 0, exError: errors.New("page search parameter provided with a value that is above the maximum value")},
+			{given: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
+			{given: "0", exValue: 0, exError: errors.New("Value is below the minimum value (1)")},
+			{given: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (1)")},
+			{given: "101", exValue: 0, exError: errors.New("Value is above the maximum value (100)")},
 			{given: "1", exValue: 1, exError: nil},
 			{given: "100", exValue: 100, exError: nil},
 		}
 
 		Convey("check that the validator correctly validates the page number", func() {
 			for _, ps := range offsets {
-				v, e := validator(Page, ps.given)
+				v, e := validator(ps.given)
 
 				So(v, ShouldEqual, ps.exValue)
 				So(e, ShouldResemble, ps.exError)
@@ -300,7 +299,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("after-day search parameter provided with a value that is above the maximum value"),
+				exError: errors.New("Value is above the maximum value (31)"),
 			},
 			{
 				afterDay: "29", afterMonth: "2", afterYear: "2021",
