@@ -333,10 +333,10 @@ func TestUnitHandlers(t *testing.T) {
 					Convey("When the limit parameter is negative", func() {
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
 
-						Convey("Then it returns 400", func() {
+						Convey("Then it returns 500", func() {
 							router.ServeHTTP(w, req)
 
-							So(w.Code, ShouldEqual, http.StatusBadRequest)
+							So(w.Code, ShouldEqual, http.StatusInternalServerError)
 						})
 					})
 
@@ -390,13 +390,13 @@ func TestUnitHandlers(t *testing.T) {
 					})
 				})
 
-				Convey("it returns 400 when there is an error in one of the parameters", func() {
+				Convey("it returns 500 when there is an error in one of the parameters", func() {
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
 					setRequestHeaders(req)
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusBadRequest)
+					So(w.Code, ShouldEqual, http.StatusInternalServerError)
 				})
 
 				Convey("it returns 500 when there is an error getting the releases from the search api", func() {

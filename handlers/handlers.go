@@ -99,7 +99,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 
 		validatedParams, err := validateParams(ctx, params, cfg)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			setStatusCode(r, w, err)
 			return
 		}
 
@@ -125,7 +125,7 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 
 		_, err := validateParams(ctx, params, cfg)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			setStatusCode(r, w, err)
 			return
 		}
 
