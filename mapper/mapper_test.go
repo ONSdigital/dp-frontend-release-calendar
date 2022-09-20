@@ -488,7 +488,7 @@ func TestGetPageURL(t *testing.T) {
 					Highlight:   true,
 				},
 				path:     "/test-prefix/releasecalendar",
-				expected: "/test-prefix/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&census=false&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
+				expected: "/test-prefix/releasecalendar?after-day=30&after-month=11&after-year=2021&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
 			},
 			{
 				params: queryparams.ValidatedParams{
@@ -502,7 +502,7 @@ func TestGetPageURL(t *testing.T) {
 					Census:      true,
 				},
 				path:     "/releasecalendar",
-				expected: "/releasecalendar?after-day=&after-month=&after-year=&before-day=1&before-month=4&before-year=2022&census=true&highlight=false&keywords=&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-confirmed=false&subtype-postponed=true&subtype-provisional=true",
+				expected: "/releasecalendar?before-day=1&before-month=4&before-year=2022&census=true&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-postponed=true&subtype-provisional=true",
 			},
 		}
 

@@ -529,14 +529,9 @@ func defaultParams() url.Values {
 	values.Set("limit", "10")
 	values.Set("page", "1")
 	values.Set("offset", "0")
-	values.Set("fromDate", "")
-	values.Set("toDate", "")
 	values.Set("sort", queryparams.RelDateDesc.BackendString())
-	values.Set("keywords", "")
-	values.Set("query", "")
 	values.Set("release-type", queryparams.Published.Name())
 	values.Set("highlight", "true")
-
 	return values
 }
 

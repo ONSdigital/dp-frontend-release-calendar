@@ -309,38 +309,42 @@ func TestGetKeywords(t *testing.T) {
 }
 
 func TestGetBoolean(t *testing.T) {
-	Convey("given a set of strings to be parsed as a boolean value", t, func() {
-		var bvs []string
-		Convey("if the strings are not valid representations of a boolean value", func() {
-			bvs = []string{"not right", "correct", "right", "wrong", "maybe"}
-			Convey("the correct error is returned", func() {
-				for _, bb := range bvs {
-					v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{bb}}, "bool-attr", true)
-					So(v, ShouldBeFalse)
-					So(s, ShouldBeFalse)
-					So(err, ShouldResemble, errors.New(`invalid boolean value for "bool-attr"`))
-				}
-			})
-			Convey("if the strings are valid representations of a boolean value", func() {
-				bvs = []string{"false", "T", "TRUE", "0", "1"}
-				Convey("the correct boolean value is returned without error", func() {
-					for _, gb := range bvs {
-						v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{gb}}, "bool-attr", true)
-						So(v, ShouldBeIn, true, false)
-						So(s, ShouldBeTrue)
+	Convey("Given a set of strings to be parsed as a boolean value", t, func() {
+		defaultValue := true
+		paramName := "bool-attr"
+		Convey("And they are not valid representations of a boolean value", func() {
+			bvs := []string{"not right", "correct", "right", "wrong", "maybe"}
+			for _, bb := range bvs {
+				Convey(fmt.Sprintf("When we call the GetBoolean function for a parameter with value %s", bb), func() {
+					values := url.Values{paramName: []string{bb}}
+					v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+					Convey("Then an error is returned", func() {
+						So(v, ShouldEqual, defaultValue)
+						So(err, ShouldResemble, fmt.Errorf(`invalid boolean value for parameter "%s"`, paramName))
+					})
+				})
+			}
+		})
+		Convey("And they are valid representations of a boolean value", func() {
+			bvs := map[string]bool{"false": false, "T": true, "TRUE": true, "0": false, "1": true}
+			for bb, expected := range bvs {
+				Convey(fmt.Sprintf("When we call the GetBoolean function for a parameter with value %s", bb), func() {
+					values := url.Values{paramName: []string{bb}}
+					v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+					Convey("Then the right boolean value is returned", func() {
+						So(v, ShouldEqual, expected)
 						So(err, ShouldBeNil)
-					}
+					})
 				})
+			}
+		})
+		Convey("And they are empty strings", func() {
+			Convey("When we call the GetBoolean function", func() {
+				values := url.Values{paramName: {""}}
+				v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+				So(v, ShouldEqual, defaultValue)
+				So(err, ShouldBeNil)
 			})
-			Convey("if the strings are empty strings", func() {
-				Convey("the correct boolean value corresponding to the default value is returned without error", func() {
-					v, s, err := GetBoolean(context.Background(), url.Values{}, "bool-attr", true)
-					So(v, ShouldBeTrue)
-					So(s, ShouldBeFalse)
-					So(err, ShouldBeNil)
-				})
-			})
-
 		})
 	})
 }
@@ -432,31 +436,154 @@ func TestDatesFromParams(t *testing.T) {
 	})
 }
 
-func TestParamsAsQuery(t *testing.T) {
-	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true, Census: true}
+func TestParamsAsFrontendQuery(t *testing.T) {
+	Convey("Given a set of validated parameters as a ValidatedParam struct", t, func() {
+		vp := ValidatedParams{
+			Limit:       10,
+			Page:        2,
+			Offset:      10,
+			AfterDate:   MustParseDate("2020-01-01"),
+			Keywords:    "some keywords",
+			Sort:        TitleAZ,
+			Provisional: true,
+			Confirmed:   true,
+			Postponed:   true,
+			Census:      true,
+		}
 
-		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
-			uv := vp.AsQuery()
-			So(uv.Get(Limit), ShouldEqual, "10")
-			So(uv.Get(Page), ShouldEqual, "2")
-			So(uv.Get(YearAfter), ShouldEqual, "2020")
-			So(uv.Get(MonthAfter), ShouldEqual, "1")
-			So(uv.Get(DayAfter), ShouldEqual, "1")
-			So(uv.Get(YearBefore), ShouldEqual, "")
-			So(uv.Get(MonthBefore), ShouldEqual, "")
-			So(uv.Get(DayBefore), ShouldEqual, "")
-			So(uv.Get(Keywords), ShouldEqual, "some keywords")
-			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
-			So(uv.Get(Type), ShouldEqual, Upcoming.String())
-			So(uv.Get(Provisional.String()), ShouldEqual, "true")
-			So(uv.Get(Confirmed.String()), ShouldEqual, "false")
-			So(uv.Get(Postponed.String()), ShouldEqual, "false")
-			So(uv.Get(Census), ShouldEqual, "true")
-			So(uv.Get(Highlight), ShouldEqual, "false")
+		Convey("And the release type is upcoming", func() {
+			vp.ReleaseType = Upcoming
 
-			Convey("and any validated parameters not needed are absent from the url.Values mapping", func() {
-				So(uv.Get(Offset), ShouldEqual, "")
+			Convey("When we call AsFrontendQuery", func() {
+				uv := vp.AsFrontendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "")
+					So(uv.Get(MonthBefore), ShouldEqual, "")
+					So(uv.Get(DayBefore), ShouldEqual, "")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.String())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Provisional.String()), ShouldEqual, "true")
+					So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+					So(uv.Get(Postponed.String()), ShouldEqual, "true")
+					So(uv.Get(Census), ShouldEqual, "true")
+					So(uv.Get(Highlight), ShouldEqual, "")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Offset), ShouldEqual, "")
+					})
+				})
+			})
+		})
+
+		Convey("And the release type is not upcoming", func() {
+			vp.ReleaseType = Cancelled
+
+			Convey("When we call AsFrontendQuery", func() {
+				uv := vp.AsFrontendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "")
+					So(uv.Get(MonthBefore), ShouldEqual, "")
+					So(uv.Get(DayBefore), ShouldEqual, "")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.String())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Census), ShouldEqual, "true")
+					So(uv.Get(Highlight), ShouldEqual, "")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Offset), ShouldEqual, "")
+						So(uv.Get(Provisional.String()), ShouldEqual, "")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "")
+						So(uv.Get(Postponed.String()), ShouldEqual, "")
+					})
+				})
+			})
+		})
+	})
+}
+
+func TestParamsAsBackendQuery(t *testing.T) {
+	Convey("Given a set of validated parameters as a ValidatedParam struct", t, func() {
+		vp := ValidatedParams{
+			Limit:       10,
+			Page:        2,
+			Offset:      10,
+			AfterDate:   MustParseDate("2020-01-01"),
+			BeforeDate:  MustParseDate("2022-09-19"),
+			Keywords:    "some keywords",
+			Sort:        RelDateDesc,
+			Provisional: true,
+			Confirmed:   true,
+			Postponed:   true,
+			Highlight:   true,
+			Census:      false,
+		}
+
+		Convey("And the release type is upcoming", func() {
+			vp.ReleaseType = Upcoming
+
+			Convey("When we call AsBackendQuery", func() {
+				uv := vp.AsBackendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(Offset), ShouldEqual, "10")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "2022")
+					So(uv.Get(MonthBefore), ShouldEqual, "9")
+					So(uv.Get(DayBefore), ShouldEqual, "19")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Provisional.String()), ShouldEqual, "true")
+					So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+					So(uv.Get(Postponed.String()), ShouldEqual, "true")
+					So(uv.Get(Census), ShouldEqual, "")
+					So(uv.Get(Highlight), ShouldEqual, "true")
+				})
+			})
+		})
+
+		Convey("And the release type is not upcoming", func() {
+			vp.ReleaseType = Published
+
+			Convey("When we call AsBackendQuery", func() {
+				uv := vp.AsBackendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(Offset), ShouldEqual, "10")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "2022")
+					So(uv.Get(MonthBefore), ShouldEqual, "9")
+					So(uv.Get(DayBefore), ShouldEqual, "19")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Census), ShouldEqual, "")
+					So(uv.Get(Highlight), ShouldEqual, "true")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Provisional.String()), ShouldEqual, "")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "")
+						So(uv.Get(Postponed.String()), ShouldEqual, "")
+					})
+				})
 			})
 		})
 	})

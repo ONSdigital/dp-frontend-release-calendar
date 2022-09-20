@@ -139,19 +139,21 @@ func GetReleaseType(ctx context.Context, params url.Values, defaultValue Release
 	return relType, nil
 }
 
-func GetBoolean(ctx context.Context, params url.Values, name string, defaultValue bool) (bool, bool, error) {
+// GetBoolean finds a boolean parameter and returns a default value if not present
+// It returns the default value together with an error if the value can't be parsed to a boolean
+func GetBoolean(ctx context.Context, params url.Values, name string, defaultValue bool) (bool, error) {
 	asString := params.Get(name)
 	if asString == "" {
-		return defaultValue, false, nil
+		return defaultValue, nil
 	}
 
 	upcoming, err := strconv.ParseBool(asString)
 	if err != nil {
-		log.Warn(ctx, fmt.Sprintf("invalid boolean value for %q", name), log.Data{"param": name, "value": asString})
-		return false, false, fmt.Errorf("invalid boolean value for %q", name)
+		log.Warn(ctx, "invalid boolean value", log.Data{"param": name, "value": asString})
+		return defaultValue, fmt.Errorf("invalid boolean value for parameter %q", name)
 	}
 
-	return upcoming, true, nil
+	return upcoming, nil
 }
 
 func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error) {
@@ -414,29 +416,59 @@ type ValidatedParams struct {
 	Highlight   bool
 }
 
-func (vp ValidatedParams) AsQuery() url.Values {
+// AsBackendQuery converts to a url.Values object with parameters as expected by the api
+func (vp ValidatedParams) AsBackendQuery() url.Values {
+	return vp.asQuery(true)
+}
+
+// AsFrontendQuery converts to a url.Values object with parameters
+func (vp ValidatedParams) AsFrontendQuery() url.Values {
+	return vp.asQuery(false)
+}
+
+func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	var query = make(url.Values)
-	query.Set(Limit, strconv.Itoa(vp.Limit))
-	query.Set(Page, strconv.Itoa(vp.Page))
-
-	query.Set(YearBefore, vp.BeforeDate.YearString())
-	query.Set(MonthBefore, vp.BeforeDate.MonthString())
-	query.Set(DayBefore, vp.BeforeDate.DayString())
-
-	query.Set(YearAfter, vp.AfterDate.YearString())
-	query.Set(MonthAfter, vp.AfterDate.MonthString())
-	query.Set(DayAfter, vp.AfterDate.DayString())
-
-	query.Set(Keywords, vp.Keywords)
-	query.Set(SortName, vp.Sort.String())
-	query.Set(Type, vp.ReleaseType.String())
-	if vp.ReleaseType == Upcoming {
-		query.Set(Provisional.String(), strconv.FormatBool(vp.Provisional))
-		query.Set(Confirmed.String(), strconv.FormatBool(vp.Confirmed))
-		query.Set(Postponed.String(), strconv.FormatBool(vp.Postponed))
+	setValue(query, Limit, strconv.Itoa(vp.Limit))
+	setValue(query, Page, strconv.Itoa(vp.Page))
+	if isBackend {
+		// Frontend won't need offset
+		setValue(query, Offset, strconv.Itoa(vp.Offset))
 	}
-	query.Set(Census, strconv.FormatBool(vp.Census))
-	query.Set(Highlight, strconv.FormatBool(vp.Highlight))
+
+	setValue(query, YearBefore, vp.BeforeDate.YearString())
+	setValue(query, MonthBefore, vp.BeforeDate.MonthString())
+	setValue(query, DayBefore, vp.BeforeDate.DayString())
+
+	setValue(query, YearAfter, vp.AfterDate.YearString())
+	setValue(query, MonthAfter, vp.AfterDate.MonthString())
+	setValue(query, DayAfter, vp.AfterDate.DayString())
+
+	setValue(query, Keywords, vp.Keywords)
+	if isBackend {
+		setValue(query, SortName, vp.Sort.BackendString())
+	} else {
+		setValue(query, SortName, vp.Sort.String())
+	}
+	setValue(query, Type, vp.ReleaseType.String())
+	if vp.ReleaseType == Upcoming {
+		setBoolValue(query, Provisional.String(), vp.Provisional)
+		setBoolValue(query, Confirmed.String(), vp.Confirmed)
+		setBoolValue(query, Postponed.String(), vp.Postponed)
+	}
+	setBoolValue(query, Census, vp.Census)
+	setBoolValue(query, Highlight, vp.Highlight)
 
 	return query
+}
+
+func setValue(query url.Values, key string, value string) {
+	if value != "" {
+		query.Set(key, value)
+	}
+}
+
+func setBoolValue(query url.Values, key string, value bool) {
+	if value {
+		query.Set(key, strconv.FormatBool(value))
+	}
 }

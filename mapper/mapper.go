@@ -385,7 +385,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 }
 
 func getPageURL(page int, params queryparams.ValidatedParams, path string) (pageURL string) {
-	query := params.AsQuery()
+	query := params.AsFrontendQuery()
 	query.Set("page", strconv.Itoa(page))
 
 	return path + "?" + query.Encode()

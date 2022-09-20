@@ -114,7 +114,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
 		}
 
-		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -134,13 +134,13 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 		ctx := r.Context()
 		params := r.URL.Query()
 
-		_, err := validateParams(ctx, params, cfg)
+		validatedParams, err := validateParams(ctx, params, cfg)
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
 		}
 
-		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -167,78 +167,56 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	if err != nil {
 		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Limit, err.Error())
 	}
-	params.Set(queryparams.Limit, strconv.Itoa(limit))
 	validatedParams.Limit = limit
 
 	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
 	if err != nil {
 		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Page, err.Error())
 	}
-	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
 	validatedParams.Page = pageNumber
 
 	offset := queryparams.CalculateOffset(pageNumber, limit)
-	params.Set(queryparams.Offset, strconv.Itoa(offset))
 	validatedParams.Offset = offset
 
 	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.DateFrom, fromDate.String())
 	validatedParams.AfterDate = fromDate
-	params.Set(queryparams.DateTo, toDate.String())
 	validatedParams.BeforeDate = toDate
 
 	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.SortName, sort.BackendString())
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.Keywords, keywords)
 	validatedParams.Keywords = keywords
-	params.Set(queryparams.Query, keywords)
 
 	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.Type, releaseType.String())
 	validatedParams.ReleaseType = releaseType
 
-	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
+	provisional, _ := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
 	validatedParams.Provisional = provisional
-	if provisional || set {
-		params.Set(queryparams.Provisional.String(), strconv.FormatBool(provisional))
-	}
-	confirmed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
+
+	confirmed, _ := queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
 	validatedParams.Confirmed = confirmed
-	if confirmed || set {
-		params.Set(queryparams.Confirmed.String(), strconv.FormatBool(confirmed))
-	}
-	postponed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
+
+	postponed, _ := queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
 	validatedParams.Postponed = postponed
-	if postponed || set {
-		params.Set(queryparams.Postponed.String(), strconv.FormatBool(postponed))
-	}
 
-	census, set, err := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
+	census, _ := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
 	validatedParams.Census = census
-	if census || set {
-		params.Set(queryparams.Census, strconv.FormatBool(census))
-	}
 
-	highlight, set, err := queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
+	highlight, _ := queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
 	validatedParams.Highlight = highlight
-	if highlight || set {
-		params.Set(queryparams.Highlight, strconv.FormatBool(highlight))
-	}
 
 	return validatedParams, nil
 }
