@@ -24,6 +24,7 @@ import (
 const (
 	iCalDateFormat = "20060102T150405Z"
 	defaultMaxAge  = 5 // 5 seconds
+	homepagePath   = "/"
 )
 
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
@@ -50,10 +51,15 @@ func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageA
 }
 
 // Release will load a release page
-func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI) http.HandlerFunc {
+func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
+
+		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
+		if err != nil {
+			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
+		}
 
 		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseUri)
 		if err != nil {
@@ -62,7 +68,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 		}
 
 		basePage := rc.NewBasePageModel()
-		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath())
+		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
 		setCacheHeader(ctx, w, babbage, releaseUri, cfg.MaxAgeKey)
 
@@ -92,7 +98,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	})
 }
 
-func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI) http.HandlerFunc {
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		params := r.URL.Query()
@@ -103,6 +109,11 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			return
 		}
 
+		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
+		if err != nil {
+			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
+		}
+
 		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
 		if err != nil {
 			setStatusCode(r, w, err)
@@ -110,7 +121,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		}
 
 		basePage := rc.NewBasePageModel()
-		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang)
+		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
 		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 

@@ -140,10 +140,6 @@ one = "Manylion cyswllt"
 description = "Changes to this release date"
 one = "Newidiadau i ddyddiad y datganiad hwn"
 
-[ReleaseSectionReleaseHistory]
-description = "Release history"
-one = "Hanes datganiadau"
-
 [ReleaseSectionAboutTheData]
 description = "About the data"
 one = "Ynglŷn â'r data"
@@ -167,22 +163,6 @@ one = "Dyddiad blaenorol"
 [ReleaseSubsectionReasonForChange]
 description = "Reason for change"
 one = "Rheswm dros newid"
-
-[ReleaseHistoryReleaseDate]
-description = "Release date"
-one = "Dyddiad y datganiad"
-
-[ReleaseHistoryReasonForUpdate]
-description = "Reason for update"
-one = "Rheswm dros ddiweddaru"
-
-[ReleaseHistoryLatest]
-description = "LATEST"
-one = "DIWEDDARAF"
-
-[ReleaseHistoryAllPrevious]
-description = "See all previous releases"
-one = "Gweld pob datganiad blaenorol"
 
 [BreadcrumbHome]
 description = "Home"
