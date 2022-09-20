@@ -64,7 +64,7 @@ func get() (*Config, error) {
 		Debug:                       false,
 		DefaultLimit:                10,
 		DefaultMaximumLimit:         100,
-		DefaultSort:                 queryparams.RelDateDesc.String(),
+		DefaultSort:                 queryparams.Newest,
 		DefaultMaximumSearchResults: 1000,
 		GracefulShutdownTimeout:     5 * time.Second,
 		HealthCheckInterval:         30 * time.Second,

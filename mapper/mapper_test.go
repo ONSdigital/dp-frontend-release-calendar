@@ -273,7 +273,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			AfterDate:   queryparams.Date{},
 			BeforeDate:  queryparams.Date{},
 			Keywords:    "everything",
-			Sort:        queryparams.RelDateAsc,
+			Sort:        queryparams.MustParseSort(queryparams.Newest),
 			ReleaseType: queryparams.Upcoming,
 		}
 
@@ -483,7 +483,7 @@ func TestGetPageURL(t *testing.T) {
 					Page:        2,
 					AfterDate:   queryparams.MustParseDate("2021-11-30"),
 					Keywords:    "test",
-					Sort:        queryparams.TitleAZ,
+					Sort:        queryparams.MustParseSort(queryparams.AlphaUser),
 					ReleaseType: queryparams.Published,
 					Highlight:   true,
 				},
@@ -495,7 +495,7 @@ func TestGetPageURL(t *testing.T) {
 					Limit:       25,
 					Page:        5,
 					BeforeDate:  queryparams.MustParseDate("2022-04-01"),
-					Sort:        queryparams.RelDateDesc,
+					Sort:        queryparams.MustParseSort(queryparams.Newest),
 					ReleaseType: queryparams.Upcoming,
 					Provisional: true,
 					Postponed:   true,

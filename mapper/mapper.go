@@ -502,31 +502,31 @@ func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
 		{
 			LocaleKey: "ReleaseCalendarSortOptionDateNewest",
 			Plural:    1,
-			Value:     queryparams.RelDateDesc.String(),
+			Value:     queryparams.Newest,
 			Disabled:  false,
 		},
 		{
 			LocaleKey: "ReleaseCalendarSortOptionDateOldest",
 			Plural:    1,
-			Value:     queryparams.RelDateAsc.String(),
+			Value:     queryparams.Oldest,
 			Disabled:  false,
 		},
 		{
 			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalAZ",
 			Plural:    1,
-			Value:     queryparams.TitleAZ.String(),
+			Value:     queryparams.AlphaUser,
 			Disabled:  false,
 		},
 		{
 			LocaleKey: "ReleaseCalendarSortOptionAlphabeticalZA",
 			Plural:    1,
-			Value:     queryparams.TitleZA.String(),
+			Value:     queryparams.ReverseAlphaUser,
 			Disabled:  false,
 		},
 		{
 			LocaleKey: "ReleaseCalendarSortOptionRelevance",
 			Plural:    1,
-			Value:     queryparams.Relevance.String(),
+			Value:     queryparams.RelevanceLabel,
 			Disabled: func(keywords string) bool {
 				if keywords == "" {
 					return true

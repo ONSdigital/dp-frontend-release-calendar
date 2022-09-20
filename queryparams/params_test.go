@@ -134,66 +134,122 @@ func TestCalculatePageNumber(t *testing.T) {
 	})
 }
 
-func TestSort(t *testing.T) {
-	Convey("given a set of erroneous sort string options", t, func() {
-		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending", "score"}
+func TestParseSortFromFrontend(t *testing.T) {
+	Convey("given a release type of Published", t, func() {
+		releaseType := Published
 
-		Convey("parsing produces an error and returns the Invalid sort option", func() {
-			for _, bso := range badSortOptions {
-				v, e := ParseSort(bso)
-
-				So(v, ShouldEqual, Invalid)
-				So(e, ShouldNotBeNil)
-			}
+		Convey("when the sort order is not given", func() {
+			sort, err := ParseSortFromFrontend("", releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedNewest])
 		})
 
-		Convey("and calling GetSortOrder() returns the same error and sort option", func() {
-			for _, bso := range badSortOptions {
-				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc)
-
-				So(v, ShouldEqual, Invalid)
-				So(e, ShouldNotBeNil)
-			}
+		Convey("when the sort order is 'newest'", func() {
+			sort, err := ParseSortFromFrontend(Newest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedNewest])
 		})
 
-		Convey("but a good sort option string is parsed without error, and the appropriate Sort option returned", func() {
-			goodSortOptions := []struct {
-				given   string
-				exValue Sort
-			}{
-				{given: "date-oldest", exValue: RelDateAsc},
-				{given: "date-newest", exValue: RelDateDesc},
-				{given: "alphabetical-az", exValue: TitleAZ},
-				{given: "alphabetical-za", exValue: TitleZA},
-			}
-
-			for _, gso := range goodSortOptions {
-				v, e := ParseSort(gso.given)
-
-				So(v, ShouldEqual, gso.exValue)
-				So(e, ShouldBeNil)
-
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc)
-				So(v, ShouldEqual, gso.exValue)
-				So(e, ShouldBeNil)
-
-			}
+		Convey("when the sort order is 'oldest'", func() {
+			sort, err := ParseSortFromFrontend(Oldest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedOldest])
 		})
-		Convey("except for the 'relevance' sort option - this parses as normal", func() {
-			v, e := ParseSort("relevance")
 
-			So(v, ShouldEqual, Relevance)
+		Convey("when the sort order is not a date option (such as 'relevance')", func() {
+			sort, err := ParseSortFromFrontend(RelevanceLabel, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[Relevance])
+		})
+	})
+
+	Convey("given a release type of Upcoming", t, func() {
+		releaseType := Upcoming
+
+		Convey("when the sort order is not given", func() {
+			sort, err := ParseSortFromFrontend("", releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[UpcomingNewest])
+		})
+
+		Convey("when the sort order is 'newest", func() {
+			sort, err := ParseSortFromFrontend(Newest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[UpcomingNewest])
+		})
+
+		Convey("when the sort order is 'oldest'", func() {
+			sort, err := ParseSortFromFrontend(Oldest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[UpcomingOldest])
+		})
+
+		Convey("when the sort order is not a date option (such as 'alphabetical A-Z')", func() {
+			sort, err := ParseSortFromFrontend(AlphaUser, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[Alpha])
+		})
+	})
+
+	Convey("given a release type of Cancelled", t, func() {
+		releaseType := Cancelled
+
+		Convey("when the sort order is not given", func() {
+			sort, err := ParseSortFromFrontend("", releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedNewest])
+		})
+
+		Convey("when the sort order is 'newest'", func() {
+			sort, err := ParseSortFromFrontend(Newest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedNewest])
+		})
+
+		Convey("when the sort order is 'oldest'", func() {
+			sort, err := ParseSortFromFrontend(Oldest, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[PublishedOldest])
+		})
+
+		Convey("when the sort order is not a date option (such as 'alphabetical Z-A')", func() {
+			sort, err := ParseSortFromFrontend(ReverseAlphaUser, releaseType)
+			So(err, ShouldBeNil)
+			So(sort, ShouldResemble, sortValues[ReverseAlpha])
+		})
+	})
+}
+
+func TestSortOrder(t *testing.T) {
+	Convey("given a valid release type", t, func() {
+		releaseType := Published
+
+		Convey("when GetSortOrder() is called with an invalid sort option", func() {
+			v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{"dont sort"}}, releaseType, MustParseSort(RelevanceLabel))
+
+			So(e, ShouldNotBeNil)
+			So(v, ShouldResemble, sortValues[InvalidSort])
+		})
+
+		Convey("when GetSortOrder() is called with a valid sort option such as 'alphabetical AZ'", func() {
+			v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{AlphaUser}}, releaseType, MustParseSort(RelevanceLabel))
+
 			So(e, ShouldBeNil)
+			So(v, ShouldResemble, sortValues[Alpha])
+		})
 
-			Convey("but can only be set if a keyword has also been set", func() {
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}, Keywords: []string{"keywords set"}}, RelDateDesc)
-				So(v, ShouldEqual, Relevance)
-				So(e, ShouldBeNil)
+		Convey("when GetSortOrder() is called with the 'relevance' sort option and a keyword has been set", func() {
+			v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{RelevanceLabel}, Keywords: []string{"keywords set"}}, releaseType, MustParseSort(AlphaUser))
 
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}}, RelDateDesc)
-				So(v, ShouldEqual, RelDateDesc)
-				So(e, ShouldBeNil)
-			})
+			So(e, ShouldBeNil)
+			So(v, ShouldResemble, sortValues[Relevance])
+		})
+
+		Convey("when GetSortOrder() is called with the 'relevance' sort option but a keyword has NOT been set", func() {
+			v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{RelevanceLabel}}, releaseType, MustParseSort(AlphaUser))
+
+			So(e, ShouldBeNil)
+			So(v, ShouldResemble, sortValues[Alpha])
 		})
 	})
 }
@@ -344,7 +400,7 @@ func TestDatesFromParams(t *testing.T) {
 
 func TestParamsAsQuery(t *testing.T) {
 	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true, Census: true}
+		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: sortValues[Alpha], ReleaseType: Upcoming, Provisional: true, Census: true}
 
 		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
 			uv := vp.AsQuery()
@@ -357,7 +413,7 @@ func TestParamsAsQuery(t *testing.T) {
 			So(uv.Get(MonthBefore), ShouldEqual, "")
 			So(uv.Get(DayBefore), ShouldEqual, "")
 			So(uv.Get(Keywords), ShouldEqual, "some keywords")
-			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
+			So(uv.Get(SortName), ShouldEqual, sortValues[Alpha].feValue)
 			So(uv.Get(Type), ShouldEqual, Upcoming.String())
 			So(uv.Get(Provisional.String()), ShouldEqual, "true")
 			So(uv.Get(Confirmed.String()), ShouldEqual, "false")

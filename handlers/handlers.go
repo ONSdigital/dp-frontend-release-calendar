@@ -189,7 +189,14 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	params.Set(queryparams.DateTo, toDate.String())
 	validatedParams.BeforeDate = toDate
 
-	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
+	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
+	if err != nil {
+		return validatedParams, err
+	}
+	params.Set(queryparams.Type, releaseType.String())
+	validatedParams.ReleaseType = releaseType
+
+	sort, err := queryparams.GetSortOrder(ctx, params, releaseType, queryparams.MustParseSort(cfg.DefaultSort))
 	if err != nil {
 		return validatedParams, err
 	}
@@ -203,13 +210,6 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	params.Set(queryparams.Keywords, keywords)
 	validatedParams.Keywords = keywords
 	params.Set(queryparams.Query, keywords)
-
-	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
-	if err != nil {
-		return validatedParams, err
-	}
-	params.Set(queryparams.Type, releaseType.String())
-	validatedParams.ReleaseType = releaseType
 
 	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
 	validatedParams.Provisional = provisional
@@ -253,7 +253,7 @@ func releaseCalendarICSEntries(w http.ResponseWriter, req *http.Request, userAcc
 	params := req.URL.Query()
 
 	params.Set(queryparams.Limit, strconv.Itoa(cfg.DefaultMaximumSearchResults))
-	params.Set(queryparams.SortName, queryparams.RelDateAsc.BackendString())
+	params.Set(queryparams.SortName, queryparams.RelDateAsc)
 	params.Set(queryparams.DateTo, time.Now().AddDate(0, 3, 0).Format(queryparams.DateFormat))
 	params.Set(queryparams.Type, queryparams.Upcoming.String())
 

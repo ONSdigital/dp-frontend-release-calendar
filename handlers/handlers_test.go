@@ -139,7 +139,7 @@ func TestUnitHandlers(t *testing.T) {
 						})
 
 						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("error on Babbage"))
 
 							Convey("Then it returns 200 and the default cache header", func() {
 								router.ServeHTTP(w, req)
@@ -166,7 +166,7 @@ func TestUnitHandlers(t *testing.T) {
 						})
 
 						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("error on Babbage"))
 
 							Convey("Then it returns 200 and the default cache header", func() {
 								router.ServeHTTP(w, req)
@@ -298,7 +298,7 @@ func TestUnitHandlers(t *testing.T) {
 							})
 
 							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("error on Babbage"))
 
 								Convey("Then it returns 200 and the default cache header", func() {
 									router.ServeHTTP(w, req)
@@ -326,7 +326,7 @@ func TestUnitHandlers(t *testing.T) {
 							})
 
 							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("error on Babbage"))
 
 								Convey("Then it returns 200 and the default cache header", func() {
 									router.ServeHTTP(w, req)
@@ -531,7 +531,7 @@ func defaultParams() url.Values {
 	values.Set("offset", "0")
 	values.Set("fromDate", "")
 	values.Set("toDate", "")
-	values.Set("sort", queryparams.RelDateDesc.BackendString())
+	values.Set("sort", queryparams.RelDateDesc)
 	values.Set("keywords", "")
 	values.Set("query", "")
 	values.Set("release-type", queryparams.Published.Name())
@@ -544,7 +544,7 @@ func defaultICSParams() url.Values {
 	values := url.Values{}
 	values.Set("limit", "1000")
 	values.Set("toDate", time.Now().AddDate(0, 3, 0).Format(queryparams.DateFormat))
-	values.Set("sort", queryparams.RelDateAsc.BackendString())
+	values.Set("sort", queryparams.RelDateAsc)
 	values.Set("release-type", queryparams.Upcoming.String())
 
 	return values

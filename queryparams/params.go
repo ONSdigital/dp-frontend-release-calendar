@@ -91,22 +91,20 @@ func GetPage(ctx context.Context, params url.Values, defaultValue int, validator
 	return limit, nil
 }
 
-func GetSortOrder(ctx context.Context, params url.Values, defaultValue Sort) (Sort, error) {
+func GetSortOrder(ctx context.Context, params url.Values, releaseType ReleaseType, defaultValue Sort) (Sort, error) {
 	var (
-		sort = defaultValue
+		sort Sort
 		err  error
 	)
 	asString := params.Get(SortName)
-	if asString != "" {
-		sort, err = ParseSort(asString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
-			return Invalid, err
-		}
+	sort, err = ParseSortFromFrontend(asString, releaseType)
+	if err != nil {
+		log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
+		return sort, err
 	}
 
 	// When keywords are empty in this case, force the sort order back to the default.
-	if params.Get(Keywords) == "" && sort == Relevance {
+	if params.Get(Keywords) == "" && sort.feValue == RelevanceLabel {
 		return defaultValue, nil
 	}
 
@@ -249,38 +247,118 @@ func CalculatePageNumber(offset, pageSize int) int {
 	return ((offset + 1) / pageSize) + 1
 }
 
-type Sort int
+type SortKind int
 
 const (
-	Invalid Sort = iota
-	RelDateAsc
-	RelDateDesc
-	TitleAZ
-	TitleZA
+	InvalidSort SortKind = iota
+	PublishedNewest
+	PublishedOldest
+	UpcomingNewest
+	UpcomingOldest
+	CancelledNewest
+	CancelledOldest
+	Alpha
+	ReverseAlpha
 	Relevance
+
+	// Frontend labels
+	Newest           = "date-newest"
+	Oldest           = "date-oldest"
+	AlphaUser        = "alphabetical-az"
+	ReverseAlphaUser = "alphabetical-za"
+
+	// Backend labels
+	RelDateAsc          = "release_date_asc"
+	RelDateDesc         = "release_date_desc"
+	AlphaBackend        = "title_asc"
+	ReverseAlphaBackend = "title_desc"
+
+	// Common Labels
+	RelevanceLabel = "relevance"
+	InvalidLabel   = "invalid"
 )
 
-var sortValues = map[Sort]struct{ feValue, beValue string }{
-	RelDateAsc:  {feValue: "date-oldest", beValue: "release_date_asc"},
-	RelDateDesc: {feValue: "date-newest", beValue: "release_date_desc"},
-	TitleAZ:     {feValue: "alphabetical-az", beValue: "title_asc"},
-	TitleZA:     {feValue: "alphabetical-za", beValue: "title_desc"},
-	Relevance:   {feValue: "relevance", beValue: "relevance"},
-	Invalid:     {feValue: "invalid", beValue: "invalid"},
+type Sort struct {
+	feValue string
+	beValue string
 }
 
-func ParseSort(sort string) (Sort, error) {
-	for s, sv := range sortValues {
-		if strings.EqualFold(sort, sv.feValue) {
-			return s, nil
+var sortValues = map[SortKind]Sort{
+	PublishedNewest: {feValue: Newest, beValue: RelDateDesc},
+	PublishedOldest: {feValue: Oldest, beValue: RelDateAsc},
+	UpcomingNewest:  {feValue: Newest, beValue: RelDateAsc},
+	UpcomingOldest:  {feValue: Oldest, beValue: RelDateDesc},
+	CancelledNewest: {feValue: Newest, beValue: RelDateDesc},
+	CancelledOldest: {feValue: Oldest, beValue: RelDateAsc},
+	Alpha:           {feValue: AlphaUser, beValue: AlphaBackend},
+	ReverseAlpha:    {feValue: ReverseAlphaUser, beValue: ReverseAlphaBackend},
+	Relevance:       {feValue: RelevanceLabel, beValue: RelevanceLabel},
+	InvalidSort:     {feValue: InvalidLabel, beValue: InvalidLabel},
+}
+
+// ParseSortFromFrontend returns the Sort, given a sort parameter - a string representing the frontend value of a sort
+// option. This may be empty.
+//
+// When the sort parameter is empty, or is a date related sort option, it is assumed the value of the releaseType parameter
+// is a valid ReleaseType, and the returned value of Sort cannot be trusted if this is not the case.
+// For all other values of the sort parameter, the releaseType parameter is not used.
+func ParseSortFromFrontend(sort string, releaseType ReleaseType) (Sort, error) {
+	switch sort {
+	case "",
+		Newest:
+		if releaseType == Upcoming {
+			return sortValues[UpcomingNewest], nil
 		}
+		return sortValues[PublishedNewest], nil
+	case Oldest:
+		if releaseType == Upcoming {
+			return sortValues[UpcomingOldest], nil
+		}
+		return sortValues[PublishedOldest], nil
+	case AlphaUser:
+		return sortValues[Alpha], nil
+	case ReverseAlphaUser:
+		return sortValues[ReverseAlpha], nil
+	case RelevanceLabel:
+		return sortValues[Relevance], nil
+	default:
+		return sortValues[InvalidSort], errors.New("invalid sort option string")
 	}
-
-	return Invalid, errors.New("invalid sort option string")
 }
 
+// ParseSortFromBackend returns the Sort, given a sort parameter - a string representing the backend value of a sort
+// option. This may be empty.
+//
+// When the sort parameter is empty, or is a date related sort option, it is assumed the value of the releaseType parameter
+// is a valid ReleaseType, and the returned value of Sort cannot be trusted if this is not the case.
+// For all other values of the sort parameter, the releaseType parameter is not used.
+func ParseSortFromBackend(sort string, releaseType ReleaseType) (Sort, error) {
+	switch sort {
+	case "",
+		RelDateDesc:
+		if releaseType == Upcoming {
+			return sortValues[UpcomingOldest], nil
+		}
+		return sortValues[PublishedNewest], nil
+	case RelDateAsc:
+		if releaseType == Upcoming {
+			return sortValues[UpcomingNewest], nil
+		}
+		return sortValues[PublishedOldest], nil
+	case AlphaBackend:
+		return sortValues[Alpha], nil
+	case ReverseAlphaBackend:
+		return sortValues[ReverseAlpha], nil
+	case RelevanceLabel:
+		return sortValues[Relevance], nil
+	default:
+		return sortValues[InvalidSort], errors.New("invalid sort option string")
+	}
+}
+
+// MustParseSort is a convenience function that should be used only in testing
 func MustParseSort(sort string) Sort {
-	s, err := ParseSort(sort)
+	s, err := ParseSortFromFrontend(sort, InvalidReleaseType)
 	if err != nil {
 		panic("invalid sort string: " + sort)
 	}
@@ -289,11 +367,11 @@ func MustParseSort(sort string) Sort {
 }
 
 func (s Sort) String() string {
-	return sortValues[s].feValue
+	return s.feValue
 }
 
 func (s Sort) BackendString() string {
-	return sortValues[s].beValue
+	return s.beValue
 }
 
 type Date struct {
