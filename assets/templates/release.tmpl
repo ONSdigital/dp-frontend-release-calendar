@@ -1,4 +1,20 @@
-<div class="ons-page__container ons-container release" 
+<script>
+window.dataLayer.push({
+    {{ if .Description.Published }}
+        "release-status": "published",
+    {{ else }}
+        "release-status": "cancelled",
+    {{ end }}
+        "release-date": {{dateFormatYYYYMMDD .Description.ReleaseDate}},
+        "release-time": {{timeFormat24h .Description.ReleaseDate}},
+        "release-date-status": "{{- .Description.ProvisionalDate -}}",
+        "next-release-date": "{{- .Description.NextRelease -}}"
+        "contact-name": "{{- .Description.Contact.Name -}}",
+});
+</script>
+
+
+<div class="ons-page__container ons-container release"
   {{ if .Description.Published }}
     data-gtm-release-status="published"
   {{ else }}
