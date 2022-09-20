@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/assets"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
@@ -53,6 +54,7 @@ func (svc *Service) Init(ctx context.Context, cfg *config.Config, serviceList *E
 		ReleaseCalendarAPI: releasecalendar.NewWithHealthClient(routerHealthClient),
 		SearchAPI:          sitesearch.NewWithHealthClient(routerHealthClient),
 		BabbageAPI:         handlers.NewBabbageClient(cfg.BabbageURL),
+		ZebedeeClient:      zebedee.NewWithHealthClient(routerHealthClient),
 	}
 
 	// Get healthcheck with checkers

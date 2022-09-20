@@ -3,9 +3,11 @@ package mapper
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
@@ -106,7 +108,20 @@ func createTableOfContents(
 	return toc
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path string) model.Release {
+func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyBanner {
+	var mappedEmergencyBanner coreModel.EmergencyBanner
+	emptyBannerObj := zebedee.EmergencyBanner{}
+	if bannerData != emptyBannerObj {
+		mappedEmergencyBanner.Title = bannerData.Title
+		mappedEmergencyBanner.Type = strings.Replace(bannerData.Type, "_", "-", -1)
+		mappedEmergencyBanner.Description = bannerData.Description
+		mappedEmergencyBanner.URI = bannerData.URI
+		mappedEmergencyBanner.LinkText = bannerData.LinkText
+	}
+	return mappedEmergencyBanner
+}
+
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -131,6 +146,8 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		},
 	}
 	result.Language = lang
+	result.ServiceMessage = serviceMessage
+	result.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
@@ -207,12 +224,14 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang string) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
 	calendar.Language = lang
 	calendar.BetaBannerEnabled = true
+	calendar.ServiceMessage = serviceMessage
+	calendar.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
 		ElementId: "keyword-search",
