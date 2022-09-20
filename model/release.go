@@ -33,7 +33,6 @@ type Release struct {
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
-	ReleaseHistory            []Link             `json:"release_history"`
 	AboutTheData              bool               `json:"about_the_data"`
 	PublicationState          PublicationState   `json:"publication_state"`
 }
@@ -57,12 +56,6 @@ type ReleaseDescription struct {
 	ReleaseDate        string         `json:"release_date"`
 	Summary            string         `json:"summary"`
 	Title              string         `json:"title"`
-}
-
-type PreviousReleases struct {
-	coreModel.Page
-	Description    ReleaseDescription `json:"description"`
-	ReleaseHistory []Link             `json:"release_history"`
 }
 
 // FuncGetPostponementReason Gets the most recent postponement reason, if available
