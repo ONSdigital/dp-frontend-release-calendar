@@ -1,5 +1,9 @@
 <script>
-window.dataLayer.push({
+dataLayer = [{
+    "analyticsOptOut": getUsageCookieValue(),
+    "gtm.whitelist": ["google","hjtc","lcl"],
+    "gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+    "contentTitle": "{{- .Page.Metadata.Title -}}"
     {{ if .Description.Published }}
         "release-status": "published",
     {{ else }}
@@ -10,7 +14,7 @@ window.dataLayer.push({
         "release-date-status": "{{- .Description.ProvisionalDate -}}",
         "next-release-date": "{{- .Description.NextRelease -}}"
         "contact-name": "{{- .Description.Contact.Name -}}",
-});
+}];
 </script>
 
 
