@@ -431,22 +431,23 @@ func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	setValue(query, Limit, strconv.Itoa(vp.Limit))
 	setValue(query, Page, strconv.Itoa(vp.Page))
 
-	setValue(query, YearBefore, vp.BeforeDate.YearString())
-	setValue(query, MonthBefore, vp.BeforeDate.MonthString())
-	setValue(query, DayBefore, vp.BeforeDate.DayString())
-
-	setValue(query, YearAfter, vp.AfterDate.YearString())
-	setValue(query, MonthAfter, vp.AfterDate.MonthString())
-	setValue(query, DayAfter, vp.AfterDate.DayString())
-
 	if isBackend {
 		setValue(query, Offset, strconv.Itoa(vp.Offset))
 		setValue(query, Query, vp.Keywords)
 		setValue(query, SortName, vp.getSortBackendString())
+		setValue(query, DateFrom, vp.AfterDate.String())
+		setValue(query, DateTo, vp.BeforeDate.String())
 	} else {
 		setValue(query, Keywords, vp.Keywords)
 		setValue(query, SortName, vp.Sort.String())
+		setValue(query, YearBefore, vp.BeforeDate.YearString())
+		setValue(query, MonthBefore, vp.BeforeDate.MonthString())
+		setValue(query, DayBefore, vp.BeforeDate.DayString())
+		setValue(query, YearAfter, vp.AfterDate.YearString())
+		setValue(query, MonthAfter, vp.AfterDate.MonthString())
+		setValue(query, DayAfter, vp.AfterDate.DayString())
 	}
+
 	setValue(query, Type, vp.ReleaseType.String())
 	if vp.ReleaseType == Upcoming {
 		setBoolValue(query, Provisional.String(), vp.Provisional)
