@@ -430,10 +430,6 @@ func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	var query = make(url.Values)
 	setValue(query, Limit, strconv.Itoa(vp.Limit))
 	setValue(query, Page, strconv.Itoa(vp.Page))
-	if isBackend {
-		// Frontend won't need offset
-		setValue(query, Offset, strconv.Itoa(vp.Offset))
-	}
 
 	setValue(query, YearBefore, vp.BeforeDate.YearString())
 	setValue(query, MonthBefore, vp.BeforeDate.MonthString())
@@ -443,10 +439,12 @@ func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	setValue(query, MonthAfter, vp.AfterDate.MonthString())
 	setValue(query, DayAfter, vp.AfterDate.DayString())
 
-	setValue(query, Keywords, vp.Keywords)
 	if isBackend {
+		setValue(query, Offset, strconv.Itoa(vp.Offset))
+		setValue(query, Query, vp.Keywords)
 		setValue(query, SortName, vp.Sort.BackendString())
 	} else {
+		setValue(query, Keywords, vp.Keywords)
 		setValue(query, SortName, vp.Sort.String())
 	}
 	setValue(query, Type, vp.ReleaseType.String())

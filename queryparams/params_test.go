@@ -476,6 +476,7 @@ func TestParamsAsFrontendQuery(t *testing.T) {
 
 					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
 						So(uv.Get(Offset), ShouldEqual, "")
+						So(uv.Get(Query), ShouldEqual, "")
 					})
 				})
 			})
@@ -503,6 +504,7 @@ func TestParamsAsFrontendQuery(t *testing.T) {
 
 					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
 						So(uv.Get(Offset), ShouldEqual, "")
+						So(uv.Get(Query), ShouldEqual, "")
 						So(uv.Get(Provisional.String()), ShouldEqual, "")
 						So(uv.Get(Confirmed.String()), ShouldEqual, "")
 						So(uv.Get(Postponed.String()), ShouldEqual, "")
@@ -545,7 +547,7 @@ func TestParamsAsBackendQuery(t *testing.T) {
 					So(uv.Get(YearBefore), ShouldEqual, "2022")
 					So(uv.Get(MonthBefore), ShouldEqual, "9")
 					So(uv.Get(DayBefore), ShouldEqual, "19")
-					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(Query), ShouldEqual, "some keywords")
 					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
 					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
 					So(uv.Get(Provisional.String()), ShouldEqual, "true")
@@ -553,6 +555,10 @@ func TestParamsAsBackendQuery(t *testing.T) {
 					So(uv.Get(Postponed.String()), ShouldEqual, "true")
 					So(uv.Get(Census), ShouldEqual, "")
 					So(uv.Get(Highlight), ShouldEqual, "true")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Keywords), ShouldEqual, "")
+					})
 				})
 			})
 		})
@@ -572,13 +578,14 @@ func TestParamsAsBackendQuery(t *testing.T) {
 					So(uv.Get(YearBefore), ShouldEqual, "2022")
 					So(uv.Get(MonthBefore), ShouldEqual, "9")
 					So(uv.Get(DayBefore), ShouldEqual, "19")
-					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(Query), ShouldEqual, "some keywords")
 					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
 					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
 					So(uv.Get(Census), ShouldEqual, "")
 					So(uv.Get(Highlight), ShouldEqual, "true")
 
 					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Keywords), ShouldEqual, "")
 						So(uv.Get(Provisional.String()), ShouldEqual, "")
 						So(uv.Get(Confirmed.String()), ShouldEqual, "")
 						So(uv.Get(Postponed.String()), ShouldEqual, "")
