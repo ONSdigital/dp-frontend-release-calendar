@@ -442,7 +442,7 @@ func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	if isBackend {
 		setValue(query, Offset, strconv.Itoa(vp.Offset))
 		setValue(query, Query, vp.Keywords)
-		setValue(query, SortName, vp.Sort.BackendString())
+		setValue(query, SortName, vp.getSortBackendString())
 	} else {
 		setValue(query, Keywords, vp.Keywords)
 		setValue(query, SortName, vp.Sort.String())
@@ -457,6 +457,18 @@ func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	setBoolValue(query, Highlight, vp.Highlight)
 
 	return query
+}
+
+func (vp ValidatedParams) getSortBackendString() string {
+	// Newest is now defined as 'the closest date to today' and so its
+	// meaning in terms of algorithmic definition (ascending/descending)
+	// is reversed depending on the release-type that is being viewed
+	if vp.ReleaseType == Upcoming && vp.Sort == RelDateDesc {
+		return RelDateAsc.BackendString()
+	} else if vp.ReleaseType == Upcoming && vp.Sort == RelDateAsc {
+		return RelDateDesc.BackendString()
+	}
+	return vp.Sort.BackendString()
 }
 
 func setValue(query url.Values, key string, value string) {

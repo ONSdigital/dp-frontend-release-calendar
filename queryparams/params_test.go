@@ -524,7 +524,6 @@ func TestParamsAsBackendQuery(t *testing.T) {
 			AfterDate:   MustParseDate("2020-01-01"),
 			BeforeDate:  MustParseDate("2022-09-19"),
 			Keywords:    "some keywords",
-			Sort:        RelDateDesc,
 			Provisional: true,
 			Confirmed:   true,
 			Postponed:   true,
@@ -534,30 +533,65 @@ func TestParamsAsBackendQuery(t *testing.T) {
 
 		Convey("And the release type is upcoming", func() {
 			vp.ReleaseType = Upcoming
+			Convey("And we are sorting by date in ascending order", func() {
+				vp.Sort = RelDateAsc
+				Convey("When we call AsBackendQuery", func() {
+					uv := vp.AsBackendQuery()
+					Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+						So(uv.Get(Limit), ShouldEqual, "10")
+						So(uv.Get(Page), ShouldEqual, "2")
+						So(uv.Get(Offset), ShouldEqual, "10")
+						So(uv.Get(YearAfter), ShouldEqual, "2020")
+						So(uv.Get(MonthAfter), ShouldEqual, "1")
+						So(uv.Get(DayAfter), ShouldEqual, "1")
+						So(uv.Get(YearBefore), ShouldEqual, "2022")
+						So(uv.Get(MonthBefore), ShouldEqual, "9")
+						So(uv.Get(DayBefore), ShouldEqual, "19")
+						So(uv.Get(Query), ShouldEqual, "some keywords")
+						So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+						So(uv.Get(Provisional.String()), ShouldEqual, "true")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+						So(uv.Get(Postponed.String()), ShouldEqual, "true")
+						So(uv.Get(Census), ShouldEqual, "")
+						So(uv.Get(Highlight), ShouldEqual, "true")
 
-			Convey("When we call AsBackendQuery", func() {
-				uv := vp.AsBackendQuery()
-				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
-					So(uv.Get(Limit), ShouldEqual, "10")
-					So(uv.Get(Page), ShouldEqual, "2")
-					So(uv.Get(Offset), ShouldEqual, "10")
-					So(uv.Get(YearAfter), ShouldEqual, "2020")
-					So(uv.Get(MonthAfter), ShouldEqual, "1")
-					So(uv.Get(DayAfter), ShouldEqual, "1")
-					So(uv.Get(YearBefore), ShouldEqual, "2022")
-					So(uv.Get(MonthBefore), ShouldEqual, "9")
-					So(uv.Get(DayBefore), ShouldEqual, "19")
-					So(uv.Get(Query), ShouldEqual, "some keywords")
-					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
-					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
-					So(uv.Get(Provisional.String()), ShouldEqual, "true")
-					So(uv.Get(Confirmed.String()), ShouldEqual, "true")
-					So(uv.Get(Postponed.String()), ShouldEqual, "true")
-					So(uv.Get(Census), ShouldEqual, "")
-					So(uv.Get(Highlight), ShouldEqual, "true")
+						Convey("And the date sort order is inverted", func() {
+							So(uv.Get(SortName), ShouldEqual, RelDateDesc.BackendString())
+						})
+						Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+							So(uv.Get(Keywords), ShouldEqual, "")
+						})
+					})
+				})
+			})
+			Convey("And we are sorting by date in descending order", func() {
+				vp.Sort = RelDateDesc
+				Convey("When we call AsBackendQuery", func() {
+					uv := vp.AsBackendQuery()
+					Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+						So(uv.Get(Limit), ShouldEqual, "10")
+						So(uv.Get(Page), ShouldEqual, "2")
+						So(uv.Get(Offset), ShouldEqual, "10")
+						So(uv.Get(YearAfter), ShouldEqual, "2020")
+						So(uv.Get(MonthAfter), ShouldEqual, "1")
+						So(uv.Get(DayAfter), ShouldEqual, "1")
+						So(uv.Get(YearBefore), ShouldEqual, "2022")
+						So(uv.Get(MonthBefore), ShouldEqual, "9")
+						So(uv.Get(DayBefore), ShouldEqual, "19")
+						So(uv.Get(Query), ShouldEqual, "some keywords")
+						So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+						So(uv.Get(Provisional.String()), ShouldEqual, "true")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+						So(uv.Get(Postponed.String()), ShouldEqual, "true")
+						So(uv.Get(Census), ShouldEqual, "")
+						So(uv.Get(Highlight), ShouldEqual, "true")
 
-					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
-						So(uv.Get(Keywords), ShouldEqual, "")
+						Convey("And the date sort order is inverted", func() {
+							So(uv.Get(SortName), ShouldEqual, RelDateAsc.BackendString())
+						})
+						Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+							So(uv.Get(Keywords), ShouldEqual, "")
+						})
 					})
 				})
 			})
