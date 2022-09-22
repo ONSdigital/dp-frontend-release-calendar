@@ -1,15 +1,19 @@
 <div class="ons-page__container ons-container release-calendar">
   <div class="ons-grid ons-u-ml-no">
     <h1 class="ons-u-fs-xxxl ons-u-mt-m ons-u-mb-xl">{{ localise "ReleaseCalendarPageTitle" .Language 1 }}</h1>
-
-    {{/* Left column */}}
-    <div class="ons-grid__col ons-col-4@m ons-u-p-no">
-      {{ template "partials/calendar/filters" . }}
-    </div>
-
-    {{/* Right column */}}
-    <div class="ons-grid__col ons-col-8@m ons-u-pl-no@xxs@m ons-u-bt@xxs@m ons-u-pt-s@xxs@m">
-      {{ template "partials/calendar/items" . }}
-    </div>
+    {{ if and .GlobalError.Title.LocaleKey .GlobalError.Message }}
+      <div class="ons-grid__col ons-col-12@m ons-u-p-no ons-u-mb-xl">
+        {{ template "partials/calendar/global-error" . }}
+      </div>
+    {{ else }}
+      {{/* Left column */}}
+      <div class="ons-grid__col ons-col-4@m ons-u-p-no">
+        {{ template "partials/calendar/filters" . }}
+      </div>
+      {{/* Right column */}}
+      <div class="ons-grid__col ons-col-8@m ons-u-pl-no@xxs@m ons-u-bt@xxs@m ons-u-pt-s@xxs@m">
+        {{ template "partials/calendar/items" . }}
+      </div>
+    {{ end }}
   </div>
 </div>

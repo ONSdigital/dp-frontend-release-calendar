@@ -106,6 +106,8 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		validatedParams, err := validateParams(ctx, params, cfg)
 		if err != nil {
 			setStatusCode(r, w, err)
+			calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
+			rc.BuildPage(w, calendar, "calendar")
 			return
 		}
 
@@ -120,11 +122,8 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			return
 		}
 
-		basePage := rc.NewBasePageModel()
-		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
-
+		calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
-
 		rc.BuildPage(w, calendar, "calendar")
 	})
 }

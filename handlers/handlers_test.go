@@ -341,6 +341,8 @@ func TestUnitHandlers(t *testing.T) {
 
 				Convey("Given a request with parameters", func() {
 					Convey("When the limit parameter is negative", func() {
+						mockRenderClient.EXPECT().NewBasePageModel()
+						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
 
 						Convey("Then it returns 500", func() {
