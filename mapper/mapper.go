@@ -3,9 +3,11 @@ package mapper
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
@@ -18,7 +20,6 @@ func createTableOfContents(
 	relatedDocuments []model.Link,
 	relatedDatasets []model.Link,
 	dateChanges []model.DateChange,
-	releaseHistory []model.Link,
 	aboutTheData bool,
 	relatedArticleDatasets []model.Link,
 ) coreModel.TableOfContents {
@@ -91,17 +92,6 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "changestothisreleasedate")
 	}
 
-	if len(releaseHistory) > 0 {
-		sections["releasehistory"] = coreModel.ContentSection{
-			Current: false,
-			Title: coreModel.Localisation{
-				LocaleKey: "ReleaseSectionReleaseHistory",
-				Plural:    1,
-			},
-		}
-		displayOrder = append(displayOrder, "releasehistory")
-	}
-
 	if aboutTheData {
 		sections["aboutthedata"] = coreModel.ContentSection{
 			Current: false,
@@ -129,7 +119,20 @@ func createTableOfContents(
 	return toc
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path string) model.Release {
+func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyBanner {
+	var mappedEmergencyBanner coreModel.EmergencyBanner
+	emptyBannerObj := zebedee.EmergencyBanner{}
+	if bannerData != emptyBannerObj {
+		mappedEmergencyBanner.Title = bannerData.Title
+		mappedEmergencyBanner.Type = strings.Replace(bannerData.Type, "_", "-", -1)
+		mappedEmergencyBanner.Description = bannerData.Description
+		mappedEmergencyBanner.URI = bannerData.URI
+		mappedEmergencyBanner.LinkText = bannerData.LinkText
+	}
+	return mappedEmergencyBanner
+}
+
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -154,8 +157,11 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		},
 	}
 	result.Language = lang
+	result.ServiceMessage = serviceMessage
+	result.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedArticleDatasets = mapLink(release.RelatedDatasets)
+	result.RelatedAPIDatasets = mapLink(release.RelatedAPIDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
 	result.RelatedMethodologyArticle = mapLink(release.RelatedMethodologyArticle)
@@ -182,7 +188,6 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.RelatedDocuments,
 		result.RelatedDatasets,
 		result.DateChanges,
-		result.ReleaseHistory,
 		result.AboutTheData,
 		result.RelatedArticleDatasets,
 	)
@@ -233,12 +238,14 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang string) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
 	calendar.Language = lang
 	calendar.BetaBannerEnabled = true
+	calendar.ServiceMessage = serviceMessage
+	calendar.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
 	calendar.KeywordSearch = coreModel.CompactSearch{
 		ElementId: "keyword-search",
@@ -319,6 +326,12 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	return calendar
 }
 
+// The current page number sits within a window, and the window size determines the
+// number of pages around the current page. For example a window size of 3 with the
+// current page shown in () would give:
+// - (1) 2 3 at the start of the page range
+// - 8 9 (10) at the end of the page range
+// - 1 ... 5 (6) 7 ... 10 in the middle of the page range
 const defaultWindowSize = 5
 
 func getPagesToDisplay(params queryparams.ValidatedParams, path string, totalPages, windowSize int) []coreModel.PageToDisplay {
@@ -386,7 +399,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 }
 
 func getPageURL(page int, params queryparams.ValidatedParams, path string) (pageURL string) {
-	query := params.AsQuery()
+	query := params.AsFrontendQuery()
 	query.Set("page", strconv.Itoa(page))
 
 	return path + "?" + query.Encode()

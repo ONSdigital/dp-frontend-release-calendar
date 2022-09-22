@@ -140,10 +140,6 @@ one = "Manylion cyswllt"
 description = "Changes to this release date"
 one = "Newidiadau i ddyddiad y datganiad hwn"
 
-[ReleaseSectionReleaseHistory]
-description = "Release history"
-one = "Hanes datganiadau"
-
 [ReleaseSectionAboutTheData]
 description = "About the data"
 one = "Ynglŷn â'r data"
@@ -171,22 +167,6 @@ one = "Dyddiad blaenorol"
 [ReleaseSubsectionReasonForChange]
 description = "Reason for change"
 one = "Rheswm dros newid"
-
-[ReleaseHistoryReleaseDate]
-description = "Release date"
-one = "Dyddiad y datganiad"
-
-[ReleaseHistoryReasonForUpdate]
-description = "Reason for update"
-one = "Rheswm dros ddiweddaru"
-
-[ReleaseHistoryLatest]
-description = "LATEST"
-one = "DIWEDDARAF"
-
-[ReleaseHistoryAllPrevious]
-description = "See all previous releases"
-one = "Gweld pob datganiad blaenorol"
 
 [BreadcrumbHome]
 description = "Home"
@@ -306,23 +286,23 @@ one = "Mae'r ystadegau hyn wedi cael statws Ystadegau Gwladol gan y Swyddfa Rheo
 
 [AboutDataNationalStatisticsBody2]
 description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
-one = "Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus, sy'n golygu eu bod:"
+one = " Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus, sy'n golygu eu bod:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
-one = "Cod Ymarfer ar gyfer Ystadegau."
+one = "Cod Ymarfer ar gyfer Ystadegau"
 
 [AboutDataNationalStatisticsIdentified]
 description = "meet identified user needs"
-one = "yn diwallu anghenion defnyddwyr a nodwyd "
+one = "yn diwallu anghenion defnyddwyr a nodwyd"
 
 [AboutDataNationalStatisticsExplained]
 description = "are well explained and easily accessible"
-one = "wedi'u hesbonio'n dda ac ar gael yn hawdd "
+one = "wedi'u hesbonio'n dda ac ar gael yn hawdd"
 
 [AboutDataNationalStatisticsProduced]
 description = "are produced based on appropriate data and methods"
-one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol "
+one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol"
 
 [AboutDataNationalStatisticsManaged]
 description = "are managed impartially and objectively in the public interest"

@@ -29,12 +29,12 @@ type Release struct {
 	RelatedDocuments          []Link             `json:"related_documents"`
 	RelatedDatasets           []Link             `json:"related_datasets"`
 	RelatedArticleDatasets    []Link             `json:"related_article_datasets"`
+	RelatedAPIDatasets        []Link             `json:"related_api_datasets"`
 	RelatedMethodology        []Link             `json:"related_methodology"`
 	RelatedMethodologyArticle []Link             `json:"related_methodology_article"`
 	Links                     []Link             `json:"links"`
 	DateChanges               []DateChange       `json:"date_changes"`
 	Description               ReleaseDescription `json:"description"`
-	ReleaseHistory            []Link             `json:"release_history"` // TODO Provisional entry for modelling history
 	AboutTheData              bool               `json:"about_the_data"`
 	PublicationState          PublicationState   `json:"publication_state"`
 }
@@ -60,14 +60,7 @@ type ReleaseDescription struct {
 	Title              string         `json:"title"`
 }
 
-// TODO Provisional model for previous releases
-type PreviousReleases struct {
-	coreModel.Page
-	Description    ReleaseDescription `json:"description"`
-	ReleaseHistory []Link             `json:"release_history"`
-}
-
-// Gets the most recent postponement reason, if available
+// FuncGetPostponementReason Gets the most recent postponement reason, if available
 func (release Release) FuncGetPostponementReason() string {
 	reason := ""
 	totalDateChanges := len(release.DateChanges)

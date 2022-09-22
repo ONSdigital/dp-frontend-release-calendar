@@ -21,6 +21,12 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
+const (
+	iCalDateFormat = "20060102T150405Z"
+	defaultMaxAge  = 5 // 5 seconds
+	homepagePath   = "/"
+)
+
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
 	if err, ok := err.(ClientError); ok {
@@ -36,17 +42,24 @@ func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageA
 	maxAge, err := babbage.GetMaxAge(ctx, uri, key)
 	if err != nil {
 		// Do not cache
-		maxAge = 0
-		log.Warn(ctx, "Couldn't find max age from Babbage, using default 0", log.Data{"uri": uri, "err": err.Error()})
+		maxAge = defaultMaxAge
+		log.Warn(ctx,
+			fmt.Sprintf("Couldn't find max age from Babbage, using default %d sec", maxAge),
+			log.Data{"uri": uri, "err": err.Error()})
 	}
 	w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
 }
 
 // Release will load a release page
-func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI) http.HandlerFunc {
+func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
+
+		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
+		if err != nil {
+			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
+		}
 
 		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseUri)
 		if err != nil {
@@ -55,7 +68,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 		}
 
 		basePage := rc.NewBasePageModel()
-		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath())
+		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
 		setCacheHeader(ctx, w, babbage, releaseUri, cfg.MaxAgeKey)
 
@@ -85,25 +98,30 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	})
 }
 
-func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI) http.HandlerFunc {
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		params := r.URL.Query()
 
 		validatedParams, err := validateParams(ctx, params, cfg)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			setStatusCode(r, w, err)
 			return
 		}
 
-		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
+		if err != nil {
+			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
+		}
+
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
 		}
 
 		basePage := rc.NewBasePageModel()
-		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang)
+		calendar := mapper.CreateReleaseCalendar(basePage, validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
 		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 
@@ -116,13 +134,13 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 		ctx := r.Context()
 		params := r.URL.Query()
 
-		_, err := validateParams(ctx, params, cfg)
+		validatedParams, err := validateParams(ctx, params, cfg)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			setStatusCode(r, w, err)
 			return
 		}
 
-		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -145,83 +163,50 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 func validateParams(ctx context.Context, params url.Values, cfg config.Config) (queryparams.ValidatedParams, error) {
 	validatedParams := queryparams.ValidatedParams{}
 
-	pageSize, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, queryparams.GetIntValidator(0, cfg.DefaultMaximumLimit))
-	if err != nil {
-		if err != nil {
-			return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Limit)
-		}
-	}
-	params.Set(queryparams.Limit, strconv.Itoa(pageSize))
-	validatedParams.Limit = pageSize
-
-	pageNumber, err := queryparams.GetPage(ctx, params, 1, queryparams.GetIntValidator(1, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit))
-	if err != nil {
-		return validatedParams, fmt.Errorf("invalid %s parameter", queryparams.Page)
-	}
-	params.Set(queryparams.Page, strconv.Itoa(pageNumber))
-	validatedParams.Page = pageNumber
-	offset := queryparams.CalculateOffset(pageNumber, pageSize)
-	params.Set(queryparams.Offset, strconv.Itoa(offset))
-	validatedParams.Offset = offset
-
-	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
+	limit, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, cfg.DefaultMaximumLimit)
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.DateFrom, fromDate.String())
+	validatedParams.Limit = limit
+
+	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
+	if err != nil {
+		return validatedParams, err
+	}
+	validatedParams.Page = pageNumber
+
+	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
+
+	fromDate, toDate, err := queryparams.GetDates(ctx, params)
+	if err != nil {
+		return validatedParams, err
+	}
 	validatedParams.AfterDate = fromDate
-	params.Set(queryparams.DateTo, toDate.String())
 	validatedParams.BeforeDate = toDate
 
-	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
+	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.SortName, sort.BackendString())
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.Keywords, keywords)
 	validatedParams.Keywords = keywords
-	params.Set(queryparams.Query, keywords)
 
 	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
 	if err != nil {
 		return validatedParams, err
 	}
-	params.Set(queryparams.Type, releaseType.String())
 	validatedParams.ReleaseType = releaseType
 
-	provisional, set, err := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
-	validatedParams.Provisional = provisional
-	if provisional || set {
-		params.Set(queryparams.Provisional.String(), strconv.FormatBool(provisional))
-	}
-	confirmed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
-	validatedParams.Confirmed = confirmed
-	if confirmed || set {
-		params.Set(queryparams.Confirmed.String(), strconv.FormatBool(confirmed))
-	}
-	postponed, set, err := queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
-	validatedParams.Postponed = postponed
-	if postponed || set {
-		params.Set(queryparams.Postponed.String(), strconv.FormatBool(postponed))
-	}
-
-	census, set, err := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
-	validatedParams.Census = census
-	if census || set {
-		params.Set(queryparams.Census, strconv.FormatBool(census))
-	}
-
-	highlight, set, err := queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
-	validatedParams.Highlight = highlight
-	if highlight || set {
-		params.Set(queryparams.Highlight, strconv.FormatBool(highlight))
-	}
+	validatedParams.Provisional, _ = queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
+	validatedParams.Confirmed, _ = queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
+	validatedParams.Postponed, _ = queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
+	validatedParams.Census, _ = queryparams.GetBoolean(ctx, params, queryparams.Census, false)
+	validatedParams.Highlight, _ = queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
 
 	return validatedParams, nil
 }
@@ -296,8 +281,6 @@ func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err
 
 	return nil
 }
-
-const iCalDateFormat = "20060102T150405Z"
 
 func iCalDate(ctx context.Context, dateRFC3339 string) string {
 	dateiCal, err := time.Parse(time.RFC3339, dateRFC3339)

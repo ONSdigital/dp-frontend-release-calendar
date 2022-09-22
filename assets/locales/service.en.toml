@@ -140,10 +140,6 @@ one = "Contact details"
 description = "Changes to this release date"
 one = "Changes to this release date"
 
-[ReleaseSectionReleaseHistory]
-description = "Release history"
-one = "Release history"
-
 [ReleaseSectionAboutTheData]
 description = "About the data"
 one = "About the data"
@@ -171,22 +167,6 @@ one = "Previous date"
 [ReleaseSubsectionReasonForChange]
 description = "Reason for change"
 one = "Reason for change"
-
-[ReleaseHistoryReleaseDate]
-description = "Release date"
-one = "Release date"
-
-[ReleaseHistoryReasonForUpdate]
-description = "Reason for update"
-one = "Reason for update"
-
-[ReleaseHistoryLatest]
-description = "LATEST"
-one = "LATEST"
-
-[ReleaseHistoryAllPrevious]
-description = "See all previous releases"
-one = "See all previous releases"
 
 [BreadcrumbHome]
 description = "Home"
@@ -302,11 +282,11 @@ one = "This release has been written with contributions of analysis and data sup
 
 [AboutDataNationalStatisticsBody1]
 description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
-one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
+one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the "
 
 [AboutDataNationalStatisticsBody2]
 description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
-one = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
+one = " They meet the highest standards of trustworthiness, quality and public value. This means that they:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"

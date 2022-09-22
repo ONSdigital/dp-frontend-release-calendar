@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
@@ -119,11 +120,30 @@ func TestUnitMapper(t *testing.T) {
 			crumbLabelHome := "Hafan"
 			crumbLabelReleaseCalendar := "Calendr datganiadau"
 			crumbLabelCancelled := "Canslwyd"
-			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar")
+			serviceMessage := "Service Message"
+			emergencyBannerTitle := "Emergency Title"
+			emergencyBannerType := "notable-death"
+			emergencyBannerDescription := "Emergency Description"
+			emergencyBannerUri := "https://example.com/emergency"
+			emergencyBannerLinkText := "Attention, this is an emergency. There's an emergency going on."
+			bannerData := zebedee.EmergencyBanner{
+				Title:       emergencyBannerTitle,
+				Type:        emergencyBannerType,
+				Description: emergencyBannerDescription,
+				URI:         emergencyBannerUri,
+				LinkText:    emergencyBannerLinkText,
+			}
+			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData)
 
 			So(release.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(release.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(release.BetaBannerEnabled, ShouldBeTrue)
+			So(release.ServiceMessage, ShouldEqual, serviceMessage)
+			So(release.EmergencyBanner.Title, ShouldEqual, emergencyBannerTitle)
+			So(release.EmergencyBanner.Type, ShouldEqual, emergencyBannerType)
+			So(release.EmergencyBanner.Description, ShouldEqual, emergencyBannerDescription)
+			So(release.EmergencyBanner.URI, ShouldEqual, emergencyBannerUri)
+			So(release.EmergencyBanner.LinkText, ShouldEqual, emergencyBannerLinkText)
 			So(release.Metadata.Title, ShouldEqual, releaseResponse.Description.Title)
 			So(release.URI, ShouldEqual, releaseResponse.URI)
 			So(release.Markdown, ShouldResemble, releaseResponse.Markdown)
@@ -262,11 +282,31 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
 			lang := "cy"
 			metaTitle := "Calendr datganiadau"
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang)
+			serviceMessage := "Service Message"
+			emergencyBannerTitle := "Emergency Title"
+			emergencyBannerType := "notable-death"
+			emergencyBannerDescription := "Emergency Description"
+			emergencyBannerUri := "https://example.com/emergency"
+			emergencyBannerLinkText := "Attention, this is an emergency. There's an emergency going on."
+			bannerData := zebedee.EmergencyBanner{
+				Title:       emergencyBannerTitle,
+				Type:        emergencyBannerType,
+				Description: emergencyBannerDescription,
+				URI:         emergencyBannerUri,
+				LinkText:    emergencyBannerLinkText,
+			}
+
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang, serviceMessage, bannerData)
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)
+			So(calendar.ServiceMessage, ShouldEqual, serviceMessage)
+			So(calendar.EmergencyBanner.Title, ShouldEqual, emergencyBannerTitle)
+			So(calendar.EmergencyBanner.Type, ShouldEqual, emergencyBannerType)
+			So(calendar.EmergencyBanner.Description, ShouldEqual, emergencyBannerDescription)
+			So(calendar.EmergencyBanner.URI, ShouldEqual, emergencyBannerUri)
+			So(calendar.EmergencyBanner.LinkText, ShouldEqual, emergencyBannerLinkText)
 			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: mapSortOptions(params)})
@@ -448,7 +488,7 @@ func TestGetPageURL(t *testing.T) {
 					Highlight:   true,
 				},
 				path:     "/test-prefix/releasecalendar",
-				expected: "/test-prefix/releasecalendar?after-day=30&after-month=11&after-year=2021&before-day=&before-month=&before-year=&census=false&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
+				expected: "/test-prefix/releasecalendar?after-day=30&after-month=11&after-year=2021&highlight=true&keywords=test&limit=10&page=2&release-type=type-published&sort=alphabetical-az",
 			},
 			{
 				params: queryparams.ValidatedParams{
@@ -462,7 +502,7 @@ func TestGetPageURL(t *testing.T) {
 					Census:      true,
 				},
 				path:     "/releasecalendar",
-				expected: "/releasecalendar?after-day=&after-month=&after-year=&before-day=1&before-month=4&before-year=2022&census=true&highlight=false&keywords=&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-confirmed=false&subtype-postponed=true&subtype-provisional=true",
+				expected: "/releasecalendar?before-day=1&before-month=4&before-year=2022&census=true&limit=25&page=5&release-type=type-upcoming&sort=date-newest&subtype-postponed=true&subtype-provisional=true",
 			},
 		}
 

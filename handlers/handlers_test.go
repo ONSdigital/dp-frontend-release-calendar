@@ -75,6 +75,7 @@ func TestUnitHandlers(t *testing.T) {
 		router := mux.NewRouter()
 
 		Convey("test Release endpoints", func() {
+			mockZebedeeClient := NewMockZebedeeClient(mockCtrl)
 			mockApiClient := NewMockReleaseCalendarAPI(mockCtrl)
 			root := "/releases"
 			maxAge := 670
@@ -87,13 +88,14 @@ func TestUnitHandlers(t *testing.T) {
 			r.URI = fmt.Sprintf("%s/%s", root, titleSegment)
 
 			Convey("test '/releases'", func() {
-				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockApiClient, mockBabbageAPI))
+				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockApiClient, mockBabbageAPI, mockZebedeeClient))
 
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), nil)
 				Convey("When there is an error getting the release from the release calendar API", func() {
 					apiError := errors.New("error reading data")
 					Convey("And the request uses headers", func() {
 						setRequestHeaders(req)
+						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 						mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, apiError)
 
 						Convey("Then it returns 500", func() {
@@ -104,6 +106,7 @@ func TestUnitHandlers(t *testing.T) {
 					})
 
 					Convey("And the request does not use headers", func() {
+						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 						mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil).Return(nil, apiError)
 
 						Convey("Then it returns 500", func() {
@@ -120,6 +123,7 @@ func TestUnitHandlers(t *testing.T) {
 
 					Convey("And the request uses headers", func() {
 						setRequestHeaders(req)
+						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 						mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
@@ -141,12 +145,13 @@ func TestUnitHandlers(t *testing.T) {
 								router.ServeHTTP(w, req)
 
 								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 							})
 						})
 					})
 
 					Convey("And the request does not use headers", func() {
+						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 						mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
@@ -167,7 +172,7 @@ func TestUnitHandlers(t *testing.T) {
 								router.ServeHTTP(w, req)
 
 								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 							})
 						})
 					})
@@ -226,11 +231,12 @@ func TestUnitHandlers(t *testing.T) {
 
 		Convey("test ReleaseCalendar endpoints", func() {
 			mockSearchClient := NewMockSearchAPI(mockCtrl)
+			mockZebedeeClient := NewMockZebedeeClient(mockCtrl)
 
 			Convey("test '/releasecalendar' endpoint", func() {
 				endpoint := "/releasecalendar"
 				maxAge := 422
-				router.HandleFunc(endpoint, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient, mockBabbageAPI))
+				router.HandleFunc(endpoint, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient, mockBabbageAPI, mockZebedeeClient))
 				r := sitesearch.ReleaseResponse{
 					Releases: []sitesearch.Release{
 						{
@@ -248,6 +254,7 @@ func TestUnitHandlers(t *testing.T) {
 
 						Convey("And the request uses headers", func() {
 							setRequestHeaders(req)
+							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, apiError)
 
 							Convey("Then it returns 500", func() {
@@ -258,6 +265,7 @@ func TestUnitHandlers(t *testing.T) {
 						})
 
 						Convey("And the request does not use headers", func() {
+							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, apiError)
 
 							Convey("Then it returns 500", func() {
@@ -274,6 +282,7 @@ func TestUnitHandlers(t *testing.T) {
 
 						Convey("And the request uses headers", func() {
 							setRequestHeaders(req)
+							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
 							Convey("And Babbage calculates the cache max age successfully", func() {
@@ -295,12 +304,13 @@ func TestUnitHandlers(t *testing.T) {
 									router.ServeHTTP(w, req)
 
 									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 								})
 							})
 						})
 
 						Convey("And the request does not use headers", func() {
+							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
 
 							Convey("And Babbage calculates the cache max age successfully", func() {
@@ -322,7 +332,7 @@ func TestUnitHandlers(t *testing.T) {
 									router.ServeHTTP(w, req)
 
 									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=0")
+									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
 								})
 							})
 						})
@@ -333,10 +343,10 @@ func TestUnitHandlers(t *testing.T) {
 					Convey("When the limit parameter is negative", func() {
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
 
-						Convey("Then it returns 400", func() {
+						Convey("Then it returns 500", func() {
 							router.ServeHTTP(w, req)
 
-							So(w.Code, ShouldEqual, http.StatusBadRequest)
+							So(w.Code, ShouldEqual, http.StatusInternalServerError)
 						})
 					})
 
@@ -390,13 +400,13 @@ func TestUnitHandlers(t *testing.T) {
 					})
 				})
 
-				Convey("it returns 400 when there is an error in one of the parameters", func() {
+				Convey("it returns 500 when there is an error in one of the parameters", func() {
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
 					setRequestHeaders(req)
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusBadRequest)
+					So(w.Code, ShouldEqual, http.StatusInternalServerError)
 				})
 
 				Convey("it returns 500 when there is an error getting the releases from the search api", func() {
@@ -519,14 +529,9 @@ func defaultParams() url.Values {
 	values.Set("limit", "10")
 	values.Set("page", "1")
 	values.Set("offset", "0")
-	values.Set("fromDate", "")
-	values.Set("toDate", "")
 	values.Set("sort", queryparams.RelDateDesc.BackendString())
-	values.Set("keywords", "")
-	values.Set("query", "")
 	values.Set("release-type", queryparams.Published.Name())
 	values.Set("highlight", "true")
-
 	return values
 }
 

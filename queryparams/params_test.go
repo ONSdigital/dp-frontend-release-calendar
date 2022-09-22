@@ -5,34 +5,34 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strconv"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestIntValidator(t *testing.T) {
-	Convey("given an IntValidator parameterised with a maximum and minimum value", t, func() {
-		validator := GetIntValidator(0, 1000)
+func TestGetIntValidator(t *testing.T) {
+	Convey("given an intValidator parameterised with a maximum and minimum value", t, func() {
+		validator := getIntValidator(0, 1000)
 
-		Convey("and a set of int values as strings representing a given parameter name", func() {
+		Convey("and a set of int values as strings", func() {
 
 			limits := []struct {
-				name    string
 				value   string
 				exValue int
 				exError error
 			}{
-				{name: "limit", value: "XXX", exValue: 0, exError: errors.New("limit search parameter provided with non numeric characters")},
-				{name: "limit", value: "-1", exValue: 0, exError: errors.New("limit search parameter provided with a value that is below the minimum value")},
-				{name: "limit", value: "1001", exValue: 0, exError: fmt.Errorf("limit search parameter provided with a value that is above the maximum value")},
-				{name: "limit", value: "0", exValue: 0, exError: nil},
-				{name: "limit", value: "123", exValue: 123, exError: nil},
-				{name: "limit", value: "1000", exValue: 1000, exError: nil},
+				{value: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
+				{value: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (0)")},
+				{value: "1001", exValue: 0, exError: fmt.Errorf("Value is above the maximum value (1000)")},
+				{value: "0", exValue: 0, exError: nil},
+				{value: "123", exValue: 123, exError: nil},
+				{value: "1000", exValue: 1000, exError: nil},
 			}
 
 			Convey("check that the validator correctly validates the limit, giving the expected results", func() {
 				for _, ls := range limits {
-					v, e := validator(ls.name, ls.value)
+					v, e := validator(ls.value)
 
 					So(v, ShouldEqual, ls.exValue)
 					So(e, ShouldResemble, ls.exError)
@@ -43,54 +43,144 @@ func TestIntValidator(t *testing.T) {
 }
 
 func TestGetLimit(t *testing.T) {
-	Convey("given an IntValidator for a limit, and a set of limits as strings", t, func() {
-		validator := GetIntValidator(0, 1000)
-		limits := []struct {
-			given   string
-			exValue int
-			exError error
-		}{
-			{given: "XXX", exValue: 0, exError: errors.New("limit search parameter provided with non numeric characters")},
-			{given: "-1", exValue: 0, exError: errors.New("limit search parameter provided with a value that is below the minimum value")},
-			{given: "1001", exValue: 0, exError: fmt.Errorf("limit search parameter provided with a value that is above the maximum value")},
-			{given: "0", exValue: 0, exError: nil},
-			{given: "1000", exValue: 1000, exError: nil},
-		}
-
-		Convey("check that the validator correctly validates the limit", func() {
-			for _, ls := range limits {
-				v, e := validator(Limit, ls.given)
-
-				So(v, ShouldEqual, ls.exValue)
-				So(e, ShouldResemble, ls.exError)
-			}
+	Convey("Given a list of params", t, func() {
+		ctx := context.Background()
+		params := make(url.Values)
+		defaultValue := 8
+		maxValue := 55
+		Convey("And it does not include a limit param", func() {
+			Convey("When we call GetLimit", func() {
+				res, err := GetLimit(ctx, params, defaultValue, maxValue)
+				Convey("Then the default value is returned", func() {
+					So(err, ShouldBeNil)
+					So(res, ShouldEqual, defaultValue)
+				})
+			})
+		})
+		Convey("And it includes a limit param", func() {
+			Convey("And it is empty", func() {
+				params.Set("limit", "")
+				Convey("When we call GetLimit", func() {
+					res, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then the default value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, defaultValue)
+					})
+				})
+			})
+			Convey("And it is valid", func() {
+				limit := 0
+				params.Set("limit", strconv.Itoa(limit))
+				Convey("When we call GetLimit", func() {
+					res, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then the value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, limit)
+					})
+				})
+			})
+			Convey("And it is lower than 0", func() {
+				params.Set("limit", "-1")
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is below the minimum value (0)")
+					})
+				})
+			})
+			Convey("And it is higher than the maximum", func() {
+				limit := maxValue + 1
+				params.Set("limit", strconv.Itoa(limit))
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is above the maximum value (55)")
+					})
+				})
+			})
+			Convey("And it is not a number", func() {
+				params.Set("limit", "seven")
+				Convey("When we call GetLimit", func() {
+					_, err := GetLimit(ctx, params, defaultValue, maxValue)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value contains non numeric characters")
+					})
+				})
+			})
 		})
 	})
 }
 
-func TestPageValidator(t *testing.T) {
-	Convey("given a page validator, and a set of page numbers as strings", t, func() {
-		validator := GetIntValidator(1, 100)
-		offsets := []struct {
-			given   string
-			exValue int
-			exError error
-		}{
-			{given: "XXX", exValue: 0, exError: errors.New("page search parameter provided with non numeric characters")},
-			{given: "0", exValue: 0, exError: errors.New("page search parameter provided with a value that is below the minimum value")},
-			{given: "-1", exValue: 0, exError: errors.New("page search parameter provided with a value that is below the minimum value")},
-			{given: "101", exValue: 0, exError: errors.New("page search parameter provided with a value that is above the maximum value")},
-			{given: "1", exValue: 1, exError: nil},
-			{given: "100", exValue: 100, exError: nil},
-		}
-
-		Convey("check that the validator correctly validates the page number", func() {
-			for _, ps := range offsets {
-				v, e := validator(Page, ps.given)
-
-				So(v, ShouldEqual, ps.exValue)
-				So(e, ShouldResemble, ps.exError)
-			}
+func TestGetPage(t *testing.T) {
+	Convey("Given a list of params", t, func() {
+		ctx := context.Background()
+		params := make(url.Values)
+		maxPage := 10
+		Convey("And it does not include a page param", func() {
+			Convey("When we call GetPage", func() {
+				res, err := GetPage(ctx, params, maxPage)
+				Convey("Then the default value is returned", func() {
+					So(err, ShouldBeNil)
+					So(res, ShouldEqual, 1)
+				})
+			})
+		})
+		Convey("And it includes a page param", func() {
+			Convey("And it is empty", func() {
+				params.Set("page", "")
+				Convey("When we call GetPage", func() {
+					res, err := GetPage(ctx, params, maxPage)
+					Convey("Then the default value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, 1)
+					})
+				})
+			})
+			Convey("And it is valid", func() {
+				limit := 1
+				params.Set("page", strconv.Itoa(limit))
+				Convey("When we call GetPage", func() {
+					res, err := GetPage(ctx, params, maxPage)
+					Convey("Then the value is returned", func() {
+						So(err, ShouldBeNil)
+						So(res, ShouldEqual, limit)
+					})
+				})
+			})
+			Convey("And it is lower than 1", func() {
+				params.Set("page", "0")
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value is below the minimum value (1)")
+					})
+				})
+			})
+			Convey("And it is higher than the maximum", func() {
+				page := maxPage + 1
+				params.Set("page", strconv.Itoa(page))
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value is above the maximum value (10)")
+					})
+				})
+			})
+			Convey("And it is not a number", func() {
+				params.Set("page", "three")
+				Convey("When we call GetPage", func() {
+					_, err := GetPage(ctx, params, maxPage)
+					Convey("Then an error is returned", func() {
+						So(err, ShouldNotBeNil)
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value contains non numeric characters")
+					})
+				})
+			})
 		})
 	})
 }
@@ -134,63 +224,84 @@ func TestCalculatePageNumber(t *testing.T) {
 	})
 }
 
-func TestSort(t *testing.T) {
+func TestGetSortOrder(t *testing.T) {
 	Convey("given a set of erroneous sort string options", t, func() {
 		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending", "score"}
 
-		Convey("parsing produces an error and returns the Invalid sort option", func() {
+		Convey("When we call GetSortOrder(), it returns an error and the default sort option", func() {
 			for _, bso := range badSortOptions {
-				v, e := ParseSort(bso)
+				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc.String())
 
-				So(v, ShouldEqual, Invalid)
+				So(v, ShouldEqual, RelDateDesc)
 				So(e, ShouldNotBeNil)
+				So(e.Error(), ShouldEqual, "invalid sort parameter: invalid sort option string")
 			}
 		})
+	})
 
-		Convey("and calling GetSortOrder() returns the same error and sort option", func() {
-			for _, bso := range badSortOptions {
-				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc)
+	Convey("given a set of good sort string options", t, func() {
+		goodSortOptions := []struct {
+			given   string
+			exValue Sort
+		}{
+			{given: "date-oldest", exValue: RelDateAsc},
+			{given: "date-newest", exValue: RelDateDesc},
+			{given: "alphabetical-az", exValue: TitleAZ},
+			{given: "alphabetical-za", exValue: TitleZA},
+		}
 
-				So(v, ShouldEqual, Invalid)
-				So(e, ShouldNotBeNil)
-			}
-		})
-
-		Convey("but a good sort option string is parsed without error, and the appropriate Sort option returned", func() {
-			goodSortOptions := []struct {
-				given   string
-				exValue Sort
-			}{
-				{given: "date-oldest", exValue: RelDateAsc},
-				{given: "date-newest", exValue: RelDateDesc},
-				{given: "alphabetical-az", exValue: TitleAZ},
-				{given: "alphabetical-za", exValue: TitleZA},
-			}
-
+		Convey("When we call GetSortOrder(), it returns the right value", func() {
 			for _, gso := range goodSortOptions {
-				v, e := ParseSort(gso.given)
-
-				So(v, ShouldEqual, gso.exValue)
-				So(e, ShouldBeNil)
-
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc)
+				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc.String())
 				So(v, ShouldEqual, gso.exValue)
 				So(e, ShouldBeNil)
 
 			}
 		})
-		Convey("except for the 'relevance' sort option - this parses as normal", func() {
-			v, e := ParseSort("relevance")
+	})
 
-			So(v, ShouldEqual, Relevance)
-			So(e, ShouldBeNil)
+	Convey("given the 'relevance' sort option", t, func() {
+		sortOption := []string{"relevance"}
 
-			Convey("but can only be set if a keyword has also been set", func() {
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}, Keywords: []string{"keywords set"}}, RelDateDesc)
+		Convey("When keywords have been set", func() {
+			params := url.Values{SortName: sortOption, Keywords: []string{"keywords set"}}
+			Convey("Then GetSortOrder() returns the relevance value", func() {
+				v, e := GetSortOrder(context.Background(), params, RelDateDesc.String())
 				So(v, ShouldEqual, Relevance)
 				So(e, ShouldBeNil)
+			})
+		})
 
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}}, RelDateDesc)
+		Convey("When keywords have not been set", func() {
+			params := url.Values{SortName: sortOption}
+
+			Convey("And a valid default sort option has been configured", func() {
+				defaultSort := RelDateAsc
+				Convey("Then GetSortOrder() returns the default value", func() {
+					v, e := GetSortOrder(context.Background(), params, defaultSort.String())
+					So(v, ShouldEqual, RelDateAsc)
+					So(e, ShouldBeNil)
+				})
+			})
+
+			Convey("And a wrong default sort option has been configured", func() {
+				defaultSort := "random"
+				Convey("Then GetSortOrder() returns the RelDateDesc value", func() {
+					v, e := GetSortOrder(context.Background(), params, defaultSort)
+					So(v, ShouldEqual, RelDateDesc)
+					So(e, ShouldBeNil)
+				})
+			})
+		})
+	})
+
+	Convey("given a wrong default sort option", t, func() {
+		defaultSort := "random"
+
+		Convey("And no sort parameter has been provided", func() {
+			params := url.Values{}
+			Convey("Then GetSortOrder() returns the RelDateDesc value", func() {
+				v, e := GetSortOrder(context.Background(), params, defaultSort)
 				So(v, ShouldEqual, RelDateDesc)
 				So(e, ShouldBeNil)
 			})
@@ -219,67 +330,74 @@ func TestGetKeywords(t *testing.T) {
 }
 
 func TestGetBoolean(t *testing.T) {
-	Convey("given a set of strings to be parsed as a boolean value", t, func() {
-		var bvs []string
-		Convey("if the strings are not valid representations of a boolean value", func() {
-			bvs = []string{"not right", "correct", "right", "wrong", "maybe"}
-			Convey("the correct error is returned", func() {
-				for _, bb := range bvs {
-					v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{bb}}, "bool-attr", true)
-					So(v, ShouldBeFalse)
-					So(s, ShouldBeFalse)
-					So(err, ShouldResemble, errors.New(`invalid boolean value for "bool-attr"`))
-				}
-			})
-			Convey("if the strings are valid representations of a boolean value", func() {
-				bvs = []string{"false", "T", "TRUE", "0", "1"}
-				Convey("the correct boolean value is returned without error", func() {
-					for _, gb := range bvs {
-						v, s, err := GetBoolean(context.Background(), url.Values{"bool-attr": []string{gb}}, "bool-attr", true)
-						So(v, ShouldBeIn, true, false)
-						So(s, ShouldBeTrue)
+	Convey("Given a set of strings to be parsed as a boolean value", t, func() {
+		defaultValue := true
+		paramName := "bool-attr"
+		Convey("And they are not valid representations of a boolean value", func() {
+			bvs := []string{"not right", "correct", "right", "wrong", "maybe"}
+			for _, bb := range bvs {
+				Convey(fmt.Sprintf("When we call the GetBoolean function for a parameter with value %s", bb), func() {
+					values := url.Values{paramName: []string{bb}}
+					v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+					Convey("Then an error is returned", func() {
+						So(v, ShouldEqual, defaultValue)
+						So(err, ShouldResemble, fmt.Errorf(`invalid boolean value for parameter "%s"`, paramName))
+					})
+				})
+			}
+		})
+		Convey("And they are valid representations of a boolean value", func() {
+			bvs := map[string]bool{"false": false, "T": true, "TRUE": true, "0": false, "1": true}
+			for bb, expected := range bvs {
+				Convey(fmt.Sprintf("When we call the GetBoolean function for a parameter with value %s", bb), func() {
+					values := url.Values{paramName: []string{bb}}
+					v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+					Convey("Then the right boolean value is returned", func() {
+						So(v, ShouldEqual, expected)
 						So(err, ShouldBeNil)
-					}
+					})
 				})
+			}
+		})
+		Convey("And they are empty strings", func() {
+			Convey("When we call the GetBoolean function", func() {
+				values := url.Values{paramName: {""}}
+				v, err := GetBoolean(context.Background(), values, paramName, defaultValue)
+				So(v, ShouldEqual, defaultValue)
+				So(err, ShouldBeNil)
 			})
-			Convey("if the strings are empty strings", func() {
-				Convey("the correct boolean value corresponding to the default value is returned without error", func() {
-					v, s, err := GetBoolean(context.Background(), url.Values{}, "bool-attr", true)
-					So(v, ShouldBeTrue)
-					So(s, ShouldBeFalse)
-					So(err, ShouldBeNil)
-				})
-			})
-
 		})
 	})
 }
 
-func TestReleaseType(t *testing.T) {
+func TestGetReleaseType(t *testing.T) {
 	Convey("given a set of erroneous release-type option strings", t, func() {
 		badReleaseTypes := []string{"coming-up", "finished", "done"}
-
-		Convey("parsing produces an error and returns the InvalidReleaseType ReleaseType", func() {
+		defaultType := Published
+		Convey("When we call GetReleaseType(), it returns an error and the default sort option", func() {
 			for _, rt := range badReleaseTypes {
-				v, e := ParseReleaseType(rt)
+				v, e := GetReleaseType(context.Background(), url.Values{Type: []string{rt}}, defaultType)
 
-				So(v, ShouldEqual, InvalidReleaseType)
+				So(v, ShouldEqual, defaultType)
 				So(e, ShouldNotBeNil)
+				So(e.Error(), ShouldEqual, "invalid release-type parameter: invalid release type string")
 			}
 		})
+	})
 
-		Convey("but a good release-type option string is parsed without error, and the appropriate ReleaseType returned", func() {
-			goodReleaseTypes := []struct {
-				given   string
-				exValue ReleaseType
-			}{
-				{given: "type-upcoming", exValue: Upcoming},
-				{given: "type-published", exValue: Published},
-				{given: "type-cancelled", exValue: Cancelled},
-			}
-
+	Convey("given a set of good release-type option", t, func() {
+		goodReleaseTypes := []struct {
+			given   string
+			exValue ReleaseType
+		}{
+			{given: "type-upcoming", exValue: Upcoming},
+			{given: "type-published", exValue: Published},
+			{given: "type-cancelled", exValue: Cancelled},
+		}
+		defaultType := Published
+		Convey("When we call GetReleaseType(), it returns the right value", func() {
 			for _, grt := range goodReleaseTypes {
-				v, e := ParseReleaseType(grt.given)
+				v, e := GetReleaseType(context.Background(), url.Values{Type: []string{grt.given}}, defaultType)
 
 				So(v, ShouldEqual, grt.exValue)
 				So(e, ShouldBeNil)
@@ -300,7 +418,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("after-day search parameter provided with a value that is above the maximum value"),
+				exError: errors.New("invalid after-day parameter: Value is above the maximum value (31)"),
 			},
 			{
 				afterDay: "29", afterMonth: "2", afterYear: "2021",
@@ -318,7 +436,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "1", beforeMonth: "02", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid dates - 'after' after 'before'"),
+				exError: errors.New("invalid dates: 'after' after 'before'"),
 			},
 		}
 
@@ -332,7 +450,7 @@ func TestDatesFromParams(t *testing.T) {
 				params.Set("before-month", tc.beforeMonth)
 				params.Set("before-day", tc.beforeDay)
 
-				from, to, err := DatesFromParams(context.Background(), params)
+				from, to, err := GetDates(context.Background(), params)
 
 				So(err, ShouldResemble, tc.exError)
 				So(from.String(), ShouldEqual, tc.exFromDate)
@@ -342,31 +460,183 @@ func TestDatesFromParams(t *testing.T) {
 	})
 }
 
-func TestParamsAsQuery(t *testing.T) {
-	Convey("given a set of validated parameters as a ValidatedParam struct", t, func() {
-		vp := ValidatedParams{Limit: 10, Page: 2, Offset: 10, AfterDate: MustParseDate("2020-01-01"), Keywords: "some keywords", Sort: TitleAZ, ReleaseType: Upcoming, Provisional: true, Census: true}
+func TestParamsAsFrontendQuery(t *testing.T) {
+	Convey("Given a set of validated parameters as a ValidatedParam struct", t, func() {
+		vp := ValidatedParams{
+			Limit:       10,
+			Page:        2,
+			Offset:      10,
+			AfterDate:   MustParseDate("2020-01-01"),
+			Keywords:    "some keywords",
+			Sort:        TitleAZ,
+			Provisional: true,
+			Confirmed:   true,
+			Postponed:   true,
+			Census:      true,
+		}
 
-		Convey("verify that the validated parameters are correctly returned in an url.Values mapping", func() {
-			uv := vp.AsQuery()
-			So(uv.Get(Limit), ShouldEqual, "10")
-			So(uv.Get(Page), ShouldEqual, "2")
-			So(uv.Get(YearAfter), ShouldEqual, "2020")
-			So(uv.Get(MonthAfter), ShouldEqual, "1")
-			So(uv.Get(DayAfter), ShouldEqual, "1")
-			So(uv.Get(YearBefore), ShouldEqual, "")
-			So(uv.Get(MonthBefore), ShouldEqual, "")
-			So(uv.Get(DayBefore), ShouldEqual, "")
-			So(uv.Get(Keywords), ShouldEqual, "some keywords")
-			So(uv.Get(SortName), ShouldEqual, TitleAZ.String())
-			So(uv.Get(Type), ShouldEqual, Upcoming.String())
-			So(uv.Get(Provisional.String()), ShouldEqual, "true")
-			So(uv.Get(Confirmed.String()), ShouldEqual, "false")
-			So(uv.Get(Postponed.String()), ShouldEqual, "false")
-			So(uv.Get(Census), ShouldEqual, "true")
-			So(uv.Get(Highlight), ShouldEqual, "false")
+		Convey("And the release type is upcoming", func() {
+			vp.ReleaseType = Upcoming
 
-			Convey("and any validated parameters not needed are absent from the url.Values mapping", func() {
-				So(uv.Get(Offset), ShouldEqual, "")
+			Convey("When we call AsFrontendQuery", func() {
+				uv := vp.AsFrontendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "")
+					So(uv.Get(MonthBefore), ShouldEqual, "")
+					So(uv.Get(DayBefore), ShouldEqual, "")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.String())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Provisional.String()), ShouldEqual, "true")
+					So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+					So(uv.Get(Postponed.String()), ShouldEqual, "true")
+					So(uv.Get(Census), ShouldEqual, "true")
+					So(uv.Get(Highlight), ShouldEqual, "")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Offset), ShouldEqual, "")
+						So(uv.Get(Query), ShouldEqual, "")
+					})
+				})
+			})
+		})
+
+		Convey("And the release type is not upcoming", func() {
+			vp.ReleaseType = Cancelled
+
+			Convey("When we call AsFrontendQuery", func() {
+				uv := vp.AsFrontendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(YearAfter), ShouldEqual, "2020")
+					So(uv.Get(MonthAfter), ShouldEqual, "1")
+					So(uv.Get(DayAfter), ShouldEqual, "1")
+					So(uv.Get(YearBefore), ShouldEqual, "")
+					So(uv.Get(MonthBefore), ShouldEqual, "")
+					So(uv.Get(DayBefore), ShouldEqual, "")
+					So(uv.Get(Keywords), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.String())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Census), ShouldEqual, "true")
+					So(uv.Get(Highlight), ShouldEqual, "")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Offset), ShouldEqual, "")
+						So(uv.Get(Query), ShouldEqual, "")
+						So(uv.Get(Provisional.String()), ShouldEqual, "")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "")
+						So(uv.Get(Postponed.String()), ShouldEqual, "")
+					})
+				})
+			})
+		})
+	})
+}
+
+func TestParamsAsBackendQuery(t *testing.T) {
+	Convey("Given a set of validated parameters as a ValidatedParam struct", t, func() {
+		vp := ValidatedParams{
+			Limit:       10,
+			Page:        2,
+			Offset:      10,
+			AfterDate:   MustParseDate("2020-01-01"),
+			BeforeDate:  MustParseDate("2022-09-19"),
+			Keywords:    "some keywords",
+			Provisional: true,
+			Confirmed:   true,
+			Postponed:   true,
+			Highlight:   true,
+			Census:      false,
+		}
+
+		Convey("And the release type is upcoming", func() {
+			vp.ReleaseType = Upcoming
+			Convey("And we are sorting by date in ascending order", func() {
+				vp.Sort = RelDateAsc
+				Convey("When we call AsBackendQuery", func() {
+					uv := vp.AsBackendQuery()
+					Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+						So(uv.Get(Limit), ShouldEqual, "10")
+						So(uv.Get(Page), ShouldEqual, "2")
+						So(uv.Get(Offset), ShouldEqual, "10")
+						So(uv.Get(DateFrom), ShouldEqual, "2020-01-01")
+						So(uv.Get(DateTo), ShouldEqual, "2022-09-19")
+						So(uv.Get(Query), ShouldEqual, "some keywords")
+						So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+						So(uv.Get(Provisional.String()), ShouldEqual, "true")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+						So(uv.Get(Postponed.String()), ShouldEqual, "true")
+						So(uv.Get(Census), ShouldEqual, "")
+						So(uv.Get(Highlight), ShouldEqual, "true")
+
+						Convey("And the date sort order is inverted", func() {
+							So(uv.Get(SortName), ShouldEqual, RelDateDesc.BackendString())
+						})
+						Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+							So(uv.Get(Keywords), ShouldEqual, "")
+						})
+					})
+				})
+			})
+			Convey("And we are sorting by date in descending order", func() {
+				vp.Sort = RelDateDesc
+				Convey("When we call AsBackendQuery", func() {
+					uv := vp.AsBackendQuery()
+					Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+						So(uv.Get(Limit), ShouldEqual, "10")
+						So(uv.Get(Page), ShouldEqual, "2")
+						So(uv.Get(Offset), ShouldEqual, "10")
+						So(uv.Get(DateFrom), ShouldEqual, "2020-01-01")
+						So(uv.Get(DateTo), ShouldEqual, "2022-09-19")
+						So(uv.Get(Query), ShouldEqual, "some keywords")
+						So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+						So(uv.Get(Provisional.String()), ShouldEqual, "true")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "true")
+						So(uv.Get(Postponed.String()), ShouldEqual, "true")
+						So(uv.Get(Census), ShouldEqual, "")
+						So(uv.Get(Highlight), ShouldEqual, "true")
+
+						Convey("And the date sort order is inverted", func() {
+							So(uv.Get(SortName), ShouldEqual, RelDateAsc.BackendString())
+						})
+						Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+							So(uv.Get(Keywords), ShouldEqual, "")
+						})
+					})
+				})
+			})
+		})
+
+		Convey("And the release type is not upcoming", func() {
+			vp.ReleaseType = Published
+
+			Convey("When we call AsBackendQuery", func() {
+				uv := vp.AsBackendQuery()
+				Convey("Then the validated parameters are correctly returned in an url.Values mapping", func() {
+					So(uv.Get(Limit), ShouldEqual, "10")
+					So(uv.Get(Page), ShouldEqual, "2")
+					So(uv.Get(Offset), ShouldEqual, "10")
+					So(uv.Get(DateFrom), ShouldEqual, "2020-01-01")
+					So(uv.Get(DateTo), ShouldEqual, "2022-09-19")
+					So(uv.Get(Query), ShouldEqual, "some keywords")
+					So(uv.Get(SortName), ShouldEqual, vp.Sort.BackendString())
+					So(uv.Get(Type), ShouldEqual, vp.ReleaseType.String())
+					So(uv.Get(Census), ShouldEqual, "")
+					So(uv.Get(Highlight), ShouldEqual, "true")
+
+					Convey("And any validated parameters not needed are absent from the url.Values mapping", func() {
+						So(uv.Get(Keywords), ShouldEqual, "")
+						So(uv.Get(Provisional.String()), ShouldEqual, "")
+						So(uv.Get(Confirmed.String()), ShouldEqual, "")
+						So(uv.Get(Postponed.String()), ShouldEqual, "")
+					})
+				})
 			})
 		})
 	})

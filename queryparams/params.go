@@ -32,19 +32,20 @@ const (
 	Highlight   = "highlight"
 )
 
-type IntValidator func(name string, valueAsString string) (int, error)
+type intValidator func(valueAsString string) (int, error)
 
-func GetIntValidator(minValue, maxValue int) IntValidator {
-	return func(name string, valueAsString string) (int, error) {
+// getIntValidator returns an IntValidator object using the min and max values provided
+func getIntValidator(minValue, maxValue int) intValidator {
+	return func(valueAsString string) (int, error) {
 		value, err := strconv.Atoi(valueAsString)
 		if err != nil {
-			return 0, fmt.Errorf("%s search parameter provided with non numeric characters", name)
+			return 0, fmt.Errorf("Value contains non numeric characters")
 		}
 		if value < minValue {
-			return 0, fmt.Errorf("%s search parameter provided with a value that is below the minimum value", name)
+			return 0, fmt.Errorf("Value is below the minimum value (%d)", minValue)
 		}
 		if value > maxValue {
-			return 0, fmt.Errorf("%s search parameter provided with a value that is above the maximum value", name)
+			return 0, fmt.Errorf("Value is above the maximum value (%d)", maxValue)
 		}
 
 		return value, nil
@@ -52,67 +53,69 @@ func GetIntValidator(minValue, maxValue int) IntValidator {
 }
 
 var (
-	dayValidator   = GetIntValidator(1, 31)
-	monthValidator = GetIntValidator(1, 12)
-	yearValidator  = GetIntValidator(1900, 2150)
+	dayValidator   = getIntValidator(1, 31)
+	monthValidator = getIntValidator(1, 12)
+	yearValidator  = getIntValidator(1900, 2150)
 )
 
-func GetLimit(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
+// GetLimit validates and returns the "limit" parameter
+func GetLimit(ctx context.Context, params url.Values, defaultValue int, maxValue int) (int, error) {
+	validator := getIntValidator(0, maxValue)
+	return validateAndGetIntParam(ctx, params, Limit, defaultValue, validator)
+}
+
+// GetPage validates and returns the "page" parameter
+func GetPage(ctx context.Context, params url.Values, maxPage int) (int, error) {
+	defaultPage := 1
+	validator := getIntValidator(1, maxPage)
+	return validateAndGetIntParam(ctx, params, Page, defaultPage, validator)
+}
+
+func validateAndGetIntParam(ctx context.Context, params url.Values, paramName string, defaultValue int, validator intValidator) (int, error) {
 	var (
 		limit = defaultValue
 		err   error
 	)
-	asString := params.Get(Limit)
+	asString := params.Get(paramName)
 	if asString != "" {
-		limit, err = validator(Limit, asString)
+		limit, err = validator(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Limit, "value": asString})
-			return 0, err
+			log.Warn(ctx, err.Error(), log.Data{"param": paramName, "value": asString})
+			return 0, fmt.Errorf("invalid %s parameter: %s", paramName, err.Error())
 		}
 	}
 
 	return limit, nil
 }
 
-func GetPage(ctx context.Context, params url.Values, defaultValue int, validator IntValidator) (int, error) {
-	var (
-		limit = defaultValue
-		err   error
-	)
-	asString := params.Get(Page)
-	if asString != "" {
-		limit, err = validator(Page, asString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
-			return 0, err
-		}
+// GetSortOrder validates and returns the "sort" parameter
+func GetSortOrder(ctx context.Context, params url.Values, defaultValue string) (Sort, error) {
+
+	defaultSort, err := parseSort(defaultValue)
+	if err != nil {
+		log.Warn(ctx, fmt.Sprintf("Invalid config value for default sort. Using %s as default", RelDateDesc.String()), log.Data{"value": defaultValue})
+		defaultSort = RelDateDesc
 	}
 
-	return limit, nil
-}
-
-func GetSortOrder(ctx context.Context, params url.Values, defaultValue Sort) (Sort, error) {
-	var (
-		sort = defaultValue
-		err  error
-	)
+	sort := defaultSort
 	asString := params.Get(SortName)
 	if asString != "" {
-		sort, err = ParseSort(asString)
+		sort, err = parseSort(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
-			return Invalid, err
+			log.Warn(ctx, err.Error(), log.Data{"param": SortName, "value": asString})
+			return defaultSort, fmt.Errorf("invalid %s parameter: %s", SortName, err.Error())
 		}
 	}
 
 	// When keywords are empty in this case, force the sort order back to the default.
 	if params.Get(Keywords) == "" && sort == Relevance {
-		return defaultValue, nil
+		sort = defaultSort
 	}
 
 	return sort, nil
 }
 
+// GetKeywords validates and returns the "keywords" parameter
 func GetKeywords(_ context.Context, params url.Values, defaultValue string) (string, error) {
 	keywords := defaultValue
 
@@ -125,6 +128,7 @@ func GetKeywords(_ context.Context, params url.Values, defaultValue string) (str
 	return keywords, nil
 }
 
+// GetReleaseType validates and returns the "release-type" parameter
 func GetReleaseType(ctx context.Context, params url.Values, defaultValue ReleaseType) (ReleaseType, error) {
 	var (
 		relType = defaultValue
@@ -132,32 +136,35 @@ func GetReleaseType(ctx context.Context, params url.Values, defaultValue Release
 	)
 	asString := params.Get(Type)
 	if asString != "" {
-		relType, err = ParseReleaseType(asString)
+		relType, err = parseReleaseType(asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Type, "value": asString})
-			return InvalidReleaseType, err
+			return defaultValue, fmt.Errorf("invalid %s parameter: %s", Type, err.Error())
 		}
 	}
 
 	return relType, nil
 }
 
-func GetBoolean(ctx context.Context, params url.Values, name string, defaultValue bool) (bool, bool, error) {
+// GetBoolean finds a boolean parameter and returns a default value if not present
+// It returns the default value together with an error if the value can't be parsed to a boolean
+func GetBoolean(ctx context.Context, params url.Values, name string, defaultValue bool) (bool, error) {
 	asString := params.Get(name)
 	if asString == "" {
-		return defaultValue, false, nil
+		return defaultValue, nil
 	}
 
 	upcoming, err := strconv.ParseBool(asString)
 	if err != nil {
-		log.Warn(ctx, fmt.Sprintf("invalid boolean value for %q", name), log.Data{"param": name, "value": asString})
-		return false, false, fmt.Errorf("invalid boolean value for %q", name)
+		log.Warn(ctx, "invalid boolean value", log.Data{"param": name, "value": asString})
+		return defaultValue, fmt.Errorf("invalid boolean value for parameter %q", name)
 	}
 
-	return upcoming, true, nil
+	return upcoming, nil
 }
 
-func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error) {
+// GetDates finds the date from and date to parameters
+func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
 	var (
 		from, to         time.Time
 		fromDate, toDate Date
@@ -165,20 +172,20 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 
 	yearString, monthString, dayString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
 	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(YearAfter, yearString)
+		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearAfter, err.Error())
 		}
-		month, err := monthValidator(MonthAfter, monthString)
+		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthAfter, err.Error())
 		}
-		day, err := dayValidator(DayAfter, dayString)
+		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayAfter, err.Error())
 		}
 		from = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := from.Date()
@@ -191,20 +198,20 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 
 	yearString, monthString, dayString = params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
 	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(YearBefore, yearString)
+		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearBefore, err.Error())
 		}
-		month, err := monthValidator(MonthBefore, monthString)
+		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthBefore, err.Error())
 		}
-		day, err := dayValidator(DayBefore, dayString)
+		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayBefore, err.Error())
 		}
 		to = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := to.Date()
@@ -215,11 +222,9 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 		toDate = DateFromTime(to)
 	}
 
-	if !from.IsZero() && !to.IsZero() {
-		if from.After(to) {
-			log.Warn(ctx, "invalid dates - from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
-			return Date{}, Date{}, errors.New("invalid dates - 'after' after 'before'")
-		}
+	if !from.IsZero() && !to.IsZero() && from.After(to) {
+		log.Warn(ctx, "invalid dates: from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
+		return Date{}, Date{}, errors.New("invalid dates: 'after' after 'before'")
 	}
 
 	return fromDate, toDate, nil
@@ -252,7 +257,7 @@ func CalculatePageNumber(offset, pageSize int) int {
 type Sort int
 
 const (
-	Invalid Sort = iota
+	invalidSort Sort = iota
 	RelDateAsc
 	RelDateDesc
 	TitleAZ
@@ -266,26 +271,16 @@ var sortValues = map[Sort]struct{ feValue, beValue string }{
 	TitleAZ:     {feValue: "alphabetical-az", beValue: "title_asc"},
 	TitleZA:     {feValue: "alphabetical-za", beValue: "title_desc"},
 	Relevance:   {feValue: "relevance", beValue: "relevance"},
-	Invalid:     {feValue: "invalid", beValue: "invalid"},
 }
 
-func ParseSort(sort string) (Sort, error) {
+func parseSort(sort string) (Sort, error) {
 	for s, sv := range sortValues {
 		if strings.EqualFold(sort, sv.feValue) {
 			return s, nil
 		}
 	}
 
-	return Invalid, errors.New("invalid sort option string")
-}
-
-func MustParseSort(sort string) Sort {
-	s, err := ParseSort(sort)
-	if err != nil {
-		panic("invalid sort string: " + sort)
-	}
-
-	return s
+	return invalidSort, errors.New("invalid sort option string")
 }
 
 func (s Sort) String() string {
@@ -360,7 +355,7 @@ func (d Date) DayString() string {
 type ReleaseType int
 
 const (
-	InvalidReleaseType ReleaseType = iota
+	invalidReleaseType ReleaseType = iota
 	Upcoming
 	Published
 	Cancelled
@@ -370,23 +365,22 @@ const (
 )
 
 var relTypeValues = map[ReleaseType]struct{ name, label string }{
-	Upcoming:           {name: "type-upcoming", label: "Upcoming"},
-	Published:          {name: "type-published", label: "Published"},
-	Cancelled:          {name: "type-cancelled", label: "Cancelled"},
-	Provisional:        {name: "subtype-provisional", label: "Provisional"},
-	Confirmed:          {name: "subtype-confirmed", label: "Confirmed"},
-	Postponed:          {name: "subtype-postponed", label: "Postponed"},
-	InvalidReleaseType: {name: "Invalid", label: "Invalid"},
+	Upcoming:    {name: "type-upcoming", label: "Upcoming"},
+	Published:   {name: "type-published", label: "Published"},
+	Cancelled:   {name: "type-cancelled", label: "Cancelled"},
+	Provisional: {name: "subtype-provisional", label: "Provisional"},
+	Confirmed:   {name: "subtype-confirmed", label: "Confirmed"},
+	Postponed:   {name: "subtype-postponed", label: "Postponed"},
 }
 
-func ParseReleaseType(s string) (ReleaseType, error) {
+func parseReleaseType(s string) (ReleaseType, error) {
 	for rt, rtv := range relTypeValues {
 		if strings.EqualFold(s, rtv.name) {
 			return rt, nil
 		}
 	}
 
-	return InvalidReleaseType, errors.New("invalid release type string")
+	return invalidReleaseType, errors.New("invalid release type string")
 }
 
 func (rt ReleaseType) Name() string {
@@ -417,29 +411,70 @@ type ValidatedParams struct {
 	Highlight   bool
 }
 
-func (vp ValidatedParams) AsQuery() url.Values {
+// AsBackendQuery converts to a url.Values object with parameters as expected by the api
+func (vp ValidatedParams) AsBackendQuery() url.Values {
+	return vp.asQuery(true)
+}
+
+// AsFrontendQuery converts to a url.Values object with parameters
+func (vp ValidatedParams) AsFrontendQuery() url.Values {
+	return vp.asQuery(false)
+}
+
+func (vp ValidatedParams) asQuery(isBackend bool) url.Values {
 	var query = make(url.Values)
-	query.Set(Limit, strconv.Itoa(vp.Limit))
-	query.Set(Page, strconv.Itoa(vp.Page))
+	setValue(query, Limit, strconv.Itoa(vp.Limit))
+	setValue(query, Page, strconv.Itoa(vp.Page))
 
-	query.Set(YearBefore, vp.BeforeDate.YearString())
-	query.Set(MonthBefore, vp.BeforeDate.MonthString())
-	query.Set(DayBefore, vp.BeforeDate.DayString())
-
-	query.Set(YearAfter, vp.AfterDate.YearString())
-	query.Set(MonthAfter, vp.AfterDate.MonthString())
-	query.Set(DayAfter, vp.AfterDate.DayString())
-
-	query.Set(Keywords, vp.Keywords)
-	query.Set(SortName, vp.Sort.String())
-	query.Set(Type, vp.ReleaseType.String())
-	if vp.ReleaseType == Upcoming {
-		query.Set(Provisional.String(), strconv.FormatBool(vp.Provisional))
-		query.Set(Confirmed.String(), strconv.FormatBool(vp.Confirmed))
-		query.Set(Postponed.String(), strconv.FormatBool(vp.Postponed))
+	if isBackend {
+		setValue(query, Offset, strconv.Itoa(vp.Offset))
+		setValue(query, Query, vp.Keywords)
+		setValue(query, SortName, vp.getSortBackendString())
+		setValue(query, DateFrom, vp.AfterDate.String())
+		setValue(query, DateTo, vp.BeforeDate.String())
+	} else {
+		setValue(query, Keywords, vp.Keywords)
+		setValue(query, SortName, vp.Sort.String())
+		setValue(query, YearBefore, vp.BeforeDate.YearString())
+		setValue(query, MonthBefore, vp.BeforeDate.MonthString())
+		setValue(query, DayBefore, vp.BeforeDate.DayString())
+		setValue(query, YearAfter, vp.AfterDate.YearString())
+		setValue(query, MonthAfter, vp.AfterDate.MonthString())
+		setValue(query, DayAfter, vp.AfterDate.DayString())
 	}
-	query.Set(Census, strconv.FormatBool(vp.Census))
-	query.Set(Highlight, strconv.FormatBool(vp.Highlight))
+
+	setValue(query, Type, vp.ReleaseType.String())
+	if vp.ReleaseType == Upcoming {
+		setBoolValue(query, Provisional.String(), vp.Provisional)
+		setBoolValue(query, Confirmed.String(), vp.Confirmed)
+		setBoolValue(query, Postponed.String(), vp.Postponed)
+	}
+	setBoolValue(query, Census, vp.Census)
+	setBoolValue(query, Highlight, vp.Highlight)
 
 	return query
+}
+
+func (vp ValidatedParams) getSortBackendString() string {
+	// Newest is now defined as 'the closest date to today' and so its
+	// meaning in terms of algorithmic definition (ascending/descending)
+	// is reversed depending on the release-type that is being viewed
+	if vp.ReleaseType == Upcoming && vp.Sort == RelDateDesc {
+		return RelDateAsc.BackendString()
+	} else if vp.ReleaseType == Upcoming && vp.Sort == RelDateAsc {
+		return RelDateDesc.BackendString()
+	}
+	return vp.Sort.BackendString()
+}
+
+func setValue(query url.Values, key string, value string) {
+	if value != "" {
+		query.Set(key, value)
+	}
+}
+
+func setBoolValue(query url.Values, key string, value bool) {
+	if value {
+		query.Set(key, strconv.FormatBool(value))
+	}
 }
