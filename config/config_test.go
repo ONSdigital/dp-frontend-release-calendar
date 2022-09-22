@@ -4,8 +4,6 @@ import (
 	"os"
 	"testing"
 	"time"
-
-	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestConfig(t *testing.T) {
@@ -22,7 +20,7 @@ func TestConfig(t *testing.T) {
 			Convey("Then the values should be set to the expected defaults", func() {
 				So(cfg.Debug, ShouldBeFalse)
 				So(cfg.BindAddr, ShouldEqual, ":27700")
-				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/18f1bd2")
+				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/119ecec")
 				So(cfg.SupportedLanguages, ShouldResemble, []string{"en", "cy"})
 				So(cfg.GracefulShutdownTimeout, ShouldEqual, 5*time.Second)
 				So(cfg.HealthCheckInterval, ShouldEqual, 30*time.Second)
