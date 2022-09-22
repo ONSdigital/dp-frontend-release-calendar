@@ -81,35 +81,41 @@ func validateAndGetIntParam(ctx context.Context, params url.Values, paramName st
 		limit, err = validator(asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": paramName, "value": asString})
-			return 0, err
+			return 0, fmt.Errorf("invalid %s parameter: %s", paramName, err.Error())
 		}
 	}
 
 	return limit, nil
 }
 
-func GetSortOrder(ctx context.Context, params url.Values, defaultValue Sort) (Sort, error) {
-	var (
-		sort = defaultValue
-		err  error
-	)
+// GetSortOrder validates and returns the "sort" parameter
+func GetSortOrder(ctx context.Context, params url.Values, defaultValue string) (Sort, error) {
+
+	defaultSort, err := parseSort(defaultValue)
+	if err != nil {
+		log.Warn(ctx, fmt.Sprintf("Invalid config value for default sort. Using %s as default", RelDateDesc.String()), log.Data{"value": defaultValue})
+		defaultSort = RelDateDesc
+	}
+
+	sort := defaultSort
 	asString := params.Get(SortName)
 	if asString != "" {
-		sort, err = ParseSort(asString)
+		sort, err = parseSort(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Page, "value": asString})
-			return Invalid, err
+			log.Warn(ctx, err.Error(), log.Data{"param": SortName, "value": asString})
+			return defaultSort, fmt.Errorf("invalid %s parameter: %s", SortName, err.Error())
 		}
 	}
 
 	// When keywords are empty in this case, force the sort order back to the default.
 	if params.Get(Keywords) == "" && sort == Relevance {
-		return defaultValue, nil
+		sort = defaultSort
 	}
 
 	return sort, nil
 }
 
+// GetKeywords validates and returns the "keywords" parameter
 func GetKeywords(_ context.Context, params url.Values, defaultValue string) (string, error) {
 	keywords := defaultValue
 
@@ -122,6 +128,7 @@ func GetKeywords(_ context.Context, params url.Values, defaultValue string) (str
 	return keywords, nil
 }
 
+// GetReleaseType validates and returns the "release-type" parameter
 func GetReleaseType(ctx context.Context, params url.Values, defaultValue ReleaseType) (ReleaseType, error) {
 	var (
 		relType = defaultValue
@@ -129,10 +136,10 @@ func GetReleaseType(ctx context.Context, params url.Values, defaultValue Release
 	)
 	asString := params.Get(Type)
 	if asString != "" {
-		relType, err = ParseReleaseType(asString)
+		relType, err = parseReleaseType(asString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": Type, "value": asString})
-			return InvalidReleaseType, err
+			return defaultValue, fmt.Errorf("invalid %s parameter: %s", Type, err.Error())
 		}
 	}
 
@@ -156,7 +163,8 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 	return upcoming, nil
 }
 
-func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error) {
+// GetDates finds the date from and date to parameters
+func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
 	var (
 		from, to         time.Time
 		fromDate, toDate Date
@@ -167,17 +175,17 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearAfter, err.Error())
 		}
 		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthAfter, err.Error())
 		}
 		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayAfter, err.Error())
 		}
 		from = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := from.Date()
@@ -193,17 +201,17 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearBefore, err.Error())
 		}
 		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthBefore, err.Error())
 		}
 		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
-			return Date{}, Date{}, err
+			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayBefore, err.Error())
 		}
 		to = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := to.Date()
@@ -214,11 +222,9 @@ func DatesFromParams(ctx context.Context, params url.Values) (Date, Date, error)
 		toDate = DateFromTime(to)
 	}
 
-	if !from.IsZero() && !to.IsZero() {
-		if from.After(to) {
-			log.Warn(ctx, "invalid dates - from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
-			return Date{}, Date{}, errors.New("invalid dates - 'after' after 'before'")
-		}
+	if !from.IsZero() && !to.IsZero() && from.After(to) {
+		log.Warn(ctx, "invalid dates: from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
+		return Date{}, Date{}, errors.New("invalid dates: 'after' after 'before'")
 	}
 
 	return fromDate, toDate, nil
@@ -251,7 +257,7 @@ func CalculatePageNumber(offset, pageSize int) int {
 type Sort int
 
 const (
-	Invalid Sort = iota
+	invalidSort Sort = iota
 	RelDateAsc
 	RelDateDesc
 	TitleAZ
@@ -265,26 +271,16 @@ var sortValues = map[Sort]struct{ feValue, beValue string }{
 	TitleAZ:     {feValue: "alphabetical-az", beValue: "title_asc"},
 	TitleZA:     {feValue: "alphabetical-za", beValue: "title_desc"},
 	Relevance:   {feValue: "relevance", beValue: "relevance"},
-	Invalid:     {feValue: "invalid", beValue: "invalid"},
 }
 
-func ParseSort(sort string) (Sort, error) {
+func parseSort(sort string) (Sort, error) {
 	for s, sv := range sortValues {
 		if strings.EqualFold(sort, sv.feValue) {
 			return s, nil
 		}
 	}
 
-	return Invalid, errors.New("invalid sort option string")
-}
-
-func MustParseSort(sort string) Sort {
-	s, err := ParseSort(sort)
-	if err != nil {
-		panic("invalid sort string: " + sort)
-	}
-
-	return s
+	return invalidSort, errors.New("invalid sort option string")
 }
 
 func (s Sort) String() string {
@@ -359,7 +355,7 @@ func (d Date) DayString() string {
 type ReleaseType int
 
 const (
-	InvalidReleaseType ReleaseType = iota
+	invalidReleaseType ReleaseType = iota
 	Upcoming
 	Published
 	Cancelled
@@ -369,23 +365,22 @@ const (
 )
 
 var relTypeValues = map[ReleaseType]struct{ name, label string }{
-	Upcoming:           {name: "type-upcoming", label: "Upcoming"},
-	Published:          {name: "type-published", label: "Published"},
-	Cancelled:          {name: "type-cancelled", label: "Cancelled"},
-	Provisional:        {name: "subtype-provisional", label: "Provisional"},
-	Confirmed:          {name: "subtype-confirmed", label: "Confirmed"},
-	Postponed:          {name: "subtype-postponed", label: "Postponed"},
-	InvalidReleaseType: {name: "Invalid", label: "Invalid"},
+	Upcoming:    {name: "type-upcoming", label: "Upcoming"},
+	Published:   {name: "type-published", label: "Published"},
+	Cancelled:   {name: "type-cancelled", label: "Cancelled"},
+	Provisional: {name: "subtype-provisional", label: "Provisional"},
+	Confirmed:   {name: "subtype-confirmed", label: "Confirmed"},
+	Postponed:   {name: "subtype-postponed", label: "Postponed"},
 }
 
-func ParseReleaseType(s string) (ReleaseType, error) {
+func parseReleaseType(s string) (ReleaseType, error) {
 	for rt, rtv := range relTypeValues {
 		if strings.EqualFold(s, rtv.name) {
 			return rt, nil
 		}
 	}
 
-	return InvalidReleaseType, errors.New("invalid release type string")
+	return invalidReleaseType, errors.New("invalid release type string")
 }
 
 func (rt ReleaseType) Name() string {

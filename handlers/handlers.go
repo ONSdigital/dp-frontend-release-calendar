@@ -165,27 +165,26 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 
 	limit, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, cfg.DefaultMaximumLimit)
 	if err != nil {
-		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Limit, err.Error())
+		return validatedParams, err
 	}
 	validatedParams.Limit = limit
 
 	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
 	if err != nil {
-		return validatedParams, fmt.Errorf("invalid %s parameter: %s", queryparams.Page, err.Error())
+		return validatedParams, err
 	}
 	validatedParams.Page = pageNumber
 
-	offset := queryparams.CalculateOffset(pageNumber, limit)
-	validatedParams.Offset = offset
+	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
 
-	fromDate, toDate, err := queryparams.DatesFromParams(ctx, params)
+	fromDate, toDate, err := queryparams.GetDates(ctx, params)
 	if err != nil {
 		return validatedParams, err
 	}
 	validatedParams.AfterDate = fromDate
 	validatedParams.BeforeDate = toDate
 
-	sort, err := queryparams.GetSortOrder(ctx, params, queryparams.MustParseSort(cfg.DefaultSort))
+	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
 	if err != nil {
 		return validatedParams, err
 	}
@@ -203,20 +202,11 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	}
 	validatedParams.ReleaseType = releaseType
 
-	provisional, _ := queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
-	validatedParams.Provisional = provisional
-
-	confirmed, _ := queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
-	validatedParams.Confirmed = confirmed
-
-	postponed, _ := queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
-	validatedParams.Postponed = postponed
-
-	census, _ := queryparams.GetBoolean(ctx, params, queryparams.Census, false)
-	validatedParams.Census = census
-
-	highlight, _ := queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
-	validatedParams.Highlight = highlight
+	validatedParams.Provisional, _ = queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
+	validatedParams.Confirmed, _ = queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
+	validatedParams.Postponed, _ = queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
+	validatedParams.Census, _ = queryparams.GetBoolean(ctx, params, queryparams.Census, false)
+	validatedParams.Highlight, _ = queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
 
 	return validatedParams, nil
 }

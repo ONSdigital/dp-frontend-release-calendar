@@ -85,7 +85,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value is below the minimum value (0)")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is below the minimum value (0)")
 					})
 				})
 			})
@@ -96,7 +96,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value is above the maximum value (55)")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is above the maximum value (55)")
 					})
 				})
 			})
@@ -106,7 +106,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: Value contains non numeric characters")
 					})
 				})
 			})
@@ -156,7 +156,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value is below the minimum value (1)")
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value is below the minimum value (1)")
 					})
 				})
 			})
@@ -167,7 +167,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value is above the maximum value (10)")
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value is above the maximum value (10)")
 					})
 				})
 			})
@@ -177,7 +177,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "Value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid page parameter: Value contains non numeric characters")
 					})
 				})
 			})
@@ -224,63 +224,84 @@ func TestCalculatePageNumber(t *testing.T) {
 	})
 }
 
-func TestSort(t *testing.T) {
+func TestGetSortOrder(t *testing.T) {
 	Convey("given a set of erroneous sort string options", t, func() {
 		badSortOptions := []string{"dont sort", "sort-by-date", "date-ascending", "score"}
 
-		Convey("parsing produces an error and returns the Invalid sort option", func() {
+		Convey("When we call GetSortOrder(), it returns an error and the default sort option", func() {
 			for _, bso := range badSortOptions {
-				v, e := ParseSort(bso)
+				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc.String())
 
-				So(v, ShouldEqual, Invalid)
+				So(v, ShouldEqual, RelDateDesc)
 				So(e, ShouldNotBeNil)
+				So(e.Error(), ShouldEqual, "invalid sort parameter: invalid sort option string")
 			}
 		})
+	})
 
-		Convey("and calling GetSortOrder() returns the same error and sort option", func() {
-			for _, bso := range badSortOptions {
-				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{bso}}, RelDateDesc)
+	Convey("given a set of good sort string options", t, func() {
+		goodSortOptions := []struct {
+			given   string
+			exValue Sort
+		}{
+			{given: "date-oldest", exValue: RelDateAsc},
+			{given: "date-newest", exValue: RelDateDesc},
+			{given: "alphabetical-az", exValue: TitleAZ},
+			{given: "alphabetical-za", exValue: TitleZA},
+		}
 
-				So(v, ShouldEqual, Invalid)
-				So(e, ShouldNotBeNil)
-			}
-		})
-
-		Convey("but a good sort option string is parsed without error, and the appropriate Sort option returned", func() {
-			goodSortOptions := []struct {
-				given   string
-				exValue Sort
-			}{
-				{given: "date-oldest", exValue: RelDateAsc},
-				{given: "date-newest", exValue: RelDateDesc},
-				{given: "alphabetical-az", exValue: TitleAZ},
-				{given: "alphabetical-za", exValue: TitleZA},
-			}
-
+		Convey("When we call GetSortOrder(), it returns the right value", func() {
 			for _, gso := range goodSortOptions {
-				v, e := ParseSort(gso.given)
-
-				So(v, ShouldEqual, gso.exValue)
-				So(e, ShouldBeNil)
-
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc)
+				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc.String())
 				So(v, ShouldEqual, gso.exValue)
 				So(e, ShouldBeNil)
 
 			}
 		})
-		Convey("except for the 'relevance' sort option - this parses as normal", func() {
-			v, e := ParseSort("relevance")
+	})
 
-			So(v, ShouldEqual, Relevance)
-			So(e, ShouldBeNil)
+	Convey("given the 'relevance' sort option", t, func() {
+		sortOption := []string{"relevance"}
 
-			Convey("but can only be set if a keyword has also been set", func() {
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}, Keywords: []string{"keywords set"}}, RelDateDesc)
+		Convey("When keywords have been set", func() {
+			params := url.Values{SortName: sortOption, Keywords: []string{"keywords set"}}
+			Convey("Then GetSortOrder() returns the relevance value", func() {
+				v, e := GetSortOrder(context.Background(), params, RelDateDesc.String())
 				So(v, ShouldEqual, Relevance)
 				So(e, ShouldBeNil)
+			})
+		})
 
-				v, e = GetSortOrder(context.Background(), url.Values{SortName: []string{"relevance"}}, RelDateDesc)
+		Convey("When keywords have not been set", func() {
+			params := url.Values{SortName: sortOption}
+
+			Convey("And a valid default sort option has been configured", func() {
+				defaultSort := RelDateAsc
+				Convey("Then GetSortOrder() returns the default value", func() {
+					v, e := GetSortOrder(context.Background(), params, defaultSort.String())
+					So(v, ShouldEqual, RelDateAsc)
+					So(e, ShouldBeNil)
+				})
+			})
+
+			Convey("And a wrong default sort option has been configured", func() {
+				defaultSort := "random"
+				Convey("Then GetSortOrder() returns the RelDateDesc value", func() {
+					v, e := GetSortOrder(context.Background(), params, defaultSort)
+					So(v, ShouldEqual, RelDateDesc)
+					So(e, ShouldBeNil)
+				})
+			})
+		})
+	})
+
+	Convey("given a wrong default sort option", t, func() {
+		defaultSort := "random"
+
+		Convey("And no sort parameter has been provided", func() {
+			params := url.Values{}
+			Convey("Then GetSortOrder() returns the RelDateDesc value", func() {
+				v, e := GetSortOrder(context.Background(), params, defaultSort)
 				So(v, ShouldEqual, RelDateDesc)
 				So(e, ShouldBeNil)
 			})
@@ -349,31 +370,34 @@ func TestGetBoolean(t *testing.T) {
 	})
 }
 
-func TestReleaseType(t *testing.T) {
+func TestGetReleaseType(t *testing.T) {
 	Convey("given a set of erroneous release-type option strings", t, func() {
 		badReleaseTypes := []string{"coming-up", "finished", "done"}
-
-		Convey("parsing produces an error and returns the InvalidReleaseType ReleaseType", func() {
+		defaultType := Published
+		Convey("When we call GetReleaseType(), it returns an error and the default sort option", func() {
 			for _, rt := range badReleaseTypes {
-				v, e := ParseReleaseType(rt)
+				v, e := GetReleaseType(context.Background(), url.Values{Type: []string{rt}}, defaultType)
 
-				So(v, ShouldEqual, InvalidReleaseType)
+				So(v, ShouldEqual, defaultType)
 				So(e, ShouldNotBeNil)
+				So(e.Error(), ShouldEqual, "invalid release-type parameter: invalid release type string")
 			}
 		})
+	})
 
-		Convey("but a good release-type option string is parsed without error, and the appropriate ReleaseType returned", func() {
-			goodReleaseTypes := []struct {
-				given   string
-				exValue ReleaseType
-			}{
-				{given: "type-upcoming", exValue: Upcoming},
-				{given: "type-published", exValue: Published},
-				{given: "type-cancelled", exValue: Cancelled},
-			}
-
+	Convey("given a set of good release-type option", t, func() {
+		goodReleaseTypes := []struct {
+			given   string
+			exValue ReleaseType
+		}{
+			{given: "type-upcoming", exValue: Upcoming},
+			{given: "type-published", exValue: Published},
+			{given: "type-cancelled", exValue: Cancelled},
+		}
+		defaultType := Published
+		Convey("When we call GetReleaseType(), it returns the right value", func() {
 			for _, grt := range goodReleaseTypes {
-				v, e := ParseReleaseType(grt.given)
+				v, e := GetReleaseType(context.Background(), url.Values{Type: []string{grt.given}}, defaultType)
 
 				So(v, ShouldEqual, grt.exValue)
 				So(e, ShouldBeNil)
@@ -394,7 +418,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("Value is above the maximum value (31)"),
+				exError: errors.New("invalid after-day parameter: Value is above the maximum value (31)"),
 			},
 			{
 				afterDay: "29", afterMonth: "2", afterYear: "2021",
@@ -412,7 +436,7 @@ func TestDatesFromParams(t *testing.T) {
 				afterDay: "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "1", beforeMonth: "02", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid dates - 'after' after 'before'"),
+				exError: errors.New("invalid dates: 'after' after 'before'"),
 			},
 		}
 
@@ -426,7 +450,7 @@ func TestDatesFromParams(t *testing.T) {
 				params.Set("before-month", tc.beforeMonth)
 				params.Set("before-day", tc.beforeDay)
 
-				from, to, err := DatesFromParams(context.Background(), params)
+				from, to, err := GetDates(context.Background(), params)
 
 				So(err, ShouldResemble, tc.exError)
 				So(from.String(), ShouldEqual, tc.exFromDate)
