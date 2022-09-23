@@ -160,7 +160,6 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 	result.ServiceMessage = serviceMessage
 	result.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
-	result.RelatedArticleDatasets = mapLink(release.RelatedDatasets)
 	result.RelatedAPIDatasets = mapLink(release.RelatedAPIDatasets)
 	result.RelatedDocuments = mapLink(release.RelatedDocuments)
 	result.RelatedMethodology = mapLink(release.RelatedMethodology)
@@ -189,7 +188,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.RelatedDatasets,
 		result.DateChanges,
 		result.AboutTheData,
-		result.RelatedArticleDatasets,
+		result.RelatedAPIDatasets,
 	)
 
 	return result
