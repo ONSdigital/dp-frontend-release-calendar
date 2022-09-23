@@ -4,6 +4,8 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestConfig(t *testing.T) {
