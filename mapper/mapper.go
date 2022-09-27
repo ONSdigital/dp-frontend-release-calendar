@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"fmt"
+	"html/template"
 	"strconv"
 	"strings"
 
@@ -121,6 +122,31 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 	return mappedEmergencyBanner
 }
 
+func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
+	releaseStatus := "cancelled"
+	if description.Published {
+		releaseStatus = "published"
+	}
+
+	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
+	releaseTime := helper.TimeFormat24h(description.ReleaseDate)
+
+	return []template.JS{
+		template.JS(`dataLayer.push({
+			"analyticsOptOut": getUsageCookieValue(),
+			"gtm.whitelist": ["google","hjtc","lcl"],
+			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+			"contentTitle": "` + title + `",
+			"release-status": "` + releaseStatus + `",
+			"release-date": "` + releaseDate + `",
+			"release-time": "` + releaseTime + `",
+			"release-date-status": "` + description.ProvisionalDate + `",
+			"next-release-date": "` + description.NextRelease + `",
+			"contact-name": "` + description.Contact.Name + `",
+		});`),
+	}
+}
+
 func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
@@ -178,7 +204,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.DateChanges,
 		result.AboutTheData,
 	)
-
+	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
 }
 
