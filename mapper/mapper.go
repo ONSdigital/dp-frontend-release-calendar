@@ -122,7 +122,7 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 	return mappedEmergencyBanner
 }
 
-func createDataLayerAdditions(title string, description model.ReleaseDescription) []template.JS {
+func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
 	releaseStatus := "cancelled"
 	if description.Published {
 		releaseStatus = "published"
@@ -204,7 +204,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.DateChanges,
 		result.AboutTheData,
 	)
-	result.DataLayerAdditions = createDataLayerAdditions(result.Metadata.Title, result.Description)
+	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
 }
 
