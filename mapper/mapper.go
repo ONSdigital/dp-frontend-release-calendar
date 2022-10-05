@@ -124,7 +124,7 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 
 func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
 	releaseStatus := "cancelled"
-	censusTag := ""
+	var censusTag string
 
 	if description.Published {
 		releaseStatus = "published"
