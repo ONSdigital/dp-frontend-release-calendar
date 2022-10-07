@@ -1,39 +1,6 @@
 <div>
-  {{ if .Description.ProvisionalDate }}
-    <div>
-      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
-      {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
-      <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
-    </div>
-  {{ else if .Description.Cancelled }}
-    <div>
-      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
-    </div>
-  {{ else if .Description.NextRelease }}
-    <ul class="ons-list ons-list--bare ons-list--inline">
-      <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
-        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
-        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
-      </li>
-      <li class="ons-list__item ons-u-mr-xl@xs">
-        <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-        <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
-      </li>
-    </ul>
-  {{ else }}
-    <div>
-      <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-      <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
-    </div>
-  {{ end }}
-  <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
     {{ if .Description.Census2021 }}
-      <div
-        {{ if or (eq .PublicationState.Type "upcoming") (eq .PublicationState.Type "cancelled") }}
-          class="ons-u-pb-m"
-        {{ end }}
-      >
+      <div class="ons-u-pb-s">
         {{ if eq .Language "cy" }}
           <img
             src="https://cdn.ons.gov.uk/assets/images/census-logo/logo-cyfrifiad-2021-purple-landscape.svg"
@@ -49,40 +16,70 @@
         {{ end }}
       </div>
     {{ end }}
-    {{ if eq .PublicationState.Type "upcoming" }}
-      {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
-        <div class="ons-panel ons-panel--info ons-panel--no-title">
-          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
-          <div class="ons-panel__body">
-            <p>{{ localise "StatusBannerReleaseNotYetPublished" .Language 1 }}</p>
-          </div>
+
+    {{ if .Description.ProvisionalDate }}
+        <div>
+          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineProvisionalReleaseDate" .Language 1 }}:</span>
+          {{/* ProvisionalDate is a free text field in Florence, not a timestamp */}}
+          <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
         </div>
-      {{ else if eq .PublicationState.SubType "postponed" }}
-        <div class="ons-panel ons-panel--info ons-panel--no-title">
-          <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
-          <div class="ons-panel__body">
-            {{ $reason := .FuncGetPostponementReason }}
-            {{ if $reason }}
-              {{- markdown $reason -}}
-            {{ else }}
-              <p>{{ localise "StatusBannerReleasePostponed" .Language 1 }}</p>
-            {{ end }}
-          </div>
+        {{ else if .Description.Cancelled }}
+        <div>
+          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
+          <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
         </div>
-      {{ end }}
-    {{ else if eq .PublicationState.Type "cancelled" }}
-      <div class="ons-panel ons-panel--info ons-panel--no-title">
-        <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
-        <div class="ons-panel__body">
-          {{ if .Description.CancellationNotice }}
-            {{ range .Description.CancellationNotice }}
-              {{- markdown . -}}
-            {{ end }}
-          {{ else }}
-            <p>{{ localise "StatusBannerReleaseCancelled" .Language 1 }}</p>
-          {{ end }}
+        {{ else if .Description.NextRelease }}
+        <ul class="ons-list ons-list--bare ons-list--inline">
+          <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
+            <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
+            <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
+          </li>
+          <li class="ons-list__item ons-u-mr-xl@xs">
+            <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
+            <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
+          </li>
+        </ul>
+        {{ else }}
+        <div>
+          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
+          <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
         </div>
-      </div>
     {{ end }}
-  </div>
+    <div class="ons-u-pt-s ons-u-pb-m@m ons-u-pb-s@xxs@m">
+        {{ if eq .PublicationState.Type "upcoming" }}
+          {{ if or (eq .PublicationState.SubType "provisional") (eq .PublicationState.SubType "confirmed") }}
+            <div class="ons-panel ons-panel--info ons-panel--no-title">
+              <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
+              <div class="ons-panel__body">
+                <p>{{ localise "StatusBannerReleaseNotYetPublished" .Language 1 }}</p>
+              </div>
+            </div>
+          {{ else if eq .PublicationState.SubType "postponed" }}
+            <div class="ons-panel ons-panel--info ons-panel--no-title">
+              <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
+              <div class="ons-panel__body">
+                {{ $reason := .FuncGetPostponementReason }}
+                {{ if $reason }}
+                  {{- markdown $reason -}}
+                {{ else }}
+                  <p>{{ localise "StatusBannerReleasePostponed" .Language 1 }}</p>
+                {{ end }}
+              </div>
+            </div>
+          {{ end }}
+        {{ else if eq .PublicationState.Type "cancelled" }}
+          <div class="ons-panel ons-panel--info ons-panel--no-title">
+            <span class="ons-u-vh">{{ localise "StatusBannerImportantInformation" .Language 1 }}: </span>
+            <div class="ons-panel__body">
+              {{ if .Description.CancellationNotice }}
+                {{ range .Description.CancellationNotice }}
+                  {{- markdown . -}}
+                {{ end }}
+              {{ else }}
+                <p>{{ localise "StatusBannerReleaseCancelled" .Language 1 }}</p>
+              {{ end }}
+            </div>
+          </div>
+        {{ end }}
+    </div>
 </div>
