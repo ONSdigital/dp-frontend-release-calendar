@@ -1,0 +1,19 @@
+<div
+  aria-labelledby="alert"
+  role="alert"
+  tabindex="-1"
+  class="ons-panel ons-panel--error"
+>
+  <div class="ons-panel__header">
+    <h2
+      id="alert"
+      data-qa="error-header"
+      class="ons-panel__title ons-u-fs-r--b"
+    >
+      {{- localise .GlobalError.Title.LocaleKey .Language .GlobalError.Title.Plural -}}
+    </h2>
+  </div>
+  <div class="ons-panel__body">
+    <p>{{ .GlobalError.Message | safeHTML }}</p>
+  </div>
+</div>

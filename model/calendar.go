@@ -36,6 +36,11 @@ type Sort struct {
 	Options []SortOption `json:"options"`
 }
 
+type GlobalError struct {
+	Title   coreModel.Localisation `json:"title"`
+	Message string                 `json:"message"`
+}
+
 type Calendar struct {
 	coreModel.Page
 
@@ -47,6 +52,7 @@ type Calendar struct {
 	Entries             []CalendarEntry         `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
+	GlobalError         GlobalError             `json:"global_error"`
 }
 
 func (calendar Calendar) FuncIsFilterSearchPresent() bool {

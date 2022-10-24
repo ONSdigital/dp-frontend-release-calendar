@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"fmt"
+	"html/template"
 	"strconv"
 	"strings"
 
@@ -132,6 +133,38 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 	return mappedEmergencyBanner
 }
 
+func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
+	releaseStatus := "cancelled"
+	var censusTag string
+
+	if description.Published {
+		releaseStatus = "published"
+	}
+
+	if description.Census2021 {
+		censusTag = "census"
+	}
+
+	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
+	releaseTime := helper.TimeFormat24h(description.ReleaseDate)
+
+	return []template.JS{
+		template.JS(`dataLayer.push({
+			"analyticsOptOut": getUsageCookieValue(),
+			"gtm.whitelist": ["google","hjtc","lcl"],
+			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+			"contentTitle": "` + title + `",
+			"release-status": "` + releaseStatus + `",
+			"release-date": "` + releaseDate + `",
+			"release-time": "` + releaseTime + `",
+			"release-date-status": "` + description.ProvisionalDate + `",
+			"next-release-date": "` + description.NextRelease + `",
+			"contact-name": "` + description.Contact.Name + `",
+			"tag": "` + censusTag + `"
+		});`),
+	}
+}
+
 func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
@@ -190,7 +223,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.AboutTheData,
 		result.RelatedAPIDatasets,
 	)
-
+	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
 }
 
@@ -322,6 +355,23 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
 	}
 
+	return calendar
+}
+
+func CreateReleaseCalendarError(basePage coreModel.Page, lang, errorTitleKey string, globalError error) model.Calendar {
+	calendar := model.Calendar{
+		Page: basePage,
+	}
+	calendar.Language = lang
+	calendar.BetaBannerEnabled = true
+	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
+	calendar.GlobalError = model.GlobalError{
+		Title: coreModel.Localisation{
+			LocaleKey: errorTitleKey,
+			Plural:    1,
+		},
+		Message: globalError.Error(),
+	}
 	return calendar
 }
 

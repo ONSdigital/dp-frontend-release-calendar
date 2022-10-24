@@ -16,6 +16,10 @@
 description = "Release Calendar Title"
 one = "Calendr datganiadau"
 
+[ReleaseCalendarErrorTitleValidation]
+description = "A filter could not be validated, please go back and amend it"
+one = "A filter could not be validated, please go back and amend it (cy)"
+
 [ReleaseCalendarPageSearchKeywords]
 description = "Release Calendar Page Search Keywords"
 one = "Chwilio am eiriau allweddol"
