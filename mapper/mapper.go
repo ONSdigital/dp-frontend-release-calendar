@@ -124,8 +124,14 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 
 func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
 	releaseStatus := "cancelled"
+	var censusTag string
+
 	if description.Published {
 		releaseStatus = "published"
+	}
+
+	if description.Census2021 {
+		censusTag = "census"
 	}
 
 	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
@@ -143,6 +149,7 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 			"release-date-status": "` + description.ProvisionalDate + `",
 			"next-release-date": "` + description.NextRelease + `",
 			"contact-name": "` + description.Contact.Name + `",
+			"tag": "` + censusTag + `"
 		});`),
 	}
 }
