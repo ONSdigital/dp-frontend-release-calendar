@@ -5,8 +5,21 @@
   {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
   {{ template "partials/calendar/hidden-inputs/census" . }}
 
-  {{ template "partials/input-date" .AfterDate }}
-  {{ template "partials/input-date" .BeforeDate }}
+  {{ if .DateError.Show}}
+    <div class="ons-panel ons-panel--error ons-panel--no-title" id="duration-error">
+      <span class="ons-panel__assistive-text ons-u-vh">Error: </span>
+      <div class="ons-panel__body">
+        <p class="ons-panel__error">
+          <strong>{{ .DateError.Message }}</strong>
+        </p>
+        {{ template "partials/input-date" .AfterDate }}
+        {{ template "partials/input-date" .BeforeDate }}
+      </div>
+    </div>
+  {{ else }}
+    {{ template "partials/input-date" .AfterDate }}
+    {{ template "partials/input-date" .BeforeDate }}
+  {{ end }}
 
   <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s text-wrap">
     <span class="ons-btn__inner">{{ localise "ApplyDateFilters" .Language 1 }}</span>
