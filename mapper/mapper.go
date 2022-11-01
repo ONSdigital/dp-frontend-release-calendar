@@ -20,6 +20,7 @@ func createTableOfContents(
 	description model.ReleaseDescription,
 	relatedDocuments []model.Link,
 	relatedDatasets []model.Link,
+	relatedAPIDatasets []model.Link,
 	dateChanges []model.DateChange,
 	aboutTheData bool,
 ) coreModel.TableOfContents {
@@ -59,7 +60,7 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "publications")
 	}
 
-	if len(relatedDatasets) > 0 {
+	if len(relatedDatasets) > 0 || len(relatedAPIDatasets) > 0 {
 		sections["data"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
@@ -208,6 +209,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.Description,
 		result.RelatedDocuments,
 		result.RelatedDatasets,
+		result.RelatedAPIDatasets,
 		result.DateChanges,
 		result.AboutTheData,
 	)
