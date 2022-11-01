@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"strconv"
@@ -258,7 +259,7 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner, err error) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
@@ -281,6 +282,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Sort = model.Sort{
 		Mode:    params.Sort.String(),
 		Options: mapSortOptions(params),
+	}
+
+	if err != nil && errors.As(err, &queryparams.ErrInvalidDateInput{}) {
+		calendar.DateError.Show = true
+		calendar.DateError.Message = err.Error()
 	}
 
 	calendar.AfterDate = coreModel.InputDate{
