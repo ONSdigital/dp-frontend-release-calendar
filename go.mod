@@ -3,12 +3,12 @@ module github.com/ONSdigital/dp-frontend-release-calendar
 go 1.18
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.181.0
-	github.com/ONSdigital/dp-healthcheck v1.3.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.192.0
+	github.com/ONSdigital/dp-healthcheck v1.4.0-beta
 	github.com/ONSdigital/dp-net v1.5.0
-	github.com/ONSdigital/dp-net/v2 v2.4.0
-	github.com/ONSdigital/dp-renderer v1.50.0
-	github.com/ONSdigital/log.go/v2 v2.2.0
+	github.com/ONSdigital/dp-net/v2 v2.6.0
+	github.com/ONSdigital/dp-renderer v1.53.0
+	github.com/ONSdigital/log.go/v2 v2.3.0-beta
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -39,5 +39,5 @@ require (
 	github.com/unrolled/render v1.4.0 // indirect
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.3.8 // indirect
 )
