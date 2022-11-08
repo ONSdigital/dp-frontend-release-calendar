@@ -7,23 +7,13 @@
                 {{ else }}
                   <a href="{{ .URI }}">{{ .URI }}</a>
                 {{ end }}
-
-                <div class="ons-u-mt-xs">
-                    <span class="ons-u-fs-r--b">{{ localise "ReleaseDate" $.Language 1 }}:</span>
-                    <span>12 August 2013 [[TODO!!]]</span>
-                    <span>|</span>
-                    <span class="ons-u-fs-r--b">Published [[TODO!!]]</span>
-                    {{/*
-                        {{ dateTimeOnsDatePatternFormat .Description.ReleaseDate $.Language }}</span>
-                    */}}
-                </div>
-                <div class="ons-u-mt-xs">
-                    {{ if .Summary }}
+                {{ if .Summary }}
+                    <div class="ons-u-mt-xs">
                         <p>
-                          {{ .Summary }}
+                            {{ .Summary }}
                         </p>
-                    {{ end }}
-                </div>
+                    </div>
+                {{ end }}
             </li>
         {{ end }}
     </ol>
