@@ -17,6 +17,8 @@
         {{ template "partials/release/contents/date-changes" $release }}
       {{ else if eq $id "aboutthedata" }}
         {{ template "partials/release/contents/about-the-data" $release }}
+      {{ else if eq $id "moreonthistopic" }}
+        {{ template "partials/release/contents/more-on-this-topic" $release }}
       {{ end }}
     </section>
   {{ end }}
