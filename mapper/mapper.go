@@ -23,6 +23,7 @@ func createTableOfContents(
 	relatedAPIDatasets []model.Link,
 	dateChanges []model.DateChange,
 	aboutTheData bool,
+	relatedArticleDatasets []model.Link,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -102,6 +103,16 @@ func createTableOfContents(
 			},
 		}
 		displayOrder = append(displayOrder, "aboutthedata")
+	}
+	if len(relatedArticleDatasets) > 0 {
+		sections["moreonthistopic"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleaseSectionMoreOnThisTopic",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "moreonthistopic")
 	}
 
 	toc.Sections = sections
@@ -212,6 +223,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.RelatedAPIDatasets,
 		result.DateChanges,
 		result.AboutTheData,
+		result.RelatedAPIDatasets,
 	)
 	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
