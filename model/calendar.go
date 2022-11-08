@@ -36,6 +36,11 @@ type Sort struct {
 	Options []SortOption `json:"options"`
 }
 
+type DateError struct {
+	Show    bool   `json:"show"`
+	Message string `json:"message"`
+}
+
 type GlobalError struct {
 	Title   coreModel.Localisation `json:"title"`
 	Message string                 `json:"message"`
@@ -49,6 +54,7 @@ type Calendar struct {
 	Keywords            string                  `json:"keywords"`
 	BeforeDate          coreModel.InputDate     `json:"before_date"`
 	AfterDate           coreModel.InputDate     `json:"after_date"`
+	DateError           DateError               `json:"date_error"`
 	Entries             []CalendarEntry         `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`

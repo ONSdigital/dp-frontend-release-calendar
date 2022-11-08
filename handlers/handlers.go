@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -103,17 +104,24 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		ctx := r.Context()
 		params := r.URL.Query()
 
-		validatedParams, err := validateParams(ctx, params, cfg)
-		if err != nil {
-			setStatusCode(r, w, err)
-			calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
-			rc.BuildPage(w, calendar, "calendar")
-			return
-		}
-
 		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
 		if err != nil {
 			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
+		}
+
+		validatedParams, err := validateParams(ctx, params, cfg)
+		if err != nil {
+			if errors.As(err, &queryparams.ErrInvalidDateInput{}) {
+				calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, err)
+				setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
+				rc.BuildPage(w, calendar, "calendar")
+				return
+			} else {
+				setStatusCode(r, w, err)
+				calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
+				rc.BuildPage(w, calendar, "calendar")
+				return
+			}
 		}
 
 		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
@@ -122,7 +130,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			return
 		}
 
-		calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
+		calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, nil)
 		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 		rc.BuildPage(w, calendar, "calendar")
 	})

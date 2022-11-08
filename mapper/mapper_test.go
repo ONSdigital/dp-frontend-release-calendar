@@ -297,7 +297,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				LinkText:    emergencyBannerLinkText,
 			}
 
-			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang, serviceMessage, bannerData)
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang, serviceMessage, bannerData, nil)
 
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
