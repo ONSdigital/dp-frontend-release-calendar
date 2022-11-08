@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"strconv"
@@ -20,6 +21,7 @@ func createTableOfContents(
 	description model.ReleaseDescription,
 	relatedDocuments []model.Link,
 	relatedDatasets []model.Link,
+	relatedAPIDatasets []model.Link,
 	dateChanges []model.DateChange,
 	aboutTheData bool,
 ) coreModel.TableOfContents {
@@ -59,7 +61,7 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "publications")
 	}
 
-	if len(relatedDatasets) > 0 {
+	if len(relatedDatasets) > 0 || len(relatedAPIDatasets) > 0 {
 		sections["data"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
@@ -208,6 +210,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.Description,
 		result.RelatedDocuments,
 		result.RelatedDatasets,
+		result.RelatedAPIDatasets,
 		result.DateChanges,
 		result.AboutTheData,
 	)
@@ -258,7 +261,7 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner, err error) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
@@ -281,6 +284,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Sort = model.Sort{
 		Mode:    params.Sort.String(),
 		Options: mapSortOptions(params),
+	}
+
+	if err != nil && errors.As(err, &queryparams.ErrInvalidDateInput{}) {
+		calendar.DateError.Show = true
+		calendar.DateError.Message = err.Error()
 	}
 
 	calendar.AfterDate = coreModel.InputDate{

@@ -162,6 +162,13 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 	return upcoming, nil
 }
 
+// ErrInvalidDateInput is return when input date is invalid e.g. 31 Feb
+type ErrInvalidDateInput struct {
+	msg string
+}
+
+func (e ErrInvalidDateInput) Error() string { return e.msg }
+
 // GetDates finds the date from and date to parameters
 func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
 	var (
@@ -174,23 +181,23 @@ func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
 		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearAfter, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", YearAfter, err.Error())}
 		}
 		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthAfter, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", MonthAfter, err.Error())}
 		}
 		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayAfter, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", DayAfter, err.Error())}
 		}
 		from = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := from.Date()
 		if m != time.Month(month) {
 			log.Warn(ctx, "invalid day of month", log.Data{DayAfter: dayString, MonthAfter: monthString, YearAfter: yearString})
-			return Date{}, Date{}, fmt.Errorf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)}
 		}
 		fromDate = DateFromTime(from)
 	}
@@ -200,23 +207,23 @@ func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
 		year, err := yearValidator(yearString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", YearBefore, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", YearBefore, err.Error())}
 		}
 		month, err := monthValidator(monthString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", MonthBefore, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", MonthBefore, err.Error())}
 		}
 		day, err := dayValidator(dayString)
 		if err != nil {
 			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
-			return Date{}, Date{}, fmt.Errorf("invalid %s parameter: %s", DayBefore, err.Error())
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", DayBefore, err.Error())}
 		}
 		to = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 		_, m, _ := to.Date()
 		if m != time.Month(month) {
 			log.Warn(ctx, "invalid day of month", log.Data{DayBefore: dayString, MonthBefore: monthString, YearBefore: yearString})
-			return Date{}, Date{}, fmt.Errorf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)
+			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)}
 		}
 		toDate = DateFromTime(to)
 	}

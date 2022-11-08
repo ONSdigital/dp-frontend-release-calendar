@@ -418,13 +418,13 @@ func TestGetDates(t *testing.T) {
 				afterDay: "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid after-day parameter: Value is above the maximum value (31)"),
+				exError: ErrInvalidDateInput{msg: "invalid after-day parameter: Value is above the maximum value (31)"},
 			},
 			{
 				afterDay: "29", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid day (29) of month (2) in year (2021)"),
+				exError: ErrInvalidDateInput{msg: "invalid day (29) of month (2) in year (2021)"},
 			},
 			{
 				afterDay: "28", afterMonth: "2", afterYear: "2021",
