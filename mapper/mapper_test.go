@@ -152,6 +152,7 @@ func TestUnitMapper(t *testing.T) {
 			assertLinks(releaseResponse.RelatedDocuments, release.RelatedDocuments)
 			assertLinks(releaseResponse.RelatedMethodology, release.RelatedMethodology)
 			assertLinks(releaseResponse.RelatedMethodologyArticle, release.RelatedMethodologyArticle)
+			assertLinks(releaseResponse.RelatedAPIDatasets, release.RelatedAPIDatasets)
 			assertLinks(releaseResponse.Links, release.Links)
 			assertDateChanges(releaseResponse.DateChanges, release.DateChanges)
 			So(release.Description.Title, ShouldEqual, releaseResponse.Description.Title)
