@@ -18,7 +18,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/ONSdigital/dp-api-clients-go v1.43.0 // indirect
-	github.com/aws/aws-sdk-go v1.44.133 // indirect
+	github.com/aws/aws-sdk-go v1.44.134 // indirect
 	github.com/c2h5oh/datasize v0.0.0-20220606134207-859f65c6625b // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
