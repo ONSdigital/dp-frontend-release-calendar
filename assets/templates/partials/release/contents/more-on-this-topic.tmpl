@@ -4,7 +4,7 @@
             <li class="ons-list__item ons-u-mt-l">
                 {{ if and .URI .Title }}
                   <a href="{{ .URI }}">{{ .Title }}</a>
-                {{ else }}
+                {{ else if .URI }}
                   <a href="{{ .URI }}">{{ .URI }}</a>
                 {{ end }}
                 {{ if .Summary }}
