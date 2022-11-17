@@ -62,7 +62,7 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "publications")
 	}
 
-	if len(relatedDatasets) > 0 {
+	if len(relatedDatasets) > 0 || len(relatedAPIDatasets) > 0 {
 		sections["data"] = coreModel.ContentSection{
 			Current: false,
 			Title: coreModel.Localisation{
@@ -104,16 +104,6 @@ func createTableOfContents(
 			},
 		}
 		displayOrder = append(displayOrder, "aboutthedata")
-	}
-	if len(relatedArticleDatasets) > 0 {
-		sections["moreonthistopic"] = coreModel.ContentSection{
-			Current: false,
-			Title: coreModel.Localisation{
-				LocaleKey: "ReleaseSectionMoreOnThisTopic",
-				Plural:    1,
-			},
-		}
-		displayOrder = append(displayOrder, "moreonthistopic")
 	}
 
 	toc.Sections = sections
