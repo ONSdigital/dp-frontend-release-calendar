@@ -136,6 +136,10 @@ one = "Cyhoeddiadau"
 description = "Data"
 one = "Data"
 
+[ReleaseSectionMethodology]
+description = "Methodology"
+one = "Methodology"
+
 [ReleaseSectionContactDetails]
 description = "Contact details"
 one = "Manylion cyswllt"

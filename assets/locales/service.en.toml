@@ -136,6 +136,10 @@ one = "Publications"
 description = "Data"
 one = "Data"
 
+[ReleaseSectionMethodology]
+description = "Methodology"
+one = "Methodology"
+
 [ReleaseSectionContactDetails]
 description = "Contact details"
 one = "Contact details"

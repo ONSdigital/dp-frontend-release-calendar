@@ -25,6 +25,8 @@ func createTableOfContents(
 	dateChanges []model.DateChange,
 	aboutTheData bool,
 	relatedArticleDatasets []model.Link,
+	relatedMethodology []model.Link,
+	relatedMethodologyArticle []model.Link,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -71,6 +73,17 @@ func createTableOfContents(
 			},
 		}
 		displayOrder = append(displayOrder, "data")
+	}
+
+	if len(relatedMethodology) > 0 || len(relatedMethodologyArticle) > 0 {
+		sections["methodology"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleaseSectionMethodology",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "methodology")
 	}
 
 	if (model.ContactDetails{} != description.Contact) {
@@ -215,6 +228,8 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.DateChanges,
 		result.AboutTheData,
 		result.RelatedAPIDatasets,
+		result.RelatedMethodology,
+		result.RelatedMethodologyArticle,
 	)
 	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
