@@ -182,6 +182,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		},
 	}
 	result.Language = lang
+	result.Type = "releaseCalendar"
 	result.ServiceMessage = serviceMessage
 	result.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	result.RelatedDatasets = mapLink(release.RelatedDatasets)
@@ -268,6 +269,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Page: basePage,
 	}
 	calendar.Language = lang
+	calendar.Type = "releaseCalendar"
+	calendar.URI = "/releasecalendar"
 	calendar.BetaBannerEnabled = true
 	calendar.ServiceMessage = serviceMessage
 	calendar.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
