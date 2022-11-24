@@ -1,0 +1,43 @@
+<ul class="ons-list ons-list--bare">
+  {{ range .RelatedMethodology }}
+    <li class="ons-list__item">
+      <p>
+        {{/*
+          The Title is not always available for a link so re-use
+          the URI as the link text as a fallback.
+        */}}
+        {{ if and .URI .Title }}
+          <a href="{{ .URI }}">{{ .Title }}</a>
+        {{ else }}
+          <a href="{{ .URI }}">{{ .URI }}</a>
+        {{ end }}
+      </p>
+       {{ if .Summary }}
+        <p>
+          {{ .Summary }}
+        </p>
+      {{ end }}
+    </li>
+  {{ end }}
+  
+  {{ range .RelatedMethodologyArticle }}
+    <li class="ons-list__item">
+      <p>
+        {{/*
+          The Title is not always available for a link so re-use
+          the URI as the link text as a fallback.
+        */}}
+        {{ if and .URI .Title }}
+          <a href="{{ .URI }}">{{ .Title }}</a>
+        {{ else }}
+          <a href="{{ .URI }}">{{ .URI }}</a>
+        {{ end }}
+      </p>
+      {{ if .Summary }}
+        <p>
+          {{ .Summary }}
+        </p>
+      {{ end }}
+    </li>
+  {{ end }}
+</ul>
