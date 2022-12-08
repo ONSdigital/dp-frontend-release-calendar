@@ -1,0 +1,20 @@
+<div class="more-on-this-topic">
+    <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
+        {{ range .Links }}
+            <li class="ons-list__item ons-u-mt-l">
+                {{ if and .URI .Title }}
+                  <a href="{{ .URI }}">{{ .Title }}</a>
+                {{ else if .URI }}
+                  <a href="{{ .URI }}">{{ .URI }}</a>
+                {{ end }}
+                {{ if .Summary }}
+                    <div class="ons-u-mt-xs">
+                        <p>
+                            {{ .Summary }}
+                        </p>
+                    </div>
+                {{ end }}
+            </li>
+        {{ end }}
+    </ol>
+</div>
