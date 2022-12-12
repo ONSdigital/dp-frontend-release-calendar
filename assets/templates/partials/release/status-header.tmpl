@@ -30,11 +30,11 @@
           </div>
         {{ else if .Description.NextRelease }}
           <div class="ons-grid ons-js-toc-container ons-u-ml-no">
-            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-col-12@s ons-u-p-no">
               <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
               <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
             </div>
-            <div class="ons-grid__col ons-col-8@m">
+            <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
               <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
               <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
             </div>
