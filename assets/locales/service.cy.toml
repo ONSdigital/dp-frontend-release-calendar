@@ -298,7 +298,7 @@ one = " Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth c
 
 [AboutDataNationalStatisticsBody3]
 description = "This means that they:"
-one = "y'n golygu eu bod:"
+one = "Y'n golygu eu bod:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
