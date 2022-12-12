@@ -24,21 +24,21 @@
           <span class="ons-u-nowrap">{{ .Description.ProvisionalDate }}</span>
         </div>
         {{ else if .Description.Cancelled }}
-        <div>
-          <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
-          <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
-        </div>
+          <div>
+            <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
+            <span>{{ localise "ReleaseStatusLineCancelled" .Language 1 }}</span>
+          </div>
         {{ else if .Description.NextRelease }}
-        <ul class="ons-list ons-list--bare ons-list--inline">
-          <li class="ons-list__item ons-u-mr-xl@xs ons-u-mb-xs@xxs@m">
-            <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
-            <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
-          </li>
-          <li class="ons-list__item ons-u-mr-xl@xs">
-            <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-            <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
-          </li>
-        </ul>
+          <div class="ons-grid ons-js-toc-container ons-u-ml-no">
+            <div class="ons-grid__col ons-grid__col--sticky@m ons-col-4@m ons-u-p-no">
+              <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleased" .Language 1 }}:</span>
+              <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate .Language }}</span>
+            </div>
+            <div class="ons-grid__col ons-col-8@m">
+              <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
+              <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
+            </div>
+          </div>
         {{ else }}
         <div>
           <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineReleaseDate" .Language 1 }}:</span>
