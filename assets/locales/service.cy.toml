@@ -294,7 +294,11 @@ one = "Mae'r ystadegau hyn wedi cael statws Ystadegau Gwladol gan y Swyddfa Rheo
 
 [AboutDataNationalStatisticsBody2]
 description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
-one = " Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus, sy'n golygu eu bod:"
+one = " Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus."
+
+[AboutDataNationalStatisticsBody3]
+description = "This means that they:"
+one = "Y'n golygu eu bod:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"

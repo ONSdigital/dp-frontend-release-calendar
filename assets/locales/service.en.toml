@@ -294,7 +294,11 @@ one = "These statistics have been given National Statistics status by the Office
 
 [AboutDataNationalStatisticsBody2]
 description = "They meet the highest standards of trustworthiness, quality and public value. This means that they:"
-one = " They meet the highest standards of trustworthiness, quality and public value. This means that they:"
+one = " They meet the highest standards of trustworthiness, quality and public value."
+
+[AboutDataNationalStatisticsBody3]
+description = "This means that they:"
+one = "This means that they:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
