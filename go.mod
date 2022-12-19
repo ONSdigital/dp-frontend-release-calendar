@@ -3,10 +3,10 @@ module github.com/ONSdigital/dp-frontend-release-calendar
 go 1.18
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.207.1
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.204.0
 	github.com/ONSdigital/dp-healthcheck v1.5.0
 	github.com/ONSdigital/dp-net v1.5.0
-	github.com/ONSdigital/dp-net/v2 v2.7.0
+	github.com/ONSdigital/dp-net/v2 v2.6.0
 	github.com/ONSdigital/dp-renderer v1.58.0
 	github.com/ONSdigital/log.go/v2 v2.3.0
 	github.com/golang/mock v1.6.0
@@ -18,7 +18,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/ONSdigital/dp-api-clients-go v1.43.0 // indirect
-	github.com/aws/aws-sdk-go v1.44.162 // indirect
+	github.com/aws/aws-sdk-go v1.44.157 // indirect
 	github.com/c2h5oh/datasize v0.0.0-20220606134207-859f65c6625b // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
