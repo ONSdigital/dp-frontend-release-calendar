@@ -34,8 +34,6 @@ github.com/ONSdigital/dp-net v1.5.0 h1:H47O5N+eXyXCYqPoQGWwuK12uLds3pCgzxpYwepg+
 github.com/ONSdigital/dp-net v1.5.0/go.mod h1:d/S4n6FJlQwmVIa2rnVt1HnAUgM8XsG0QEJBQp48uGg=
 github.com/ONSdigital/dp-net/v2 v2.6.0 h1:orxdb0SVDrJgz/zma0QXgQCAGJdLDhp6g2XqH6VFUZw=
 github.com/ONSdigital/dp-net/v2 v2.6.0/go.mod h1:4/2ZyId//hFa7AtbbRNQctY729C1Vbw4UEdOliRvpZI=
-github.com/ONSdigital/dp-net/v2 v2.7.0 h1:iAbGlUmwf7Y8DKJXEF1mDXO+BDO2LhJ3XfMQwesT18U=
-github.com/ONSdigital/dp-net/v2 v2.7.0/go.mod h1:4/2ZyId//hFa7AtbbRNQctY729C1Vbw4UEdOliRvpZI=
 github.com/ONSdigital/dp-renderer v1.53.0 h1:EXh6AW4WLk7mzSeu2BWrvCCzuv0djaNdhZBkJORP4RE=
 github.com/ONSdigital/dp-renderer v1.53.0/go.mod h1:q/zlK9Qc7b95w7XPfgS7RPLID++CZgaAn0q51QCqZew=
 github.com/ONSdigital/dp-renderer v1.55.0 h1:EL6ReLTRlyOecc7niMacVybYAuhpCxz8p5wWNvRwcG8=
@@ -67,13 +65,8 @@ github.com/aws/aws-sdk-go v1.44.134 h1:TzFxjVHPPsibtkD7y6KHI4V00rEKg4yzNlMNGy2ZH
 github.com/aws/aws-sdk-go v1.44.134/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/aws/aws-sdk-go v1.44.145 h1:KMVRrIyjBsNz3xGPuHIRnhIuKlb5h3Ii5e5jbi3cgnc=
 github.com/aws/aws-sdk-go v1.44.145/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
-<<<<<<< HEAD
-github.com/aws/aws-sdk-go v1.44.162 h1:hKAd+X+/BLxVMzH+4zKxbQcQQGrk2UhFX0OTu1Mhon8=
-github.com/aws/aws-sdk-go v1.44.162/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
-=======
 github.com/aws/aws-sdk-go v1.44.157 h1:JVBPpEWC8+yA7CbfAuTl/ZFFlHS3yoqWFqxFyTCISwg=
 github.com/aws/aws-sdk-go v1.44.157/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
->>>>>>> develop
 github.com/c2h5oh/datasize v0.0.0-20200825124411-48ed595a09d2 h1:t8KYCwSKsOEZBFELI4Pn/phbp38iJ1RRAkDFNin1aak=
 github.com/c2h5oh/datasize v0.0.0-20200825124411-48ed595a09d2/go.mod h1:S/7n9copUssQ56c7aAgHqftWO4LTf4xY6CGWt8Bc+3M=
 github.com/c2h5oh/datasize v0.0.0-20220606134207-859f65c6625b h1:6+ZFm0flnudZzdSE0JxlhR2hKnGPcNB35BjQf4RYQDY=
