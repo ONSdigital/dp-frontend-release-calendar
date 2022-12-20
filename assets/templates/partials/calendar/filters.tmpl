@@ -72,7 +72,7 @@
       id="filter-date"
       data-btn-close="Hide"
       data-group="accordion"
-      {{ if .FuncIsFilterDatePresent }}
+      {{ if or  (.FuncIsFilterDatePresent) (.DateError.Show) }}
         data-open="true"
       {{ else }}
         data-open="false"
