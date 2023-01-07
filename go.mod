@@ -1,6 +1,6 @@
 module github.com/ONSdigital/dp-frontend-release-calendar
 
-go 1.18
+go 1.19
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.204.0
