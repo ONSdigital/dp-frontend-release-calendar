@@ -140,6 +140,10 @@ one = "Data"
 description = "Methodology"
 one = "Methodology"
 
+[YouMightAlsoBeInterestedIn]
+description = "You might also be interested in"
+one = "You might also be interested in"
+
 [ReleaseSectionContactDetails]
 description = "Contact details"
 one = "Manylion cyswllt"
