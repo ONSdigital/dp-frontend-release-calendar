@@ -4,11 +4,13 @@
 
 Provides server side rendering of the Release Calendar and Release pages.
 
-A Release Calender page is constructed from metadata drawn from the Search API.
+A Release Calender page is constructed from metadata drawn from the Search API. See [search service architecture docs here](https://github.com/ONSdigital/dp-search-api/tree/develop/architecture#search-service-architecture)
 
 A Release page is constructed from the data drawn from the Release API.
 
 ### Getting started
+
+Run `make help` to see full list of make targets.
 
 * Run the Digital Publishing Design System (`dp-design-system`) in a
   separate shell with `./run.sh`
