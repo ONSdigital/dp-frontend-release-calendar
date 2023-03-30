@@ -55,14 +55,14 @@ func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageA
 func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
-		releaseUri := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
+		releaseURI := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
 
 		homepageContent, err := zc.GetHomepageContent(ctx, accessToken, collectionID, lang, homepagePath)
 		if err != nil {
 			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
 		}
 
-		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseUri)
+		release, err := api.GetLegacyRelease(ctx, accessToken, collectionID, lang, releaseURI)
 		if err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -71,7 +71,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
-		setCacheHeader(ctx, w, babbage, releaseUri, cfg.MaxAgeKey)
+		setCacheHeader(ctx, w, babbage, releaseURI, cfg.MaxAgeKey)
 
 		rc.BuildPage(w, m, "release")
 	})
@@ -91,7 +91,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 			return
 		}
 
-		w.Header().Set(http.CanonicalHeaderKey("content-type"), "application/json")
+		w.Header().Set("content-type", "application/json")
 		if _, err = w.Write(data); err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -116,12 +116,12 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 				setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
 				rc.BuildPage(w, calendar, "calendar")
 				return
-			} else {
-				setStatusCode(r, w, err)
-				calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
-				rc.BuildPage(w, calendar, "calendar")
-				return
 			}
+
+			setStatusCode(r, w, err)
+			calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
+			rc.BuildPage(w, calendar, "calendar")
+			return
 		}
 
 		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
@@ -159,7 +159,7 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 			return
 		}
 
-		w.Header().Set(http.CanonicalHeaderKey("content-type"), "application/json")
+		w.Header().Set("content-type", "application/json")
 		if _, err = w.Write(data); err != nil {
 			setStatusCode(r, w, err)
 			return
@@ -240,8 +240,7 @@ func releaseCalendarICSEntries(w http.ResponseWriter, req *http.Request, userAcc
 	}
 
 	fileWriter := new(bytes.Buffer)
-	err = toICSFile(ctx, releases.Releases, fileWriter)
-	if err != nil {
+	if err = toICSFile(ctx, releases.Releases, fileWriter); err != nil {
 		setStatusCode(req, w, err)
 		return
 	}
@@ -253,7 +252,6 @@ func releaseCalendarICSEntries(w http.ResponseWriter, req *http.Request, userAcc
 		setStatusCode(req, w, err)
 		return
 	}
-
 }
 
 func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err error) {
@@ -272,16 +270,16 @@ func toICSFile(ctx context.Context, releases []search.Release, w io.Writer) (err
 	printLine("PRODID:-//Office for National Statistics//NONSGML//EN")
 	printLine("VERSION:2.0")
 	printLine("CALSCALE:GREGORIAN")
-	for _, r := range releases {
+	for i := range releases {
 		printLine("BEGIN:VEVENT")
 		printLine("DTSTAMP:" + time.Now().UTC().Format(iCalDateFormat))
-		releaseDate := iCalDate(ctx, r.Description.ReleaseDate)
+		releaseDate := iCalDate(ctx, releases[i].Description.ReleaseDate)
 		printLine("DTSTART:" + releaseDate)
 		printLine("DTEND:" + releaseDate)
-		printLine("SUMMARY:" + r.Description.Title)
-		printLine("UID:" + r.URI)
-		printLine("STATUS:" + releaseStatus(r))
-		printLine("DESCRIPTION:" + r.Description.Summary)
+		printLine("SUMMARY:" + releases[i].Description.Title)
+		printLine("UID:" + releases[i].URI)
+		printLine("STATUS:" + releaseStatus(releases[i]))
+		printLine("DESCRIPTION:" + releases[i].Description.Summary)
 		printLine("END:VEVENT")
 	}
 	printLine("END:VCALENDAR")

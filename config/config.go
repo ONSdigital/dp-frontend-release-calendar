@@ -33,9 +33,9 @@ var cfg *Config
 // Get returns the default config with any modifications through environment
 // variables
 func Get() (*Config, error) {
+	var err error
 
-	cfg, err := get()
-
+	cfg, err = get()
 	if err != nil {
 		return nil, err
 	}

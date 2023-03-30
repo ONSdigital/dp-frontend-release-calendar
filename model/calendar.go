@@ -12,7 +12,7 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	Id        string                 `json:"id"`
+	ID        string                 `json:"id"`
 	Label     string                 `json:"label"`
 	LocaleKey string                 `json:"locale_key"`
 	Plural    int                    `json:"plural"`
@@ -66,9 +66,9 @@ func (calendar Calendar) FuncIsFilterSearchPresent() bool {
 }
 
 func (calendar Calendar) FuncIsFilterCensusPresent() bool {
-	for _, releaseType := range calendar.ReleaseTypes {
-		if releaseType.Name == "census" {
-			return releaseType.Checked
+	for i := range calendar.ReleaseTypes {
+		if calendar.ReleaseTypes[i].Name == "census" {
+			return calendar.ReleaseTypes[i].Checked
 		}
 	}
 	return false
