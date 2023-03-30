@@ -37,6 +37,11 @@ type testCliError struct{}
 func (e *testCliError) Error() string { return "client error" }
 func (e *testCliError) Code() int     { return http.StatusNotFound }
 
+// TODO TestUnitHandlers needs refactoring - it is way too complex and therefore hard to maintain.
+// This needs to be split into different test functions.
+// Overlapping with other unit tests from over packages should be removed
+//
+//nolint:gocognit // needs refactoring see comment above
 func TestUnitHandlers(t *testing.T) {
 	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
 	mockCtrl := gomock.NewController(t)
@@ -44,7 +49,6 @@ func TestUnitHandlers(t *testing.T) {
 	ctx := gomock.Any()
 
 	Convey("test setStatusCode", t, func() {
-
 		Convey("test status code handles 404 response from client", func() {
 			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
 			w := httptest.NewRecorder()
@@ -76,7 +80,7 @@ func TestUnitHandlers(t *testing.T) {
 
 		Convey("test Release endpoints", func() {
 			mockZebedeeClient := NewMockZebedeeClient(mockCtrl)
-			mockApiClient := NewMockReleaseCalendarAPI(mockCtrl)
+			mockAPIClient := NewMockReleaseCalendarAPI(mockCtrl)
 			root := "/releases"
 			maxAge := 670
 			r := releasecalendar.Release{
@@ -88,15 +92,17 @@ func TestUnitHandlers(t *testing.T) {
 			r.URI = fmt.Sprintf("%s/%s", root, titleSegment)
 
 			Convey("test '/releases'", func() {
-				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockApiClient, mockBabbageAPI, mockZebedeeClient))
+				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockAPIClient, mockBabbageAPI, mockZebedeeClient))
 
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), nil)
 				Convey("When there is an error getting the release from the release calendar API", func() {
 					apiError := errors.New("error reading data")
 					Convey("And the request uses headers", func() {
-						setRequestHeaders(req)
+						if err := setRequestHeaders(req); err != nil {
+							t.Fatalf("unable to set request headers, error: %v", err)
+						}
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
-						mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, apiError)
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, apiError)
 
 						Convey("Then it returns 500", func() {
 							router.ServeHTTP(w, req)
@@ -107,7 +113,7 @@ func TestUnitHandlers(t *testing.T) {
 
 					Convey("And the request does not use headers", func() {
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
-						mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil).Return(nil, apiError)
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil).Return(nil, apiError)
 
 						Convey("Then it returns 500", func() {
 							router.ServeHTTP(w, req)
@@ -122,9 +128,11 @@ func TestUnitHandlers(t *testing.T) {
 					mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "release")
 
 					Convey("And the request uses headers", func() {
-						setRequestHeaders(req)
+						if err := setRequestHeaders(req); err != nil {
+							t.Fatalf("unable to set request headers, error: %v", err)
+						}
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
-						mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
 							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, nil)
@@ -152,7 +160,7 @@ func TestUnitHandlers(t *testing.T) {
 
 					Convey("And the request does not use headers", func() {
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
-						mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
 							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, nil)
@@ -181,14 +189,16 @@ func TestUnitHandlers(t *testing.T) {
 
 			Convey("test '/releases/{release-title}/data' endpoint", func() {
 				dataSegment := "data"
-				router.HandleFunc(root+"/{release-title}/"+dataSegment, ReleaseData(*mockConfig, mockApiClient))
+				router.HandleFunc(root+"/{release-title}/"+dataSegment, ReleaseData(*mockConfig, mockAPIClient))
 
 				js, _ := json.Marshal(r)
 				Convey("when the release is retrieved successfully", func() {
-					mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
+					mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
-					setRequestHeaders(req)
+					if err := setRequestHeaders(req); err != nil {
+						t.Fatalf("unable to set request headers, error: %v", err)
+					}
 
 					router.ServeHTTP(w, req)
 
@@ -197,12 +207,12 @@ func TestUnitHandlers(t *testing.T) {
 						So(w.Body.Bytes(), ShouldResemble, js)
 					})
 					Convey("and the content type is 'application/json' ", func() {
-						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+						So(w.Header().Get("content-type"), ShouldEqual, "application/json")
 					})
 				})
 
 				Convey("when the release is retrieved successfully without headers or cookies", func() {
-					mockApiClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
+					mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
 
@@ -213,15 +223,16 @@ func TestUnitHandlers(t *testing.T) {
 						So(w.Body.Bytes(), ShouldResemble, js)
 					})
 					Convey("and the content type is 'application/json' ", func() {
-						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+						So(w.Header().Get("content-type"), ShouldEqual, "application/json")
 					})
 				})
 
 				Convey("it returns 500 when there is an error getting the release from the api", func() {
-					mockApiClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, errors.New("error reading data"))
+					mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, errors.New("error reading data"))
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
-					setRequestHeaders(req)
-
+					if err := setRequestHeaders(req); err != nil {
+						t.Fatalf("unable to set request headers, error: %v", err)
+					}
 					router.ServeHTTP(w, req)
 
 					So(w.Code, ShouldEqual, http.StatusInternalServerError)
@@ -253,7 +264,9 @@ func TestUnitHandlers(t *testing.T) {
 						apiError := errors.New("error reading data")
 
 						Convey("And the request uses headers", func() {
-							setRequestHeaders(req)
+							if err := setRequestHeaders(req); err != nil {
+								t.Fatalf("unable to set request headers, error: %v", err)
+							}
 							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, apiError)
 
@@ -281,7 +294,9 @@ func TestUnitHandlers(t *testing.T) {
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 
 						Convey("And the request uses headers", func() {
-							setRequestHeaders(req)
+							if err := setRequestHeaders(req); err != nil {
+								t.Fatalf("unable to set request headers, error: %v", err)
+							}
 							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
@@ -374,7 +389,9 @@ func TestUnitHandlers(t *testing.T) {
 					mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-					setRequestHeaders(req)
+					if err := setRequestHeaders(req); err != nil {
+						t.Fatalf("unable to set request headers, error: %v", err)
+					}
 
 					router.ServeHTTP(w, req)
 
@@ -383,7 +400,7 @@ func TestUnitHandlers(t *testing.T) {
 						So(w.Body.Bytes(), ShouldResemble, js)
 					})
 					Convey("and the content type is 'application/json' ", func() {
-						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+						So(w.Header().Get("content-type"), ShouldEqual, "application/json")
 					})
 				})
 
@@ -399,13 +416,15 @@ func TestUnitHandlers(t *testing.T) {
 						So(w.Body.Bytes(), ShouldResemble, js)
 					})
 					Convey("and the content type is 'application/json' ", func() {
-						So(w.Header().Get(http.CanonicalHeaderKey("content-type")), ShouldEqual, "application/json")
+						So(w.Header().Get("content-type"), ShouldEqual, "application/json")
 					})
 				})
 
 				Convey("it returns 500 when there is an error in one of the parameters", func() {
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
-					setRequestHeaders(req)
+					if err := setRequestHeaders(req); err != nil {
+						t.Fatalf("unable to set request headers, error: %v", err)
+					}
 
 					router.ServeHTTP(w, req)
 
@@ -415,7 +434,9 @@ func TestUnitHandlers(t *testing.T) {
 				Convey("it returns 500 when there is an error getting the releases from the search api", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, errors.New("error reading data"))
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-					setRequestHeaders(req)
+					if err := setRequestHeaders(req); err != nil {
+						t.Fatalf("unable to set request headers, error: %v", err)
+					}
 
 					router.ServeHTTP(w, req)
 
@@ -442,7 +463,9 @@ func TestUnitHandlers(t *testing.T) {
 				}
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(single, nil)
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-				setRequestHeaders(req)
+				if err := setRequestHeaders(req); err != nil {
+					t.Fatalf("unable to set request headers, error: %v", err)
+				}
 
 				router.ServeHTTP(w, req)
 
@@ -455,7 +478,6 @@ func TestUnitHandlers(t *testing.T) {
 					So(bytes.Contains(payload, []byte(`20220315T073000`)), ShouldBeTrue)
 					So(bytes.Contains(payload, []byte(`END:VCALENDAR`)), ShouldBeTrue)
 				})
-
 			})
 
 			Convey("it returns 200 when an ICS file is generated successfully with multiple calendar entries", func() {
@@ -477,7 +499,9 @@ func TestUnitHandlers(t *testing.T) {
 				}
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(multiple, nil)
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-				setRequestHeaders(req)
+				if err := setRequestHeaders(req); err != nil {
+					t.Fatalf("unable to set request headers, error: %v", err)
+				}
 
 				router.ServeHTTP(w, req)
 
@@ -498,7 +522,9 @@ func TestUnitHandlers(t *testing.T) {
 			Convey("it returns a well formed but empty ICS file when there are no upcoming releases", func() {
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(sitesearch.ReleaseResponse{}, nil)
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-				setRequestHeaders(req)
+				if err := setRequestHeaders(req); err != nil {
+					t.Fatalf("unable to set request headers, error: %v", err)
+				}
 
 				router.ServeHTTP(w, req)
 
@@ -512,7 +538,9 @@ func TestUnitHandlers(t *testing.T) {
 			Convey("it returns 500 when there is an error getting the releases from the search api", func() {
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(sitesearch.ReleaseResponse{}, errors.New("error reading data"))
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
-				setRequestHeaders(req)
+				if err := setRequestHeaders(req); err != nil {
+					t.Fatalf("unable to set request headers, error: %v", err)
+				}
 
 				router.ServeHTTP(w, req)
 
@@ -522,9 +550,16 @@ func TestUnitHandlers(t *testing.T) {
 	})
 }
 
-func setRequestHeaders(req *http.Request) {
-	headers.SetAuthToken(req, accessToken)
-	headers.SetCollectionID(req, collectionID)
+func setRequestHeaders(req *http.Request) error {
+	if err := headers.SetAuthToken(req, accessToken); err != nil {
+		return err
+	}
+
+	if err := headers.SetCollectionID(req, collectionID); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func defaultParams() url.Values {

@@ -164,8 +164,8 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 	if description.Census2021 {
 		censusTag = "census"
 		return []template.JS{
-			template.JS(`dataLayer.push({
-				"analyticsOptOut": getUsageCookieValue(),
+			template.JS(`dataLayer.push({` + //nolint:gosec // input is controlled by app
+				`"analyticsOptOut": getUsageCookieValue(),
 				"gtm.whitelist": ["google","hjtc","lcl"],
 				"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
 				"contentTitle": "` + title + `",
@@ -180,8 +180,8 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 		}
 	}
 	return []template.JS{
-		template.JS(`dataLayer.push({
-			"analyticsOptOut": getUsageCookieValue(),
+		template.JS(`dataLayer.push({` + //nolint:gosec // input is controlled by app
+			`"analyticsOptOut": getUsageCookieValue(),
 			"gtm.whitelist": ["google","hjtc","lcl"],
 			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
 			"contentTitle": "` + title + `",
@@ -393,8 +393,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.LimitOptions = []int{10, 25}
 	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
 
-	for _, release := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
+	for i := range response.Releases {
+		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
 	}
 
 	return calendar
@@ -460,7 +460,7 @@ func getFirstAndLastPages(params queryparams.ValidatedParams, path string, total
 // getWindowStartEndPage calculates the start and end page of the moving window of size windowSize, over the set of pages
 // whose current page is currentPage, and whose size is totalPages
 // It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
-func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
+func getWindowStartEndPage(currentPage, totalPages, windowSize int) (start, end int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
 		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
@@ -473,7 +473,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	}
 
 	windowOffset := getWindowOffset(windowSize)
-	start := currentPage - windowOffset
+	start = currentPage - windowOffset
 	switch {
 	case start <= 0:
 		start = 1
@@ -481,7 +481,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 		start = totalPages - windowSize + 1
 	}
 
-	end := start + windowSize - 1
+	end = start + windowSize - 1
 	if end > totalPages {
 		end = totalPages
 	}
@@ -549,7 +549,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-published": {
 			Name:      "release-type",
 			Value:     "type-published",
-			Id:        "release-type-published",
+			ID:        "release-type-published",
 			LocaleKey: "FilterReleaseTypePublished",
 			Plural:    1,
 			Language:  language,
@@ -559,7 +559,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-upcoming": {
 			Name:      "release-type",
 			Value:     "type-upcoming",
-			Id:        "release-type-upcoming",
+			ID:        "release-type-upcoming",
 			LocaleKey: "FilterReleaseTypeUpcoming",
 			Plural:    1,
 			Language:  language,
@@ -569,7 +569,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-cancelled": {
 			Name:      "release-type",
 			Value:     "type-cancelled",
-			Id:        "release-type-cancelled",
+			ID:        "release-type-cancelled",
 			LocaleKey: "FilterReleaseTypeCancelled",
 			Plural:    1,
 			Language:  language,
@@ -579,7 +579,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-census": {
 			Name:      "census",
 			Value:     "type-census",
-			Id:        "release-type-census",
+			ID:        "release-type-census",
 			LocaleKey: "FilterReleaseTypeCensus",
 			Plural:    1,
 			Language:  language,
@@ -620,10 +620,7 @@ func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
 			Plural:    1,
 			Value:     queryparams.Relevance.String(),
 			Disabled: func(keywords string) bool {
-				if keywords == "" {
-					return true
-				}
-				return false
+				return keywords == ""
 			}(params.Keywords),
 		},
 	}

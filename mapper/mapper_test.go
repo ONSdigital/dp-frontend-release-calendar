@@ -125,13 +125,13 @@ func TestUnitMapper(t *testing.T) {
 			emergencyBannerTitle := "Emergency Title"
 			emergencyBannerType := "notable-death"
 			emergencyBannerDescription := "Emergency Description"
-			emergencyBannerUri := "https://example.com/emergency"
+			emergencyBannerURI := "https://example.com/emergency"
 			emergencyBannerLinkText := "Attention, this is an emergency. There's an emergency going on."
 			bannerData := zebedee.EmergencyBanner{
 				Title:       emergencyBannerTitle,
 				Type:        emergencyBannerType,
 				Description: emergencyBannerDescription,
-				URI:         emergencyBannerUri,
+				URI:         emergencyBannerURI,
 				LinkText:    emergencyBannerLinkText,
 			}
 			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData)
@@ -143,7 +143,7 @@ func TestUnitMapper(t *testing.T) {
 			So(release.EmergencyBanner.Title, ShouldEqual, emergencyBannerTitle)
 			So(release.EmergencyBanner.Type, ShouldEqual, emergencyBannerType)
 			So(release.EmergencyBanner.Description, ShouldEqual, emergencyBannerDescription)
-			So(release.EmergencyBanner.URI, ShouldEqual, emergencyBannerUri)
+			So(release.EmergencyBanner.URI, ShouldEqual, emergencyBannerURI)
 			So(release.EmergencyBanner.LinkText, ShouldEqual, emergencyBannerLinkText)
 			So(release.Metadata.Title, ShouldEqual, releaseResponse.Description.Title)
 			So(release.URI, ShouldEqual, releaseResponse.URI)
@@ -288,13 +288,13 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			emergencyBannerTitle := "Emergency Title"
 			emergencyBannerType := "notable-death"
 			emergencyBannerDescription := "Emergency Description"
-			emergencyBannerUri := "https://example.com/emergency"
+			emergencyBannerURI := "https://example.com/emergency"
 			emergencyBannerLinkText := "Attention, this is an emergency. There's an emergency going on."
 			bannerData := zebedee.EmergencyBanner{
 				Title:       emergencyBannerTitle,
 				Type:        emergencyBannerType,
 				Description: emergencyBannerDescription,
-				URI:         emergencyBannerUri,
+				URI:         emergencyBannerURI,
 				LinkText:    emergencyBannerLinkText,
 			}
 
@@ -307,7 +307,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.EmergencyBanner.Title, ShouldEqual, emergencyBannerTitle)
 			So(calendar.EmergencyBanner.Type, ShouldEqual, emergencyBannerType)
 			So(calendar.EmergencyBanner.Description, ShouldEqual, emergencyBannerDescription)
-			So(calendar.EmergencyBanner.URI, ShouldEqual, emergencyBannerUri)
+			So(calendar.EmergencyBanner.URI, ShouldEqual, emergencyBannerURI)
 			So(calendar.EmergencyBanner.LinkText, ShouldEqual, emergencyBannerLinkText)
 			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)

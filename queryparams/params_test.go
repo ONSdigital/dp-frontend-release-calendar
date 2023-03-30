@@ -16,15 +16,14 @@ func TestGetIntValidator(t *testing.T) {
 		validator := getIntValidator(0, 1000)
 
 		Convey("and a set of int values as strings", func() {
-
 			limits := []struct {
 				value   string
 				exValue int
 				exError error
 			}{
-				{value: "XXX", exValue: 0, exError: errors.New("Value contains non numeric characters")},
-				{value: "-1", exValue: 0, exError: errors.New("Value is below the minimum value (0)")},
-				{value: "1001", exValue: 0, exError: fmt.Errorf("Value is above the maximum value (1000)")},
+				{value: "XXX", exValue: 0, exError: errors.New("value contains non numeric characters")},
+				{value: "-1", exValue: 0, exError: errors.New("value is below the minimum value (0)")},
+				{value: "1001", exValue: 0, exError: fmt.Errorf("value is above the maximum value (1000)")},
 				{value: "0", exValue: 0, exError: nil},
 				{value: "123", exValue: 123, exError: nil},
 				{value: "1000", exValue: 1000, exError: nil},
@@ -85,7 +84,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is below the minimum value (0)")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: value is below the minimum value (0)")
 					})
 				})
 			})
@@ -96,7 +95,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid limit parameter: Value is above the maximum value (55)")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: value is above the maximum value (55)")
 					})
 				})
 			})
@@ -106,7 +105,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid limit parameter: Value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: value contains non numeric characters")
 					})
 				})
 			})
@@ -156,7 +155,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid page parameter: Value is below the minimum value (1)")
+						So(err.Error(), ShouldEqual, "invalid page parameter: value is below the minimum value (1)")
 					})
 				})
 			})
@@ -167,7 +166,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid page parameter: Value is above the maximum value (10)")
+						So(err.Error(), ShouldEqual, "invalid page parameter: value is above the maximum value (10)")
 					})
 				})
 			})
@@ -177,7 +176,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid page parameter: Value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid page parameter: value contains non numeric characters")
 					})
 				})
 			})
@@ -255,7 +254,6 @@ func TestGetSortOrder(t *testing.T) {
 				v, e := GetSortOrder(context.Background(), url.Values{SortName: []string{gso.given}}, RelDateDesc.String())
 				So(v, ShouldEqual, gso.exValue)
 				So(e, ShouldBeNil)
-
 			}
 		})
 	})
@@ -409,52 +407,66 @@ func TestGetReleaseType(t *testing.T) {
 func TestGetDates(t *testing.T) {
 	Convey("given a set of day month and year numbers as strings", t, func() {
 		testcases := []struct {
+			testDescription                    string
 			afterDay, afterMonth, afterYear    string
 			beforeDay, beforeMonth, beforeYear string
 			exFromDate, exToDate               string
 			exError                            error
 		}{
 			{
-				afterDay: "32", afterMonth: "2", afterYear: "2021",
+				testDescription: "for invalid day of month value",
+				afterDay:        "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: ErrInvalidDateInput{msg: "invalid after-day parameter: Value is above the maximum value (31)"},
+				exError: ErrInvalidDateInput{msg: "invalid 32 parameter: value is above the maximum value (31)"},
 			},
 			{
-				afterDay: "29", afterMonth: "2", afterYear: "2021",
+				testDescription: "for invalid 29th of February outside of leap year",
+				afterDay:        "29", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
 				exError: ErrInvalidDateInput{msg: "invalid day (29) of month (2) in year (2021)"},
 			},
 			{
-				afterDay: "28", afterMonth: "2", afterYear: "2021",
+				testDescription: "for valid 29th February on leap year",
+				afterDay:        "29", afterMonth: "2", afterYear: "2020",
+				beforeDay: "31", beforeMonth: "12", beforeYear: "2020",
+				exFromDate: "2020-02-29", exToDate: "2020-12-31",
+				exError: nil,
+			},
+			{
+				testDescription: "for valid date range: start date before end date",
+				afterDay:        "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "2021-02-28", exToDate: "2021-12-31",
 				exError: nil,
 			},
 			{
-				afterDay: "28", afterMonth: "2", afterYear: "2021",
+				testDescription: "for invalid date range: start date after end date",
+				afterDay:        "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "1", beforeMonth: "02", beforeYear: "2021",
 				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid dates: 'after' after 'before'"),
+				exError: errors.New("invalid dates: start date after end date"),
 			},
 		}
 
 		Convey("check that the validator correctly validates the dates, giving the expected results", func() {
 			for _, tc := range testcases {
-				params := make(url.Values)
-				params.Set("after-year", tc.afterYear)
-				params.Set("after-month", tc.afterMonth)
-				params.Set("after-day", tc.afterDay)
-				params.Set("before-year", tc.beforeYear)
-				params.Set("before-month", tc.beforeMonth)
-				params.Set("before-day", tc.beforeDay)
+				Convey(tc.testDescription, func() {
+					params := make(url.Values)
+					params.Set("after-year", tc.afterYear)
+					params.Set("after-month", tc.afterMonth)
+					params.Set("after-day", tc.afterDay)
+					params.Set("before-year", tc.beforeYear)
+					params.Set("before-month", tc.beforeMonth)
+					params.Set("before-day", tc.beforeDay)
 
-				from, to, err := GetDates(context.Background(), params)
+					from, to, err := GetDates(context.Background(), params)
 
-				So(err, ShouldResemble, tc.exError)
-				So(from.String(), ShouldEqual, tc.exFromDate)
-				So(to.String(), ShouldEqual, tc.exToDate)
+					So(err, ShouldResemble, tc.exError)
+					So(from.String(), ShouldEqual, tc.exFromDate)
+					So(to.String(), ShouldEqual, tc.exToDate)
+				})
 			}
 		})
 	})

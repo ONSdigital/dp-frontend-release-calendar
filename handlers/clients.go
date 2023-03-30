@@ -38,7 +38,7 @@ type SearchAPI interface {
 
 // BabbageClient is an interface to Babbage
 type BabbageAPI interface {
-	GetMaxAge(ctx context.Context, contentUri, key string) (int, error)
+	GetMaxAge(ctx context.Context, contentURI, key string) (int, error)
 }
 
 // ZebedeeClient is an interface for zebedee client

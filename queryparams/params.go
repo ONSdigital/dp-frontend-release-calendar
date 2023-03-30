@@ -38,13 +38,13 @@ func getIntValidator(minValue, maxValue int) intValidator {
 	return func(valueAsString string) (int, error) {
 		value, err := strconv.Atoi(valueAsString)
 		if err != nil {
-			return 0, fmt.Errorf("Value contains non numeric characters")
+			return 0, fmt.Errorf("value contains non numeric characters")
 		}
 		if value < minValue {
-			return 0, fmt.Errorf("Value is below the minimum value (%d)", minValue)
+			return 0, fmt.Errorf("value is below the minimum value (%d)", minValue)
 		}
 		if value > maxValue {
-			return 0, fmt.Errorf("Value is above the maximum value (%d)", maxValue)
+			return 0, fmt.Errorf("value is above the maximum value (%d)", maxValue)
 		}
 
 		return value, nil
@@ -58,7 +58,7 @@ var (
 )
 
 // GetLimit validates and returns the "limit" parameter
-func GetLimit(ctx context.Context, params url.Values, defaultValue int, maxValue int) (int, error) {
+func GetLimit(ctx context.Context, params url.Values, defaultValue, maxValue int) (int, error) {
 	validator := getIntValidator(0, maxValue)
 	return validateAndGetIntParam(ctx, params, Limit, defaultValue, validator)
 }
@@ -89,7 +89,6 @@ func validateAndGetIntParam(ctx context.Context, params url.Values, paramName st
 
 // GetSortOrder validates and returns the "sort" parameter
 func GetSortOrder(ctx context.Context, params url.Values, defaultValue string) (Sort, error) {
-
 	defaultSort, err := parseSort(defaultValue)
 	if err != nil {
 		log.Warn(ctx, fmt.Sprintf("Invalid config value for default sort. Using %s as default", RelDateDesc.String()), log.Data{"value": defaultValue})
@@ -170,70 +169,71 @@ type ErrInvalidDateInput struct {
 func (e ErrInvalidDateInput) Error() string { return e.msg }
 
 // GetDates finds the date from and date to parameters
-func GetDates(ctx context.Context, params url.Values) (Date, Date, error) {
+func GetDates(ctx context.Context, params url.Values) (startDate, endDate Date, err error) {
 	var (
-		from, to         time.Time
-		fromDate, toDate Date
+		startTime, endTime time.Time
 	)
 
-	yearString, monthString, dayString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
-	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(yearString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": YearAfter, "value": yearString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", YearAfter, err.Error())}
-		}
-		month, err := monthValidator(monthString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": MonthAfter, "value": monthString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", MonthAfter, err.Error())}
-		}
-		day, err := dayValidator(dayString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": DayAfter, "value": dayString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", DayAfter, err.Error())}
-		}
-		from = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-		_, m, _ := from.Date()
-		if m != time.Month(month) {
-			log.Warn(ctx, "invalid day of month", log.Data{DayAfter: dayString, MonthAfter: monthString, YearAfter: yearString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)}
-		}
-		fromDate = DateFromTime(from)
+	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
+	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
+	logData := log.Data{
+		"year_after": yearAfterString, "month_after": monthAfterString, "day_after": dayAfterString,
+		"year_before": yearBeforeString, "month_before": monthBeforeString, "day_before": DayBefore,
 	}
 
-	yearString, monthString, dayString = params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
-	if yearString != "" && monthString != "" && dayString != "" {
-		year, err := yearValidator(yearString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": YearBefore, "value": yearString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", YearBefore, err.Error())}
-		}
-		month, err := monthValidator(monthString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": MonthBefore, "value": monthString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", MonthBefore, err.Error())}
-		}
-		day, err := dayValidator(dayString)
-		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": DayBefore, "value": dayString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", DayBefore, err.Error())}
-		}
-		to = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-		_, m, _ := to.Date()
-		if m != time.Month(month) {
-			log.Warn(ctx, "invalid day of month", log.Data{DayBefore: dayString, MonthBefore: monthString, YearBefore: yearString})
-			return Date{}, Date{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", dayString, monthString, yearString)}
-		}
-		toDate = DateFromTime(to)
+	startTime, err = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString)
+	if err != nil {
+		log.Warn(ctx, "invalid date, startDate", log.FormatErrors([]error{err}), logData)
+		return Date{}, Date{}, err
 	}
 
-	if !from.IsZero() && !to.IsZero() && from.After(to) {
-		log.Warn(ctx, "invalid dates: from after to", log.Data{DateFrom: fromDate, DateTo: toDate})
-		return Date{}, Date{}, errors.New("invalid dates: 'after' after 'before'")
+	startDate = DateFromTime(startTime)
+
+	endTime, err = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString)
+	if err != nil {
+		log.Warn(ctx, "invalid date, endDate", log.FormatErrors([]error{err}), logData)
+		return Date{}, Date{}, err
 	}
 
-	return fromDate, toDate, nil
+	endDate = DateFromTime(endTime)
+
+	if !startTime.IsZero() && !endTime.IsZero() && startTime.After(endTime) {
+		log.Warn(ctx, "invalid date range: start date after end date", log.Data{DateFrom: startDate, DateTo: endDate})
+		return Date{}, Date{}, errors.New("invalid dates: start date after end date")
+	}
+
+	return startDate, endDate, nil
+}
+
+func getValidTimestamp(year, month, day string) (time.Time, error) {
+	if year == "" || month == "" || day == "" {
+		return time.Time{}, nil
+	}
+
+	y, err := yearValidator(year)
+	if err != nil {
+		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", year, err.Error())}
+	}
+
+	m, err := monthValidator(month)
+	if err != nil {
+		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", month, err.Error())}
+	}
+
+	d, err := dayValidator(day)
+	if err != nil {
+		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", day, err.Error())}
+	}
+
+	timestamp := time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC)
+
+	// Check the day is valid for the month in the year, e.g. day 30 cannot be in month 2 (February)
+	_, mo, _ := timestamp.Date()
+	if mo != time.Month(m) {
+		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year)}
+	}
+
+	return timestamp, nil
 }
 
 // CalculateOffset returns the offset (0 based) into a list, given a page number (1 based) and the size of a page.
@@ -260,7 +260,7 @@ func CalculatePageNumber(offset, pageSize int) int {
 	return ((offset + 1) / pageSize) + 1
 }
 
-func setValue(query url.Values, key string, value string) {
+func setValue(query url.Values, key, value string) {
 	if value != "" {
 		query.Set(key, value)
 	}
