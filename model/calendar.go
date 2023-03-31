@@ -12,7 +12,7 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	ID        string                 `json:"id"`
+	Id        string                 `json:"id"` //nolint:all // Id is expected in renderer library
 	Label     string                 `json:"label"`
 	LocaleKey string                 `json:"locale_key"`
 	Plural    int                    `json:"plural"`

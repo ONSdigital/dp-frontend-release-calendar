@@ -549,7 +549,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-published": {
 			Name:      "release-type",
 			Value:     "type-published",
-			ID:        "release-type-published",
+			Id:        "release-type-published",
 			LocaleKey: "FilterReleaseTypePublished",
 			Plural:    1,
 			Language:  language,
@@ -559,7 +559,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-upcoming": {
 			Name:      "release-type",
 			Value:     "type-upcoming",
-			ID:        "release-type-upcoming",
+			Id:        "release-type-upcoming",
 			LocaleKey: "FilterReleaseTypeUpcoming",
 			Plural:    1,
 			Language:  language,
@@ -569,7 +569,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-cancelled": {
 			Name:      "release-type",
 			Value:     "type-cancelled",
-			ID:        "release-type-cancelled",
+			Id:        "release-type-cancelled",
 			LocaleKey: "FilterReleaseTypeCancelled",
 			Plural:    1,
 			Language:  language,
@@ -579,7 +579,7 @@ func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResp
 		"type-census": {
 			Name:      "census",
 			Value:     "type-census",
-			ID:        "release-type-census",
+			Id:        "release-type-census",
 			LocaleKey: "FilterReleaseTypeCensus",
 			Plural:    1,
 			Language:  language,
