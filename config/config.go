@@ -20,12 +20,12 @@ type Config struct {
 	DefaultMaximumSearchResults int           `envconfig:"DEFAULT_MAXIMUM_SEARCH_RESULTS"`
 	DefaultSort                 string        `envconfig:"DEFAULT_SORT"`
 	GracefulShutdownTimeout     time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
-	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout  time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
+	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
+	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
 	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
-	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
 }
 
 var cfg *Config
@@ -64,14 +64,14 @@ func get() (*Config, error) {
 		Debug:                       false,
 		DefaultLimit:                10,
 		DefaultMaximumLimit:         100,
-		DefaultSort:                 queryparams.RelDateDesc.String(),
 		DefaultMaximumSearchResults: 1000,
+		DefaultSort:                 queryparams.RelDateDesc.String(),
 		GracefulShutdownTimeout:     5 * time.Second,
-		HealthCheckInterval:         30 * time.Second,
 		HealthCheckCriticalTimeout:  90 * time.Second,
+		HealthCheckInterval:         30 * time.Second,
+		RoutingPrefix:               "",
 		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
-		RoutingPrefix:               "",
 	}
 
 	return cfg, envconfig.Process("", cfg)
