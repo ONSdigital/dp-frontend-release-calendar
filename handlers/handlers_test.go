@@ -135,7 +135,7 @@ func TestUnitHandlers(t *testing.T) {
 						mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, nil)
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
 
 							Convey("Then it returns 200 and the right cache header", func() {
@@ -147,7 +147,7 @@ func TestUnitHandlers(t *testing.T) {
 						})
 
 						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
 
 							Convey("Then it returns 200 and the default cache header", func() {
 								router.ServeHTTP(w, req)
@@ -163,7 +163,7 @@ func TestUnitHandlers(t *testing.T) {
 						mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
 						Convey("And Babbage calculates the cache max age successfully", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, nil)
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
 
 							Convey("Then it returns 200 and the right cache header", func() {
@@ -174,7 +174,7 @@ func TestUnitHandlers(t *testing.T) {
 						})
 
 						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
 
 							Convey("Then it returns 200 and the default cache header", func() {
 								router.ServeHTTP(w, req)
@@ -301,7 +301,7 @@ func TestUnitHandlers(t *testing.T) {
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
 							Convey("And Babbage calculates the cache max age successfully", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, nil)
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 								expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
 
 								Convey("Then it returns 200 and the right cache header", func() {
@@ -313,7 +313,7 @@ func TestUnitHandlers(t *testing.T) {
 							})
 
 							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
 
 								Convey("Then it returns 200 and the default cache header", func() {
 									router.ServeHTTP(w, req)
@@ -329,7 +329,7 @@ func TestUnitHandlers(t *testing.T) {
 							mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
 
 							Convey("And Babbage calculates the cache max age successfully", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, nil)
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 								expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
 
 								Convey("Then it returns 200 and the right cache header", func() {
@@ -341,7 +341,7 @@ func TestUnitHandlers(t *testing.T) {
 							})
 
 							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.MaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
+								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
 
 								Convey("Then it returns 200 and the default cache header", func() {
 									router.ServeHTTP(w, req)

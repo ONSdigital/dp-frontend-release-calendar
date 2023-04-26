@@ -71,7 +71,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 
-		setCacheHeader(ctx, w, babbage, releaseURI, cfg.MaxAgeKey)
+		setCacheHeader(ctx, w, babbage, releaseURI, cfg.BabbageMaxAgeKey)
 
 		rc.BuildPage(w, m, "release")
 	})
@@ -113,7 +113,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		if err != nil {
 			if errors.As(err, &queryparams.ErrInvalidDateInput{}) {
 				calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, err)
-				setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
+				setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey)
 				rc.BuildPage(w, calendar, "calendar")
 				return
 			}
@@ -131,7 +131,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		}
 
 		calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, nil)
-		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.MaxAgeKey)
+		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey)
 		rc.BuildPage(w, calendar, "calendar")
 	})
 }

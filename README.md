@@ -31,8 +31,8 @@ Run `make help` to see full list of make targets.
 | Environment variable           | Default                   | Description                                                                                                        |
 |--------------------------------|---------------------------|--------------------------------------------------------------------------------------------------------------------|
 | API_ROUTER_URL                 | http://localhost:23200/v1 | The URL of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)                                        |
-| BABBAGE_URL                    | http://localhost:8080     | The URL of [babbage](https://github.com/ONSdigital/babbage)                                                        |
 | BABBAGE_MAXAGE_KEY             | ""                        | The key required to get the max age value from babbage                                                             |
+| BABBAGE_URL                    | http://localhost:8080     | The URL of [babbage](https://github.com/ONSdigital/babbage)                                                        |
 | BIND_ADDR                      | :27700                    | The host and port to bind to                                                                                       |
 | DEBUG                          | false                     | Enable debug mode                                                                                                  |
 | DEFAULT_LIMIT                  | 10                        | The default size of (number of search results on) a page                                                           |
@@ -53,6 +53,6 @@ See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### License
 
-Copyright © 2022, Office for National Statistics (https://www.ons.gov.uk)
+Copyright © 2023, Office for National Statistics (https://www.ons.gov.uk)
 
 Released under MIT license, see [LICENSE](LICENSE.md) for details.
