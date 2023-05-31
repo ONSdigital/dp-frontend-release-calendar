@@ -12,8 +12,8 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
-	"github.com/ONSdigital/dp-renderer/helper"
-	coreModel "github.com/ONSdigital/dp-renderer/model"
+	"github.com/ONSdigital/dp-renderer/v2/helper"
+	coreModel "github.com/ONSdigital/dp-renderer/v2/model"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
