@@ -24,7 +24,7 @@ func createTableOfContents(
 	relatedAPIDatasets []model.Link,
 	dateChanges []model.DateChange,
 	aboutTheData bool,
-	relatedArticleDatasets []model.Link,
+	_ []model.Link,
 	relatedMethodology []model.Link,
 	relatedMethodologyArticle []model.Link,
 	links []model.Link,

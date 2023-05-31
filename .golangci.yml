@@ -39,7 +39,6 @@ linters-settings:
       - ifElseChain
       - octalLiteral
       - hugeParam
-  funlen:
   # lines: 100
   # statements: 100
 
@@ -80,7 +79,8 @@ issues:
         - errcheck
         - dupl
         - gosec
-    - path: service/service.go
+        - revive
+    - path: service|main.go
       linters:
         - typecheck
   new: false
