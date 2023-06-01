@@ -89,11 +89,9 @@ func TestUnitMapper(t *testing.T) {
 				"type-census": {
 					Name:      "census",
 					Value:     "type-census",
-					Id:        "release-type-census",
-					LocaleKey: "FilterReleaseTypeCensus",
-					Plural:    1,
+					ID:        "release-type-census",
 					Language:  "en",
-					Checked:   true,
+					IsChecked: true,
 					Count:     2,
 				},
 			}

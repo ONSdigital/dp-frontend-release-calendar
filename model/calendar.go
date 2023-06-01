@@ -12,16 +12,15 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	Id        string                 `json:"id"` //nolint:all // Id is expected in renderer library
-	Label     string                 `json:"label"`
-	LocaleKey string                 `json:"locale_key"`
-	Plural    int                    `json:"plural"`
-	Language  string                 `json:"langugage"`
-	Name      string                 `json:"name"`
-	Value     string                 `json:"value"`
-	Checked   bool                   `json:"checked"`
-	Count     int                    `json:"count"`
-	SubTypes  map[string]ReleaseType `json:"sub_types"`
+	ID         string                 `json:"id"`
+	Label      coreModel.Localisation `json:"label"`
+	Language   string                 `json:"language"`
+	Name       string                 `json:"name"`
+	Value      string                 `json:"value"`
+	IsChecked  bool                   `json:"is_checked"`
+	IsDisabled bool                   `json:"is_disabled"`
+	Count      int                    `json:"count"`
+	SubTypes   map[string]ReleaseType `json:"sub_types"`
 }
 
 type SortOption struct {
@@ -68,7 +67,7 @@ func (calendar Calendar) FuncIsFilterSearchPresent() bool {
 func (calendar Calendar) FuncIsFilterCensusPresent() bool {
 	for i := range calendar.ReleaseTypes {
 		if calendar.ReleaseTypes[i].Name == "census" {
-			return calendar.ReleaseTypes[i].Checked
+			return calendar.ReleaseTypes[i].IsChecked
 		}
 	}
 	return false

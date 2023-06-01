@@ -545,45 +545,55 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 
 func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse, language string) map[string]model.ReleaseType {
 	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
+	generateLabel := func(localeKey, language string, plural, count int) string {
+		if count > 0 {
+			return fmt.Sprintf("%s (%d)", helper.Localise(localeKey, language, plural), count)
+		}
+		return helper.Localise(localeKey, language, plural)
+	}
 	return map[string]model.ReleaseType{
 		"type-published": {
-			Name:      "release-type",
-			Value:     "type-published",
-			Id:        "release-type-published",
-			LocaleKey: "FilterReleaseTypePublished",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-published",
+			ID:    "release-type-published",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypePublished", language, 1, response.Breakdown.Published),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Published),
+			IsChecked: checkType(params.ReleaseType, queryparams.Published),
 			Count:     response.Breakdown.Published,
 		},
 		"type-upcoming": {
-			Name:      "release-type",
-			Value:     "type-upcoming",
-			Id:        "release-type-upcoming",
-			LocaleKey: "FilterReleaseTypeUpcoming",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-upcoming",
+			ID:    "release-type-upcoming",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeUpcoming", language, 1, response.Breakdown.Provisional+response.Breakdown.Confirmed+response.Breakdown.Postponed),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Upcoming),
+			IsChecked: checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:     response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
 		},
 		"type-cancelled": {
-			Name:      "release-type",
-			Value:     "type-cancelled",
-			Id:        "release-type-cancelled",
-			LocaleKey: "FilterReleaseTypeCancelled",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-cancelled",
+			ID:    "release-type-cancelled",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeCancelled", language, 1, response.Breakdown.Cancelled),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
+			IsChecked: checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:     response.Breakdown.Cancelled,
 		},
 		"type-census": {
-			Name:      "census",
-			Value:     "type-census",
-			Id:        "release-type-census",
-			LocaleKey: "FilterReleaseTypeCensus",
-			Plural:    1,
+			Name:  "census",
+			Value: "true",
+			ID:    "release-type-census",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeCensus", language, 1, response.Breakdown.Census),
+			},
 			Language:  language,
-			Checked:   params.Census,
+			IsChecked: params.Census,
 			Count:     response.Breakdown.Census,
 		},
 	}

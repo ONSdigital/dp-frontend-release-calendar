@@ -19,6 +19,14 @@ var cyLocale = []string{
 	"one = \"Ar ddod\"",
 	"[BreadcrumbCancelled]",
 	"one = \"Canslwyd\"",
+	"[FilterReleaseTypePublished]",
+	"one = \"Cyhoeddwyd\"",
+	"[FilterReleaseTypeUpcoming]",
+	"one = \"Ar ddod\"",
+	"[FilterReleaseTypeCancelled]",
+	"one = \"Canslwyd\"",
+	"[FilterReleaseTypeCensus]",
+	"one = \"Cyfrifiad\"",
 }
 
 var enLocale = []string{
@@ -38,6 +46,14 @@ var enLocale = []string{
 	"one = \"Upcoming\"",
 	"[BreadcrumbCancelled]",
 	"one = \"Cancelled\"",
+	"[FilterReleaseTypePublished]",
+	"one = \"Published\"",
+	"[FilterReleaseTypeUpcoming]",
+	"one = \"Upcoming\"",
+	"[FilterReleaseTypeCancelled]",
+	"one = \"Cancelled\"",
+	"[FilterReleaseTypeCensus]",
+	"one = \"Census\"",
 }
 
 func MockAssetFunction(name string) ([]byte, error) {

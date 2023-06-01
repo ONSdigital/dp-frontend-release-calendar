@@ -12,13 +12,13 @@
         <p class="ons-panel__error">
           <strong>{{ .DateError.Message }}</strong>
         </p>
-        {{ template "partials/input-date" .AfterDate }}
-        {{ template "partials/input-date" .BeforeDate }}
+        {{ template "partials/inputs/input-date" .AfterDate }}
+        {{ template "partials/inputs/input-date" .BeforeDate }}
       </div>
     </div>
   {{ else }}
-    {{ template "partials/input-date" .AfterDate }}
-    {{ template "partials/input-date" .BeforeDate }}
+    {{ template "partials/inputs/input-date" .AfterDate }}
+    {{ template "partials/inputs/input-date" .BeforeDate }}
   {{ end }}
 
   <button type="submit" class="ons-btn ons-btn--secondary ons-u-mt-s text-wrap">
