@@ -13,8 +13,8 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
-	"github.com/ONSdigital/dp-renderer/helper"
-	coreModel "github.com/ONSdigital/dp-renderer/model"
+	"github.com/ONSdigital/dp-renderer/v2/helper"
+	coreModel "github.com/ONSdigital/dp-renderer/v2/model"
 )
 
 func createTableOfContents(
@@ -24,7 +24,10 @@ func createTableOfContents(
 	relatedAPIDatasets []model.Link,
 	dateChanges []model.DateChange,
 	aboutTheData bool,
-	relatedArticleDatasets []model.Link,
+	_ []model.Link,
+	relatedMethodology []model.Link,
+	relatedMethodologyArticle []model.Link,
+	links []model.Link,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -73,6 +76,17 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "data")
 	}
 
+	if len(relatedMethodology) > 0 || len(relatedMethodologyArticle) > 0 {
+		sections["methodology"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleaseSectionMethodology",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "methodology")
+	}
+
 	if (model.ContactDetails{} != description.Contact) {
 		sections["contactdetails"] = coreModel.ContentSection{
 			Current: false,
@@ -106,6 +120,17 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "aboutthedata")
 	}
 
+	if len(links) > 0 {
+		sections["links"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "YouMightAlsoBeInterestedIn",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "links")
+	}
+
 	toc.Sections = sections
 	toc.DisplayOrder = displayOrder
 
@@ -129,20 +154,34 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 	releaseStatus := "cancelled"
 	var censusTag string
 
+	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
+	releaseTime := helper.TimeFormat24h(description.ReleaseDate)
+
 	if description.Published {
 		releaseStatus = "published"
 	}
 
 	if description.Census2021 {
 		censusTag = "census"
+		return []template.JS{
+			template.JS(`dataLayer.push({` + //nolint:gosec // input is controlled by app
+				`"analyticsOptOut": getUsageCookieValue(),
+				"gtm.whitelist": ["google","hjtc","lcl"],
+				"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+				"contentTitle": "` + title + `",
+				"release-status": "` + releaseStatus + `",
+				"release-date": "` + releaseDate + `",
+				"release-time": "` + releaseTime + `",
+				"release-date-status": "` + description.ProvisionalDate + `",
+				"next-release-date": "` + description.NextRelease + `",
+				"contact-name": "` + description.Contact.Name + `",
+				"tag": "` + censusTag + `"
+			});`),
+		}
 	}
-
-	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
-	releaseTime := helper.TimeFormat24h(description.ReleaseDate)
-
 	return []template.JS{
-		template.JS(`dataLayer.push({
-			"analyticsOptOut": getUsageCookieValue(),
+		template.JS(`dataLayer.push({` + //nolint:gosec // input is controlled by app
+			`"analyticsOptOut": getUsageCookieValue(),
 			"gtm.whitelist": ["google","hjtc","lcl"],
 			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
 			"contentTitle": "` + title + `",
@@ -152,7 +191,6 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 			"release-date-status": "` + description.ProvisionalDate + `",
 			"next-release-date": "` + description.NextRelease + `",
 			"contact-name": "` + description.Contact.Name + `",
-			"tag": "` + censusTag + `"
 		});`),
 	}
 }
@@ -216,6 +254,9 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 		result.DateChanges,
 		result.AboutTheData,
 		result.RelatedAPIDatasets,
+		result.RelatedMethodology,
+		result.RelatedMethodologyArticle,
+		result.Links,
 	)
 	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 	return result
@@ -352,8 +393,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.LimitOptions = []int{10, 25}
 	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
 
-	for _, release := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(release, cfg.RoutingPrefix))
+	for i := range response.Releases {
+		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
 	}
 
 	return calendar
@@ -419,7 +460,7 @@ func getFirstAndLastPages(params queryparams.ValidatedParams, path string, total
 // getWindowStartEndPage calculates the start and end page of the moving window of size windowSize, over the set of pages
 // whose current page is currentPage, and whose size is totalPages
 // It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
-func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
+func getWindowStartEndPage(currentPage, totalPages, windowSize int) (start, end int) {
 	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
 		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
@@ -432,7 +473,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 	}
 
 	windowOffset := getWindowOffset(windowSize)
-	start := currentPage - windowOffset
+	start = currentPage - windowOffset
 	switch {
 	case start <= 0:
 		start = 1
@@ -440,7 +481,7 @@ func getWindowStartEndPage(currentPage, totalPages, windowSize int) (int, int) {
 		start = totalPages - windowSize + 1
 	}
 
-	end := start + windowSize - 1
+	end = start + windowSize - 1
 	if end > totalPages {
 		end = totalPages
 	}
@@ -504,45 +545,55 @@ func dateChanges(changes []search.ReleaseDateChange) []model.DateChange {
 
 func mapReleases(params queryparams.ValidatedParams, response search.ReleaseResponse, language string) map[string]model.ReleaseType {
 	checkType := func(given, want queryparams.ReleaseType) bool { return given == want }
+	generateLabel := func(localeKey, language string, plural, count int) string {
+		if count > 0 {
+			return fmt.Sprintf("%s (%d)", helper.Localise(localeKey, language, plural), count)
+		}
+		return helper.Localise(localeKey, language, plural)
+	}
 	return map[string]model.ReleaseType{
 		"type-published": {
-			Name:      "release-type",
-			Value:     "type-published",
-			Id:        "release-type-published",
-			LocaleKey: "FilterReleaseTypePublished",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-published",
+			ID:    "release-type-published",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypePublished", language, 1, response.Breakdown.Published),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Published),
+			IsChecked: checkType(params.ReleaseType, queryparams.Published),
 			Count:     response.Breakdown.Published,
 		},
 		"type-upcoming": {
-			Name:      "release-type",
-			Value:     "type-upcoming",
-			Id:        "release-type-upcoming",
-			LocaleKey: "FilterReleaseTypeUpcoming",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-upcoming",
+			ID:    "release-type-upcoming",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeUpcoming", language, 1, response.Breakdown.Provisional+response.Breakdown.Confirmed+response.Breakdown.Postponed),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Upcoming),
+			IsChecked: checkType(params.ReleaseType, queryparams.Upcoming),
 			Count:     response.Breakdown.Provisional + response.Breakdown.Confirmed + response.Breakdown.Postponed,
 		},
 		"type-cancelled": {
-			Name:      "release-type",
-			Value:     "type-cancelled",
-			Id:        "release-type-cancelled",
-			LocaleKey: "FilterReleaseTypeCancelled",
-			Plural:    1,
+			Name:  "release-type",
+			Value: "type-cancelled",
+			ID:    "release-type-cancelled",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeCancelled", language, 1, response.Breakdown.Cancelled),
+			},
 			Language:  language,
-			Checked:   checkType(params.ReleaseType, queryparams.Cancelled),
+			IsChecked: checkType(params.ReleaseType, queryparams.Cancelled),
 			Count:     response.Breakdown.Cancelled,
 		},
 		"type-census": {
-			Name:      "census",
-			Value:     "type-census",
-			Id:        "release-type-census",
-			LocaleKey: "FilterReleaseTypeCensus",
-			Plural:    1,
+			Name:  "census",
+			Value: "true",
+			ID:    "release-type-census",
+			Label: coreModel.Localisation{
+				Text: generateLabel("FilterReleaseTypeCensus", language, 1, response.Breakdown.Census),
+			},
 			Language:  language,
-			Checked:   params.Census,
+			IsChecked: params.Census,
 			Count:     response.Breakdown.Census,
 		},
 	}
@@ -579,10 +630,7 @@ func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
 			Plural:    1,
 			Value:     queryparams.Relevance.String(),
 			Disabled: func(keywords string) bool {
-				if keywords == "" {
-					return true
-				}
-				return false
+				return keywords == ""
 			}(params.Keywords),
 		},
 	}

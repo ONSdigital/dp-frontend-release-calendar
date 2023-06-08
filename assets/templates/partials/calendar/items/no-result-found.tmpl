@@ -3,17 +3,17 @@
         {{- localise "NoReleasesFound" .Language 1 -}}
     </h2>
     {{ with index .ReleaseTypes "type-published" }}
-        {{ if .Checked }}
+        {{ if .IsChecked }}
             <p>{{- localise "NoReleasesFoundDescriptionPublished" .Language 1 -}}</p>
         {{ end }}
     {{ end }}
     {{ with index .ReleaseTypes "type-upcoming" }}
-        {{ if .Checked }}
+        {{ if .IsChecked }}
             <p>{{- localise "NoReleasesFoundDescriptionUpcoming" .Language 1 -}}</p>
         {{ end }}
     {{ end }}
     {{ with index .ReleaseTypes "type-cancelled" }}
-        {{ if .Checked }}
+        {{ if .IsChecked }}
             <p>{{- localise "NoReleasesFoundDescriptionCancelled" .Language 1 -}}</p>
         {{ end }}
     {{ end }}

@@ -8,7 +8,7 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
-	"github.com/ONSdigital/dp-renderer/model"
+	"github.com/ONSdigital/dp-renderer/v2/model"
 )
 
 // To mock interfaces in this file
@@ -38,7 +38,7 @@ type SearchAPI interface {
 
 // BabbageClient is an interface to Babbage
 type BabbageAPI interface {
-	GetMaxAge(ctx context.Context, contentUri, key string) (int, error)
+	GetMaxAge(ctx context.Context, contentURI, key string) (int, error)
 }
 
 // ZebedeeClient is an interface for zebedee client

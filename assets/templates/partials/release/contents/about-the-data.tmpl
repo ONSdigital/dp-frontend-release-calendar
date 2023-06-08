@@ -48,11 +48,13 @@
         {{- localise "AboutDataNationalStatisticsBody1" $.Language 1 -}}<a href="https://code.statisticsauthority.gov.uk/the-code/">{{- localise "AboutDataNationalStatisticsBodyLink" $.Language 1 -}}</a>.
         {{- localise "AboutDataNationalStatisticsBody2" $.Language 1 -}}
       </p>
-      <ul>
-        <li>{{- localise "AboutDataNationalStatisticsIdentified" $.Language 1 -}}</li>
-        <li>{{- localise "AboutDataNationalStatisticsExplained" $.Language 1 -}}</li>
-        <li>{{- localise "AboutDataNationalStatisticsProduced" $.Language 1 -}}</li>
-        <li>{{- localise "AboutDataNationalStatisticsManaged" $.Language 1 -}}</li>
+
+      <p>{{- localise "AboutDataNationalStatisticsBody3" $.Language 1 -}}</p>
+      <ul class="ons-list">
+        <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsIdentified" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsExplained" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsProduced" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsManaged" $.Language 1 -}}</li>
       </ul>
     </div>
   {{ end }}

@@ -19,6 +19,10 @@
         {{ template "partials/release/contents/about-the-data" $release }}
       {{ else if eq $id "moreonthistopic" }}
         {{ template "partials/release/contents/more-on-this-topic" $release }}
+      {{ else if eq $id "methodology" }}
+        {{ template "partials/release/contents/methodology" $release }}
+      {{ else if eq $id "links" }}
+        {{ template "partials/release/contents/you-might-also-be-interested-in" $release }}
       {{ end }}
     </section>
   {{ end }}

@@ -13,7 +13,7 @@ import (
 	releasecalendar "github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	zebedee "github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
-	model "github.com/ONSdigital/dp-renderer/model"
+	model "github.com/ONSdigital/dp-renderer/v2/model"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -217,18 +217,18 @@ func (m *MockBabbageAPI) EXPECT() *MockBabbageAPIMockRecorder {
 }
 
 // GetMaxAge mocks base method.
-func (m *MockBabbageAPI) GetMaxAge(ctx context.Context, contentUri, key string) (int, error) {
+func (m *MockBabbageAPI) GetMaxAge(ctx context.Context, contentURI, key string) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMaxAge", ctx, contentUri, key)
+	ret := m.ctrl.Call(m, "GetMaxAge", ctx, contentURI, key)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetMaxAge indicates an expected call of GetMaxAge.
-func (mr *MockBabbageAPIMockRecorder) GetMaxAge(ctx, contentUri, key interface{}) *gomock.Call {
+func (mr *MockBabbageAPIMockRecorder) GetMaxAge(ctx, contentURI, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxAge", reflect.TypeOf((*MockBabbageAPI)(nil).GetMaxAge), ctx, contentUri, key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxAge", reflect.TypeOf((*MockBabbageAPI)(nil).GetMaxAge), ctx, contentURI, key)
 }
 
 // MockZebedeeClient is a mock of ZebedeeClient interface.

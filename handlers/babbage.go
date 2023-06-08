@@ -2,15 +2,14 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
-	dphttp "github.com/ONSdigital/dp-net/http"
+	dphttp "github.com/ONSdigital/dp-net/v2/http"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
@@ -44,7 +43,7 @@ func (c *BabbageClient) Checker(ctx context.Context, check *healthcheck.CheckSta
 }
 
 func (c *BabbageClient) get(ctx context.Context, uri string) (*http.Response, error) {
-	req, err := http.NewRequest(http.MethodGet, uri, nil)
+	req, err := http.NewRequest(http.MethodGet, uri, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -52,26 +51,26 @@ func (c *BabbageClient) get(ctx context.Context, uri string) (*http.Response, er
 }
 
 // GetMaxAge calls the relevant Babbage endpoint to find out the max age for the requested content uri
-func (c *BabbageClient) GetMaxAge(ctx context.Context, contentUri, key string) (int, error) {
-	var babbageUri string
-	if contentUri == "/releasecalendar" {
+func (c *BabbageClient) GetMaxAge(ctx context.Context, contentURI, key string) (int, error) {
+	var babbageURI string
+	if contentURI == "/releasecalendar" {
 		// There is a specific endpoint for the release calendar max age
-		babbageUri = fmt.Sprintf("%s/releasecalendarmaxage?key=%s", c.url, key)
+		babbageURI = fmt.Sprintf("%s/releasecalendarmaxage?key=%s", c.url, key)
 	} else {
-		babbageUri = fmt.Sprintf("%s/maxage?uri=%s&key=%s", c.url, contentUri, key)
+		babbageURI = fmt.Sprintf("%s/maxage?uri=%s&key=%s", c.url, contentURI, key)
 	}
-	resp, err := c.get(ctx, babbageUri)
+	resp, err := c.get(ctx, babbageURI)
 	if err != nil {
 		return 0, err
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return 0, errors.New(fmt.Sprintf("invalid response from babbage. Status %d", resp.StatusCode))
+		return 0, fmt.Errorf("invalid response from babbage. Status %d", resp.StatusCode)
 	}
 
 	defer closeResponseBody(ctx, resp)
 
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return 0, err
 	}
