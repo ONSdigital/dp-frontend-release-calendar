@@ -60,9 +60,9 @@ other = "Hidlo'r canlyniadau"
 description = "Release type"
 one = "Math o ddatganiad"
 
-[ReleaseCalendarFilterCensus]
-description = "Census"
-one = "Cyfrifiad"
+[ReleaseCalendarFilterTopics]
+description = "Topics"
+one = "Pwnc"
 
 [ReleaseCalendarFilterSearch]
 description = "Search"

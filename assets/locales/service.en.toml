@@ -60,9 +60,9 @@ other = "Filter results"
 description = "Release type"
 one = "Release type"
 
-[ReleaseCalendarFilterCensus]
-description = "Census"
-one = "Census"
+[ReleaseCalendarFilterTopics]
+description = "Topics"
+one = "Topics"
 
 [ReleaseCalendarFilterSearch]
 description = "Search"
