@@ -5,9 +5,6 @@
   {{ template "partials/calendar/hidden-inputs/before-date" . }}
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
 
-  <p class="ons-radios__label ons-u-mb-s">
-    {{- localise "FilterReleaseTypeShowOnly" .Language 1 -}}:
-  </p>
   <fieldset class="ons-fieldset">
     {{ with index .ReleaseTypes "type-census" }}
       <div class="ons-checkboxes__items">
