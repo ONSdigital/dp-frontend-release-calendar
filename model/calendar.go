@@ -12,15 +12,17 @@ type CalendarEntry struct {
 }
 
 type ReleaseType struct {
-	ID         string                 `json:"id"`
-	Label      coreModel.Localisation `json:"label"`
-	Language   string                 `json:"language"`
-	Name       string                 `json:"name"`
-	Value      string                 `json:"value"`
-	IsChecked  bool                   `json:"is_checked"`
-	IsDisabled bool                   `json:"is_disabled"`
-	Count      int                    `json:"count"`
-	SubTypes   map[string]ReleaseType `json:"sub_types"`
+	DataAttributes []coreModel.DataAttribute `json:"data_attributes"`
+	ID             string                    `json:"id"`
+	Label          coreModel.Localisation    `json:"label"`
+	Language       string                    `json:"language"`
+	Name           string                    `json:"name"`
+	Value          string                    `json:"value"`
+	IsChecked      bool                      `json:"is_checked"`
+	IsDisabled     bool                      `json:"is_disabled"`
+	IsRequired     bool                      `json:"is_required"`
+	Count          int                       `json:"count"`
+	SubTypes       map[string]ReleaseType    `json:"sub_types"`
 }
 
 type SortOption struct {
