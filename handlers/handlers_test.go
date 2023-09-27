@@ -50,7 +50,7 @@ func TestUnitHandlers(t *testing.T) {
 
 	Convey("test setStatusCode", t, func() {
 		Convey("test status code handles 404 response from client", func() {
-			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			req := httptest.NewRequest("GET", "http://localhost:27700", http.NoBody)
 			w := httptest.NewRecorder()
 			err := &testCliError{}
 
@@ -60,7 +60,7 @@ func TestUnitHandlers(t *testing.T) {
 		})
 
 		Convey("test status code handles internal server error", func() {
-			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			req := httptest.NewRequest("GET", "http://localhost:27700", http.NoBody)
 			w := httptest.NewRecorder()
 			err := errors.New("internal server error")
 
@@ -94,7 +94,7 @@ func TestUnitHandlers(t *testing.T) {
 			Convey("test '/releases'", func() {
 				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockAPIClient, mockBabbageAPI, mockZebedeeClient))
 
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), http.NoBody)
 				Convey("When there is an error getting the release from the release calendar API", func() {
 					apiError := errors.New("error reading data")
 					Convey("And the request uses headers", func() {
@@ -195,7 +195,7 @@ func TestUnitHandlers(t *testing.T) {
 				Convey("when the release is retrieved successfully", func() {
 					mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
 					}
@@ -214,7 +214,7 @@ func TestUnitHandlers(t *testing.T) {
 				Convey("when the release is retrieved successfully without headers or cookies", func() {
 					mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), http.NoBody)
 
 					router.ServeHTTP(w, req)
 
@@ -229,7 +229,7 @@ func TestUnitHandlers(t *testing.T) {
 
 				Convey("it returns 500 when there is an error getting the release from the api", func() {
 					mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(nil, errors.New("error reading data"))
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/%s", root, titleSegment, dataSegment), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
 					}
@@ -258,7 +258,7 @@ func TestUnitHandlers(t *testing.T) {
 				}
 
 				Convey("Given a request without parameters", func() {
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 
 					Convey("When there is an error getting the releases from the search API", func() {
 						apiError := errors.New("error reading data")
@@ -359,7 +359,7 @@ func TestUnitHandlers(t *testing.T) {
 						mockRenderClient.EXPECT().NewBasePageModel()
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
-						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
+						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), http.NoBody)
 
 						Convey("Then it returns 500", func() {
 							router.ServeHTTP(w, req)
@@ -388,7 +388,7 @@ func TestUnitHandlers(t *testing.T) {
 				Convey("when the release calendar entries are retrieved successfully", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
 					}
@@ -407,7 +407,7 @@ func TestUnitHandlers(t *testing.T) {
 				Convey("when the release calendar entries are retrieved successfully without headers or cookies", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
 
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 
 					router.ServeHTTP(w, req)
 
@@ -421,7 +421,7 @@ func TestUnitHandlers(t *testing.T) {
 				})
 
 				Convey("it returns 500 when there is an error in one of the parameters", func() {
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
 					}
@@ -433,7 +433,7 @@ func TestUnitHandlers(t *testing.T) {
 
 				Convey("it returns 500 when there is an error getting the releases from the search api", func() {
 					mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, errors.New("error reading data"))
-					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
 					}
@@ -462,7 +462,7 @@ func TestUnitHandlers(t *testing.T) {
 					},
 				}
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(single, nil)
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 				if err := setRequestHeaders(req); err != nil {
 					t.Fatalf("unable to set request headers, error: %v", err)
 				}
@@ -498,7 +498,7 @@ func TestUnitHandlers(t *testing.T) {
 					},
 				}
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(multiple, nil)
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 				if err := setRequestHeaders(req); err != nil {
 					t.Fatalf("unable to set request headers, error: %v", err)
 				}
@@ -521,7 +521,7 @@ func TestUnitHandlers(t *testing.T) {
 
 			Convey("it returns a well formed but empty ICS file when there are no upcoming releases", func() {
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(sitesearch.ReleaseResponse{}, nil)
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 				if err := setRequestHeaders(req); err != nil {
 					t.Fatalf("unable to set request headers, error: %v", err)
 				}
@@ -537,7 +537,7 @@ func TestUnitHandlers(t *testing.T) {
 
 			Convey("it returns 500 when there is an error getting the releases from the search api", func() {
 				mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultICSParams()).Return(sitesearch.ReleaseResponse{}, errors.New("error reading data"))
-				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), nil)
+				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", endpoint), http.NoBody)
 				if err := setRequestHeaders(req); err != nil {
 					t.Fatalf("unable to set request headers, error: %v", err)
 				}
