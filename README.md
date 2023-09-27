@@ -16,11 +16,11 @@ Run `make help` to see full list of make targets.
   separate shell with `./run.sh`
 * Run `make debug`
 * In your browser, visit one of:
-  - `http://localhost:27700/releasecalendar`
-  - `http://localhost:27700/releases/{topic}` where `{topic}` exists in `zebedee/master/releases/`
+  * `http://localhost:27700/releasecalendar`
+  * `http://localhost:27700/releases/{topic}` where `{topic}` exists in `zebedee/master/releases/`
 * For document data underlying each page, visit one of:
-  - `http://localhost:27700/releasecalendar/data`
-  - `http://localhost:27700/releases/{topic}/data`
+  * `http://localhost:27700/releasecalendar/data`
+  * `http://localhost:27700/releases/{topic}/data`
 
 ### Dependencies
 
@@ -30,9 +30,9 @@ Run `make help` to see full list of make targets.
 
 | Environment variable           | Default                   | Description                                                                                                        |
 |--------------------------------|---------------------------|--------------------------------------------------------------------------------------------------------------------|
-| API_ROUTER_URL                 | http://localhost:23200/v1 | The URL of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)                                        |
+| API_ROUTER_URL                 | <http://localhost:23200/v1> | The URL of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)                                        |
 | BABBAGE_MAXAGE_KEY             | ""                        | The key required to get the max age value from babbage                                                             |
-| BABBAGE_URL                    | http://localhost:8080     | The URL of [babbage](https://github.com/ONSdigital/babbage)                                                        |
+| BABBAGE_URL                    | <http://localhost:8080>     | The URL of [babbage](https://github.com/ONSdigital/babbage)                                                        |
 | BIND_ADDR                      | :27700                    | The host and port to bind to                                                                                       |
 | DEBUG                          | false                     | Enable debug mode                                                                                                  |
 | DEFAULT_LIMIT                  | 10                        | The default size of (number of search results on) a page                                                           |
@@ -45,7 +45,7 @@ Run `make help` to see full list of make targets.
 | PATTERN_LIBRARY_ASSETS_PATH    | ""                        | Pattern library location                                                                                           |
 | ROUTING_PREFIX                 | ""                        | Any routing prefix for the service                                                                                 |
 | SITE_DOMAIN                    | localhost                 |                                                                                                                    |
-| SUPPORTED_LANGUAGES            | [2]string{"en", "cy"}     | Supported languages                                                                                                |
+| SUPPORTED_LANGUAGES            | []string{"en", "cy"}     | Supported languages                                                                                                |
 
 ### Contributing
 
@@ -53,6 +53,6 @@ See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### License
 
-Copyright © 2023, Office for National Statistics (https://www.ons.gov.uk)
+Copyright © 2023, Office for National Statistics (<https://www.ons.gov.uk>)
 
 Released under MIT license, see [LICENSE](LICENSE.md) for details.
