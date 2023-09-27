@@ -24,8 +24,8 @@ type Config struct {
 	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
-	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
+	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 }
 
 var cfg *Config
@@ -70,8 +70,8 @@ func get() (*Config, error) {
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		HealthCheckInterval:         30 * time.Second,
 		RoutingPrefix:               "",
-		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
+		SupportedLanguages:          []string{"en", "cy"},
 	}
 
 	return cfg, envconfig.Process("", cfg)
