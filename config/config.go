@@ -24,8 +24,8 @@ type Config struct {
 	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	PatternLibraryAssetsPath    string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
-	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
+	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
 }
 
 var cfg *Config
@@ -43,7 +43,7 @@ func Get() (*Config, error) {
 	if cfg.Debug {
 		cfg.PatternLibraryAssetsPath = "http://localhost:9002/dist/assets"
 	} else {
-		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/48c4918"
+		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/e0a75c3"
 	}
 
 	cfg.RoutingPrefix = validateRoutingPrefix(cfg.RoutingPrefix)
@@ -70,8 +70,8 @@ func get() (*Config, error) {
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		HealthCheckInterval:         30 * time.Second,
 		RoutingPrefix:               "",
-		SupportedLanguages:          []string{"en", "cy"},
 		SiteDomain:                  "localhost",
+		SupportedLanguages:          []string{"en", "cy"},
 	}
 
 	return cfg, envconfig.Process("", cfg)
