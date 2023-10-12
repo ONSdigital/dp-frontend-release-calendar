@@ -12,8 +12,10 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
 	"github.com/ONSdigital/dp-frontend-release-calendar/routes"
 	render "github.com/ONSdigital/dp-renderer/v2"
+	"github.com/ONSdigital/dp-renderer/v2/middleware/renderror"
 	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
+	"github.com/justinas/alice"
 )
 
 var (
@@ -71,8 +73,12 @@ func (svc *Service) Init(ctx context.Context, cfg *config.Config, serviceList *E
 
 	// Initialise router
 	r := mux.NewRouter()
+	middleware := []alice.Constructor{
+		renderror.Handler(clients.Render),
+	}
+	newAlice := alice.New(middleware...).Then(r)
 	routes.Setup(ctx, r, cfg, clients)
-	svc.Server = serviceList.GetHTTPServer(cfg.BindAddr, r)
+	svc.Server = serviceList.GetHTTPServer(cfg.BindAddr, newAlice)
 
 	return nil
 }
