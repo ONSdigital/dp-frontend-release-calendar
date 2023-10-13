@@ -1,5 +1,7 @@
 /build
 assets/data.go
+.go/
+
 # Mac
 .DS_Store
 

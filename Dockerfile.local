@@ -1,0 +1,14 @@
+FROM golang:1.21 AS base
+
+ENV GOCACHE=/go/.go/cache GOPATH=/go/.go/path TZ=Europe/London
+
+# Install github.com/cespare/reflex
+RUN GOBIN=/bin go install github.com/cespare/reflex@latest
+RUN PATH=$PATH:/bin
+
+# Clean cache, as we want all modules in the container to be under /go/.go/path
+RUN go clean -modcache
+
+# Map between the working directories of dev and live
+RUN ln -s /go /dp-frontend-release-calendar
+WORKDIR /dp-frontend-release-calendar
