@@ -3,6 +3,8 @@ github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8
 github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/ONSdigital/dp-api-clients-go/v2 v2.254.1 h1:+wyakFWsEEZKm40dSxO5lEW9v8J5qlx3OA8GbMGDFqE=
 github.com/ONSdigital/dp-api-clients-go/v2 v2.254.1/go.mod h1:OsW4tA+/WtyzhI2OzFESp3FJ2GphtVd9SCicDltSGDk=
+github.com/ONSdigital/dp-cookies v0.4.0 h1:B938xsFzj9OVM5yIRVVyteYYKjWN4Oz7i+u9+PEF8nk=
+github.com/ONSdigital/dp-cookies v0.4.0/go.mod h1:1xf96apIPNeV0WJs0UtKyM09laewXVUm/9bh84wFu7w=
 github.com/ONSdigital/dp-healthcheck v1.6.1 h1:YDAnxE2fI3G2hhGC42mKI/fRhAhIYmFZGQwQ/8M65M0=
 github.com/ONSdigital/dp-healthcheck v1.6.1/go.mod h1:FURB2RUJHw3lssamKtsGsrbu31ar9yhMSDYzG9vgSIo=
 github.com/ONSdigital/dp-mocking v0.10.1 h1:yEEglJ458kUztHlnGxhMiKhIr13gMYWYOBKFbCbp89M=
