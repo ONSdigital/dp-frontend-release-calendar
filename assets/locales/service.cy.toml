@@ -22,7 +22,7 @@ one = "A filter could not be validated, please go back and amend it (cy)"
 
 [ReleaseCalendarPageSearchKeywords]
 description = "Release Calendar Page Search Keywords"
-one = "Chwilio am eiriau allweddol"
+one = "Chwilio Calendr Rhyddhau"
 
 [SubscriptionLinkRSS]
 description = "RSS feed"

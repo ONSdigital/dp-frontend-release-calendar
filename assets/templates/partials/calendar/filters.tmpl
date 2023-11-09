@@ -5,6 +5,10 @@
     </div>
   </div>
 
+  <div class="ons-u-bt ons-u-pt-s ons-u-mb-s">
+    {{ template "partials/calendar/filter/search-keywords" . }}
+  </div>
+
   <div class="ons-accordion">
     <details 
       id="filter-release-type"
@@ -43,28 +47,6 @@
         <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
           {{ template "partials/calendar/filter/census" . }}
         </div>
-    </details>
-
-    <details
-      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
-      id="filter-search"
-      data-btn-close="Hide"
-      data-group="accordion"
-      {{ if .FuncIsFilterSearchPresent }}
-        data-open="true"
-      {{ else }}
-        data-open="false"
-      {{ end }}
-    >
-      <summary class="ons-collapsible__heading ons-js-collapsible-heading" tabindex="0">
-          <h2 class="ons-collapsible__title">
-            {{- localise "ReleaseCalendarFilterSearch" .Language 1 -}}
-          </h2>
-          {{ template "icons/collapsible" . }}
-      </summary>
-      <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
-        {{ template "partials/calendar/filter/search-keywords" . }}
-      </div>
     </details>
 
     <details

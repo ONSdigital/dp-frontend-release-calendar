@@ -24,7 +24,7 @@
     <select
       id="select-calendar-item-order"
       name="sort"
-      class="ons-input ons-input--select ons-u-wa--@xxs"
+      class="ons-input ons-input--select ons-u-wa--@xxs ons-u-mr-xs"
       onchange="this.form.submit()"
     >
       {{ $sortMode := .Sort.Mode }}
@@ -38,6 +38,7 @@
         </option>
       {{ end }}
     </select>
+    {{ template "partials/calendar/items/subscription-links" .}}
     <button
       type="submit"
       class="ons-btn btn btn--primary btn--thin btn--small js--hide font-size--16 ons-u-ml-s"
