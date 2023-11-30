@@ -49,8 +49,8 @@ description = "Released after"
 one = "Released after"
 
 [DateFilterDescription]
-description = "For example: 2006 or 19/07/2010"
-one = "For example: 2006 or 19/07/2010"
+description = "For example: 2006 or 19 07 2010"
+one = "For example: 2006 or 19 07 2010"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
@@ -254,19 +254,11 @@ one = "Cancelled"
 
 [NoReleasesFound]
 description = "No releases found"
-one = "No releases found"
+one = "There are no releases for this search"
 
-[NoReleasesFoundDescriptionPublished]
-description = "No Releases Found Description Published"
-one = "There are no published releases. Try selecting a different type of release."
-
-[NoReleasesFoundDescriptionUpcoming]
-description = "No Releases Found Description Upcoming"
-one = "There are no upcoming releases. Try selecting a different type of release."
-
-[NoReleasesFoundDescriptionCancelled]
-description = "No Releases Found Description Cancelled"
-one = "There are no cancelled releases. Try selecting a different type of release."
+[NoReleasesFoundDescription]
+description = "No Releases Found Description"
+one = "Try searching using different words or select another release type."
 
 [StatusBannerImportantInformation]
 description = "Important information"

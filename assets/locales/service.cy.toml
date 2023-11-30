@@ -49,8 +49,8 @@ description = "Released after"
 one = "Cyhoeddwyd ar ôl"
 
 [DateFilterDescription]
-description = "For example: 2006 or 19/07/2010"
-one = "Er enghraifft: 2006 neu 19/07/2010"
+description = "For example: 2006 or 19 07 2010"
+one = "Er enghraifft: 2006 neu 19 07 2010"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
@@ -254,19 +254,11 @@ one = "Canslwyd"
 
 [NoReleasesFound]
 description = "No releases found"
-one = "Heb ddod o hyd i unrhyw ddatganiadau"
+one = "There are no releases for this search"
 
-[NoReleasesFoundDescriptionPublished]
-description = "No Releases Found Description Published"
-one = "Nid oes unrhyw ddatganiadau cyhoeddedig. Ceisiwch ddewis math gwahanol o ddatganiad."
-
-[NoReleasesFoundDescriptionUpcoming]
-description = "No Releases Found Description Upcoming"
-one = "Nid oes unrhyw ddatganiadau sydd ar ddod. Ceisiwch ddewis math gwahanol o ddatganiad."
-
-[NoReleasesFoundDescriptionCancelled]
-description = "No Releases Found Description Cancelled"
-one = "Nid oes unrhyw ddatganiadau a ganslwyd. Ceisiwch ddewis math gwahanol o ddatganiad."
+[NoReleasesFoundDescription]
+description = "No Releases Found Description"
+one = "Try searching using different words or select another release type."
 
 [StatusBannerImportantInformation]
 description = "Important information"
