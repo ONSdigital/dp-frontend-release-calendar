@@ -2,20 +2,6 @@
     <h2 class="ons-u-mt-l">
         {{- localise "NoReleasesFound" .Language 1 -}}
     </h2>
-    {{ with index .ReleaseTypes "type-published" }}
-        {{ if .IsChecked }}
-            <p>{{- localise "NoReleasesFoundDescriptionPublished" .Language 1 -}}</p>
-        {{ end }}
-    {{ end }}
-    {{ with index .ReleaseTypes "type-upcoming" }}
-        {{ if .IsChecked }}
-            <p>{{- localise "NoReleasesFoundDescriptionUpcoming" .Language 1 -}}</p>
-        {{ end }}
-    {{ end }}
-    {{ with index .ReleaseTypes "type-cancelled" }}
-        {{ if .IsChecked }}
-            <p>{{- localise "NoReleasesFoundDescriptionCancelled" .Language 1 -}}</p>
-        {{ end }}
-    {{ end }}
+    <p>{{- localise "NoReleasesFoundDescription" .Language 1 -}}</p>
 </div>
 
