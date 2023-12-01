@@ -254,11 +254,15 @@ one = "Canslwyd"
 
 [NoReleasesFound]
 description = "No releases found"
-one = "There are no releases for this search"
+one = "Heb ddod o hyd i unrhyw ddatganiadau"
 
-[NoReleasesFoundDescription]
-description = "No Releases Found Description"
-one = "Try searching using different words or select another release type."
+[NoReleasesFoundDescriptionOne]
+description = "No Releases Found Description one"
+one = "There are no releases for this search."
+
+[NoReleasesFoundDescriptionTwo]
+description = "No Releases Found Description two"
+one = "Try searching using different words or dates, or select another release type."
 
 [StatusBannerImportantInformation]
 description = "Important information"
