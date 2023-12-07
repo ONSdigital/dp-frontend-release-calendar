@@ -1,94 +1,118 @@
-<div class="ons-pl-grid-col release-calendar__filters">
-  <div class="ons-u-fs-r--b release-calendar__filters__heading">
-    <div class="release-calendar__filters__heading--margin-one-fix">
-      {{- localise "ReleaseCalendarFiltersTitle" .Language 4 -}}
+<form id="release-calendar__filters">
+  {{ template "partials/calendar/hidden-inputs/sort-mode" . }}
+  <div class="ons-pl-grid-col release-calendar__filters">
+    <div class="ons-u-fs-r--b release-calendar__filters__heading">
+      <div class="release-calendar__filters__heading--margin-one-fix">
+        {{- localise "ReleaseCalendarFiltersTitle" .Language 4 -}}
+      </div>
     </div>
-  </div>
 
-  <div class="ons-accordion">
-    <details 
-      id="filter-release-type"
-      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion" 
-      data-group="accordion" 
-      data-open="true"
-    >
-        <summary class="ons-collapsible__heading ons-js-collapsible-heading" tabindex="0">
+    <div class="ons-accordion">
+      <details
+        id="filter-release-type"
+        class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+        data-group="accordion"
+        data-open="true"
+      >
+        <summary
+          class="ons-collapsible__heading ons-js-collapsible-heading"
+          tabindex="0"
+        >
           <h2 class="ons-collapsible__title">
-              {{- localise "ReleaseCalendarFilterReleaseType" .Language 1 -}}
-            </h2>
-            {{ template "icons/collapsible" . }}
+            {{- localise "ReleaseCalendarFilterReleaseType" .Language 1 -}}
+          </h2>
+          {{ template "icons/collapsible" . }}
         </summary>
-        <div id="accordion-1-content" class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
+        <div
+          id="accordion-1-content"
+          class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s"
+        >
           {{ template "partials/calendar/filter/release-type" . }}
         </div>
-    </details>
+      </details>
 
-    <details
-      id="filter-census"
-      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion" 
-      data-group="accordion"
-      data-btn-close="Hide"
-      {{ if .FuncIsFilterCensusPresent }}
+      <details
+        id="filter-census"
+        class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+        data-group="accordion"
+        data-btn-close="Hide"
+        {{ if .FuncIsFilterCensusPresent }}
         data-open="true"
-      {{ else }}
+        {{ else }}
         data-open="false"
-      {{ end }}
-    >
-        <summary class="ons-collapsible__heading ons-js-collapsible-heading" tabindex="0">
+        {{ end }}
+      >
+        <summary
+          class="ons-collapsible__heading ons-js-collapsible-heading"
+          tabindex="0"
+        >
           <h2 class="ons-collapsible__title">
-              {{- localise "ReleaseCalendarFilterTopics" .Language 1 -}}
-            </h2>
-            {{ template "icons/collapsible" . }}
+            {{- localise "ReleaseCalendarFilterTopics" .Language 1 -}}
+          </h2>
+          {{ template "icons/collapsible" . }}
         </summary>
         <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
           {{ template "partials/calendar/filter/census" . }}
         </div>
-    </details>
+      </details>
 
-    <details
-      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
-      id="filter-search"
-      data-btn-close="Hide"
-      data-group="accordion"
-      {{ if .FuncIsFilterSearchPresent }}
+      <details
+        class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
+        id="filter-search"
+        data-btn-close="Hide"
+        data-group="accordion"
+        {{ if .FuncIsFilterSearchPresent }}
         data-open="true"
-      {{ else }}
+        {{ else }}
         data-open="false"
-      {{ end }}
-    >
-      <summary class="ons-collapsible__heading ons-js-collapsible-heading" tabindex="0">
+        {{ end }}
+      >
+        <summary
+          class="ons-collapsible__heading ons-js-collapsible-heading"
+          tabindex="0"
+        >
           <h2 class="ons-collapsible__title">
             {{- localise "ReleaseCalendarFilterSearch" .Language 1 -}}
           </h2>
           {{ template "icons/collapsible" . }}
-      </summary>
-      <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
-        {{ template "partials/calendar/filter/search-keywords" . }}
-      </div>
-    </details>
-
-    <details
-      class="ons-collapsible ons-js-collapsible ons-collapsible--accordion"
-      id="filter-date"
-      data-btn-close="Hide"
-      data-group="accordion"
-      {{ if or  (.FuncIsFilterDatePresent) (.DateError.Show) }}
-        data-open="true"
-      {{ else }}
-        data-open="false"
-      {{ end }}
-    >
-      <summary class="ons-collapsible__heading ons-js-collapsible-heading" tabindex="0">
-        <div class="ons-collapsible__controls">
-          <h2 class="ons-collapsible__title">
-            {{- localise "ReleaseCalendarFilterDate" .Language 1 -}}
-          </h2>
-          {{ template "icons/collapsible" . }}
+        </summary>
+        <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
+          {{ template "partials/calendar/filter/search-keywords" . }}
         </div>
-      </summary>
-      <div class="ons-collapsible__content ons-js-collapsible-content">
-        {{ template "partials/calendar/filter/date" . }}
-      </div>
-    </details>
+      </details>
+
+      <details
+        class="ons-collapsible ons-js-collapsible ons-collapsible--accordion ons-u-bb"
+        id="filter-date"
+        data-btn-close="Hide"
+        data-group="accordion"
+        {{ if or  (.FuncIsFilterDatePresent) (.DateError.Show) }}
+        data-open="true"
+        {{ else }}
+        data-open="false"
+        {{ end }}
+      >
+        <summary
+          class="ons-collapsible__heading ons-js-collapsible-heading"
+          tabindex="0"
+        >
+          <div class="ons-collapsible__controls">
+            <h2 class="ons-collapsible__title">
+              {{- localise "ReleaseCalendarFilterDate" .Language 1 -}}
+            </h2>
+            {{ template "icons/collapsible" . }}
+          </div>
+        </summary>
+        <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
+          {{ template "partials/calendar/filter/date" . }}
+        </div>
+      </details>
+    </div>
+    <button
+      type="submit"
+      class="ons-btn ons-u-mt-l ons-u-mb-l text-wrap"
+    >
+      <span class="ons-btn__inner">{{ localise "ApplyFilters" .Language 1 }}</span>
+    </button>
   </div>
-</div>
+</form>
