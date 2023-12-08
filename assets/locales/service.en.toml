@@ -22,7 +22,7 @@ one = "A filter could not be validated, please go back and amend it"
 
 [ReleaseCalendarPageSearchKeywords]
 description = "Release Calendar Page Search Keywords"
-one = "Search keywords"
+one = "Search release calendar"
 
 [SubscriptionLinkRSS]
 description = "RSS feed"
@@ -49,8 +49,8 @@ description = "Released after"
 one = "Released after"
 
 [DateFilterDescription]
-description = "For example: 2006 or 19/07/2010"
-one = "For example: 2006 or 19/07/2010"
+description = "For example: 2006 or 19 07 2010"
+one = "For example: 2006 or 19 07 2010"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
@@ -256,17 +256,13 @@ one = "Cancelled"
 description = "No releases found"
 one = "No releases found"
 
-[NoReleasesFoundDescriptionPublished]
-description = "No Releases Found Description Published"
-one = "There are no published releases. Try selecting a different type of release."
+[NoReleasesFoundDescriptionOne]
+description = "No Releases Found Description one"
+one = "There are no releases for this search."
 
-[NoReleasesFoundDescriptionUpcoming]
-description = "No Releases Found Description Upcoming"
-one = "There are no upcoming releases. Try selecting a different type of release."
-
-[NoReleasesFoundDescriptionCancelled]
-description = "No Releases Found Description Cancelled"
-one = "There are no cancelled releases. Try selecting a different type of release."
+[NoReleasesFoundDescriptionTwo]
+description = "No Releases Found Description two"
+one = "Try searching using different words or dates, or select another release type."
 
 [StatusBannerImportantInformation]
 description = "Important information"
