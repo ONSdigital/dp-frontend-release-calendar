@@ -22,7 +22,7 @@ one = "A filter could not be validated, please go back and amend it"
 
 [ReleaseCalendarPageSearchKeywords]
 description = "Release Calendar Page Search Keywords"
-one = "Search keywords"
+one = "Search release calendar"
 
 [SubscriptionLinkRSS]
 description = "RSS feed"
