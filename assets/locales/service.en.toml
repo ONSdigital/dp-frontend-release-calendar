@@ -36,9 +36,9 @@ one = "Email alerts"
 description = "Add to your calendar (ICS)"
 one = "Add to your calendar (ICS)"
 
-[ApplyDateFilters]
-description = "Apply date filters"
-one = "Apply date filters"
+[ApplyFilters]
+description = "Apply filters"
+one = "Apply filters"
 
 [ReleasedBefore]
 description = "Released before"

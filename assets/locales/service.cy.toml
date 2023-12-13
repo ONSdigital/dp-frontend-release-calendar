@@ -36,9 +36,9 @@ one = "Hysbysiadau e-bost"
 description = "Add to your calendar (ICS)"
 one = "Ychwanegu at eich calendr (ICS) Amserlennu<br>Calendr ar y Rhyngrwyd"
 
-[ApplyDateFilters]
-description = "Apply date filters"
-one = "Rhoi'r hidlyddion dyddiad ar waith"
+[ApplyFilters]
+description = "Apply filters"
+one = "Apply filters"
 
 [ReleasedBefore]
 description = "Released before"
