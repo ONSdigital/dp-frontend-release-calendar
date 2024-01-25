@@ -394,7 +394,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
 
 	for i := range response.Releases {
-		calendar.Entries = append(calendar.Entries, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
+		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
 	}
 
 	return calendar
