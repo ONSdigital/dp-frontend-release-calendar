@@ -1,0 +1,5 @@
+<h2 class="ons-u-bb ons-u-pb-s">
+    {{ .Entries.Count }} 
+    {{ if eq .Entries.Count 1 }} result {{ else }} results {{ end }} 
+    for '{{ .KeywordSearch.SearchTerm }}' 
+</h2>
