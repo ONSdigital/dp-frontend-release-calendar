@@ -1,5 +1,8 @@
 <div class="ons-pl-grid-col">
   <div class="ons-grid">
+    <div class="ons-grid__col ons-col-12@l">
+      <h2 class="ons-u-bb ons-u-pb-s">888 results</h2>
+    </div>
     <div class="ons-grid__col ons-col-6@l ons-col-8@m ">
       {{ template "partials/calendar/items/sort-by" .}}
     </div>
@@ -7,7 +10,7 @@
       {{ template "partials/calendar/items/subscription-links" .}}
     </div>
   </div>
-  {{ if eq (len .Entries) 0 }}
+  {{ if eq (len .Entries.Items) 0 }}
     {{ template "partials/calendar/items/no-result-found" .}}
   {{ else }}
     {{ template "partials/calendar/items/list" .}}
