@@ -353,6 +353,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
 			So(calendar.Pagination.Limit, ShouldEqual, 5)
 			So(calendar.TotalSearchPosition, ShouldEqual, 0)
+			So(calendar.Entries.Count, ShouldEqual, 11)
 			for i, r := range calendar.Entries.Items {
 				So(r.URI, ShouldEqual, releaseResponse.Releases[i].URI)
 				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
