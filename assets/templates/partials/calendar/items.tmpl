@@ -1,7 +1,7 @@
 <div class="ons-pl-grid-col">
   <div class="ons-grid">
     <div class="ons-grid__col ons-col-12@l">
-      <h2 class="ons-u-bb ons-u-pb-s">888 results</h2>
+      <h2 class="ons-u-bb ons-u-pb-s">{{ .Entries.Count }} results</h2>
     </div>
     <div class="ons-grid__col ons-col-6@l ons-col-8@m ">
       {{ template "partials/calendar/items/sort-by" .}}
