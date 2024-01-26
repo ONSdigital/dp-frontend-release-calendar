@@ -405,7 +405,7 @@ func TestGetReleaseType(t *testing.T) {
 }
 
 func TestGetDates(t *testing.T) {
-	Convey("given a set of day month and year numbers as strings", t, func() {
+	Convey("given a set of date parameters as strings", t, func() {
 		testcases := []struct {
 			testDescription                    string
 			afterDay, afterMonth, afterYear    string
@@ -413,6 +413,41 @@ func TestGetDates(t *testing.T) {
 			exFromDate, exToDate               string
 			exError                            error
 		}{
+			{
+				testDescription: "for missing year value",
+				afterDay:        "", afterMonth: "", afterYear: "",
+				beforeDay: "", beforeMonth: "", beforeYear: "",
+				exFromDate: "", exToDate: "",
+				exError: nil, // year is only required when day and/or month provided
+			},
+			{
+				testDescription: "for valid day and missing year value",
+				afterDay:        "1", afterMonth: "", afterYear: "",
+				beforeDay: "", beforeMonth: "", beforeYear: "",
+				exFromDate: "", exToDate: "",
+				exError: ErrInvalidDateInput{msg: "Enter a year"},
+			},
+			{
+				testDescription: "for valid month and year value assumed day set",
+				afterDay:        "", afterMonth: "11", afterYear: "2021",
+				beforeDay: "", beforeMonth: "5", beforeYear: "2024",
+				exFromDate: "2021-11-01", exToDate: "2024-05-01",
+				exError: nil,
+			},
+			{
+				testDescription: "for valid day and year value assumed month set",
+				afterDay:        "5", afterMonth: "", afterYear: "2023",
+				beforeDay: "31", beforeMonth: "", beforeYear: "2024",
+				exFromDate: "2023-01-05", exToDate: "2024-01-31",
+				exError: nil,
+			},
+			{
+				testDescription: "for invalid day and valid year value",
+				afterDay:        "35", afterMonth: "", afterYear: "2023",
+				beforeDay: "", beforeMonth: "", beforeYear: "",
+				exFromDate: "", exToDate: "",
+				exError: ErrInvalidDateInput{msg: "invalid 35 parameter: value is above the maximum value (31)"},
+			},
 			{
 				testDescription: "for invalid day of month value",
 				afterDay:        "32", afterMonth: "2", afterYear: "2021",
