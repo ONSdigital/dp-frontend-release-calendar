@@ -6,8 +6,9 @@ import (
 )
 
 type Date struct {
-	date       time.Time
-	ys, ms, ds string
+	date                     time.Time
+	ys, ms, ds               string
+	assumedDay, assumedMonth bool
 }
 
 const DateFormat = "2006-01-02"
@@ -57,9 +58,15 @@ func (d Date) YearString() string {
 }
 
 func (d Date) MonthString() string {
+	if d.assumedMonth {
+		return ""
+	}
 	return d.ms
 }
 
 func (d Date) DayString() string {
+	if d.assumedDay {
+		return ""
+	}
 	return d.ds
 }
