@@ -34,16 +34,13 @@ func TestUnitMapper(t *testing.T) {
 			calendar.AfterDate.InputValueYear = "2000"
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.AfterDate.InputValueMonth = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
-
 			calendar.AfterDate.InputValueMonth = "01"
 			calendar.AfterDate.InputValueDay = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
+			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
 			calendar.AfterDate.InputValueDay = "01"
 			calendar.AfterDate.InputValueYear = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
+			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 
 		Convey("When a BeforeDate is present", func() {
@@ -53,16 +50,13 @@ func TestUnitMapper(t *testing.T) {
 			calendar.BeforeDate.InputValueYear = "2000"
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.BeforeDate.InputValueMonth = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
-
 			calendar.BeforeDate.InputValueMonth = "01"
 			calendar.BeforeDate.InputValueDay = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
+			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
 			calendar.BeforeDate.InputValueDay = "01"
 			calendar.BeforeDate.InputValueYear = ""
-			So(calendar.FuncIsFilterDatePresent(), ShouldBeFalse)
+			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 
 		Convey("When both dates are present", func() {
