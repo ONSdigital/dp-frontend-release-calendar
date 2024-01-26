@@ -168,10 +168,16 @@ type ErrInvalidDateInput struct {
 
 func (e ErrInvalidDateInput) Error() string { return e.msg }
 
+// Assumed indicates whether values are assumed
+type Assumed struct {
+	isDay, isMonth bool
+}
+
 // GetDates finds the date from and date to parameters
 func GetDates(ctx context.Context, params url.Values) (startDate, endDate Date, err error) {
 	var (
-		startTime, endTime time.Time
+		startTime, endTime               time.Time
+		assumedStartTime, assumedEndTime Assumed
 	)
 
 	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
@@ -181,21 +187,25 @@ func GetDates(ctx context.Context, params url.Values) (startDate, endDate Date, 
 		"year_before": yearBeforeString, "month_before": monthBeforeString, "day_before": DayBefore,
 	}
 
-	startTime, err = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString)
+	startTime, assumedStartTime, err = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString)
 	if err != nil {
 		log.Warn(ctx, "invalid date, startDate", log.FormatErrors([]error{err}), logData)
 		return Date{}, Date{}, err
 	}
 
 	startDate = DateFromTime(startTime)
+	startDate.assumedDay = assumedStartTime.isDay
+	startDate.assumedMonth = assumedStartTime.isMonth
 
-	endTime, err = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString)
+	endTime, assumedEndTime, err = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString)
 	if err != nil {
 		log.Warn(ctx, "invalid date, endDate", log.FormatErrors([]error{err}), logData)
 		return Date{}, Date{}, err
 	}
 
 	endDate = DateFromTime(endTime)
+	endDate.assumedDay = assumedEndTime.isDay
+	endDate.assumedMonth = assumedEndTime.isMonth
 
 	if !startTime.IsZero() && !endTime.IsZero() && startTime.After(endTime) {
 		log.Warn(ctx, "invalid date range: start date after end date", log.Data{DateFrom: startDate, DateTo: endDate})
@@ -205,24 +215,39 @@ func GetDates(ctx context.Context, params url.Values) (startDate, endDate Date, 
 	return startDate, endDate, nil
 }
 
-func getValidTimestamp(year, month, day string) (time.Time, error) {
-	if year == "" || month == "" || day == "" {
-		return time.Time{}, nil
+func getValidTimestamp(year, month, day string) (time.Time, Assumed, error) {
+	if (month != "" || day != "") && year == "" {
+		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: "Enter a year"}
+	}
+
+	if year == "" {
+		return time.Time{}, Assumed{}, nil
+	}
+
+	var aTimes Assumed
+	if year != "" && month == "" {
+		month = "1"
+		aTimes.isMonth = true
+	}
+
+	if year != "" && day == "" {
+		day = "1"
+		aTimes.isDay = true
 	}
 
 	y, err := yearValidator(year)
 	if err != nil {
-		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", year, err.Error())}
+		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", year, err.Error())}
 	}
 
 	m, err := monthValidator(month)
 	if err != nil {
-		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", month, err.Error())}
+		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", month, err.Error())}
 	}
 
 	d, err := dayValidator(day)
 	if err != nil {
-		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", day, err.Error())}
+		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", day, err.Error())}
 	}
 
 	timestamp := time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC)
@@ -230,10 +255,10 @@ func getValidTimestamp(year, month, day string) (time.Time, error) {
 	// Check the day is valid for the month in the year, e.g. day 30 cannot be in month 2 (February)
 	_, mo, _ := timestamp.Date()
 	if mo != time.Month(m) {
-		return time.Time{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year)}
+		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year)}
 	}
 
-	return timestamp, nil
+	return timestamp, aTimes, nil
 }
 
 // CalculateOffset returns the offset (0 based) into a list, given a page number (1 based) and the size of a page.
