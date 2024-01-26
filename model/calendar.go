@@ -82,14 +82,14 @@ func (calendar Calendar) FuncIsFilterCensusPresent() bool {
 
 func (calendar Calendar) FuncIsFilterDatePresent() bool {
 	isBeforeDatePresent := func() bool {
-		return calendar.BeforeDate.InputValueDay != "" &&
-			calendar.BeforeDate.InputValueMonth != "" &&
+		return calendar.BeforeDate.InputValueDay != "" ||
+			calendar.BeforeDate.InputValueMonth != "" ||
 			calendar.BeforeDate.InputValueYear != ""
 	}
 
 	isAfterDatePresent := func() bool {
-		return calendar.AfterDate.InputValueDay != "" &&
-			calendar.AfterDate.InputValueMonth != "" &&
+		return calendar.AfterDate.InputValueDay != "" ||
+			calendar.AfterDate.InputValueMonth != "" ||
 			calendar.AfterDate.InputValueYear != ""
 	}
 
