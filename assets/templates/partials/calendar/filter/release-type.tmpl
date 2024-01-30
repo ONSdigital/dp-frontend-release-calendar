@@ -1,7 +1,5 @@
-<p class="ons-radios__label ons-u-mb-s">
-  {{- localise "FilterReleaseTypeShowOnly" .Language 1 -}}:
-</p>
 <fieldset class="ons-fieldset">
+  <legend class="ons-radios__label ons-u-mb-s">{{- localise "FilterReleaseTypeShowOnly" .Language 1 -}}:</legend>
   <div class="ons-radios__items">
     {{ with index .ReleaseTypes "type-published" }}
     <span class="ons-radios__item ons-radios__item--no-border">
