@@ -1,9 +1,5 @@
 <div class="ons-page__container ons-container release" 
-  {{ if .Description.Published }}
-    data-gtm-release-status="published"
-  {{ else }}
-    data-gtm-release-status="cancelled"
-  {{ end }}
+  data-gtm-release-status="{{- .PublicationState.Type -}}"
   data-gtm-release-date="{{dateFormatYYYYMMDD .Description.ReleaseDate}}"
   data-gtm-release-time="{{timeFormat24h .Description.ReleaseDate}}"
   data-gtm-release-date-status="{{- .Description.ProvisionalDate -}}"

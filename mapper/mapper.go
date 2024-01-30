@@ -151,14 +151,19 @@ func mapEmergencyBanner(bannerData zebedee.EmergencyBanner) coreModel.EmergencyB
 }
 
 func createPreGTMJavaScript(title string, description model.ReleaseDescription) []template.JS {
-	releaseStatus := "cancelled"
+	var releaseStatus string
 	var censusTag string
 
 	releaseDate := helper.DateFormatYYYYMMDD(description.ReleaseDate)
 	releaseTime := helper.TimeFormat24h(description.ReleaseDate)
 
-	if description.Published {
+	switch {
+	case description.Cancelled:
+		releaseStatus = "cancelled"
+	case description.Published:
 		releaseStatus = "published"
+	default:
+		releaseStatus = "upcoming"
 	}
 
 	if description.Census2021 {
@@ -237,6 +242,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 			ChangeNotice: dc.ChangeNotice,
 		})
 	}
+
 	result.PublicationState = GetPublicationState(result.Description, result.DateChanges)
 
 	result.BetaBannerEnabled = true
