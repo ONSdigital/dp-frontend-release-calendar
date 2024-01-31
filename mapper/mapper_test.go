@@ -353,7 +353,8 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
 			So(calendar.Pagination.Limit, ShouldEqual, 5)
 			So(calendar.TotalSearchPosition, ShouldEqual, 0)
-			for i, r := range calendar.Entries {
+			So(calendar.Entries.Count, ShouldEqual, 11)
+			for i, r := range calendar.Entries.Items {
 				So(r.URI, ShouldEqual, releaseResponse.Releases[i].URI)
 				assertSiteSearchDateChanges(releaseResponse.Releases[i].DateChanges, r.DateChanges)
 				So(r.Description.Title, ShouldEqual, releaseResponse.Releases[i].Description.Title)
@@ -386,7 +387,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 					SubType: "provisional",
 				},
 			}
-			for i, r := range calendar.Entries {
+			for i, r := range calendar.Entries.Items {
 				So(r.PublicationState, ShouldResemble, expectedStates[i])
 			}
 		})

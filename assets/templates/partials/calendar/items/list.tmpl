@@ -8,7 +8,7 @@
 {{ $totalSearchPositon := .TotalSearchPosition }}
 
 <ol class="ons-list ons-list--bare ons-u-bt ons-u-mb-l">
-  {{range $i, $item := .Entries }}
+  {{range $i, $item := .Entries.Items }}
     {{ $currentPosition := add $i 1 }}
     <li class="ons-list__item ons-u-mt-l">
       <a
