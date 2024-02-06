@@ -341,6 +341,18 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	if err != nil && errors.As(err, &queryparams.ErrInvalidDateInput{}) {
 		calendar.DateError.Show = true
 		calendar.DateError.Message = err.Error()
+
+		calendar.Error = coreModel.Error{
+			ErrorItems: []coreModel.ErrorItem{
+				{
+					URL: "#duration-error",
+					Description: coreModel.Localisation{
+						Text: err.Error(),
+					},
+				},
+			},
+			Language: calendar.Language,
+		}
 	}
 
 	calendar.AfterDate = coreModel.InputDate{
