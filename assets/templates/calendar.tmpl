@@ -1,5 +1,8 @@
 <div class="ons-page__container ons-container release-calendar">
   <div class="ons-grid ons-u-ml-no">
+    {{ if gt (len .Error.ErrorItems) 0 }}
+      {{ template "partials/error-summary" .Error }}
+    {{ end }}
     <h1 class="ons-u-fs-xxxl ons-u-mt-m ons-u-mb-xl">{{ localise "ReleaseCalendarPageTitle" .Language 1 }}</h1>
     {{ if and .GlobalError.Title.LocaleKey .GlobalError.Message }}
       <div class="ons-grid__col ons-col-12@m ons-u-p-no ons-u-mb-xl">
