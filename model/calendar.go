@@ -37,9 +37,10 @@ type Sort struct {
 	Options []SortOption `json:"options"`
 }
 
-type DateError struct {
-	Show    bool   `json:"show"`
-	Message string `json:"message"`
+type DateFieldset struct {
+	Input            coreModel.InputDate
+	HasValidationErr bool
+	ValidationErr    coreModel.Error
 }
 
 type GlobalError struct {
@@ -58,9 +59,8 @@ type Calendar struct {
 	ReleaseTypes        map[string]ReleaseType  `json:"release_types"`
 	Sort                Sort                    `json:"sort"`
 	Keywords            string                  `json:"keywords"`
-	BeforeDate          coreModel.InputDate     `json:"before_date"`
-	AfterDate           coreModel.InputDate     `json:"after_date"`
-	DateError           DateError               `json:"date_error"`
+	BeforeDate          DateFieldset            `json:"before_date"`
+	AfterDate           DateFieldset            `json:"after_date"`
 	Entries             Entries                 `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
@@ -82,15 +82,15 @@ func (calendar Calendar) FuncIsFilterCensusPresent() bool {
 
 func (calendar Calendar) FuncIsFilterDatePresent() bool {
 	isBeforeDatePresent := func() bool {
-		return calendar.BeforeDate.InputValueDay != "" ||
-			calendar.BeforeDate.InputValueMonth != "" ||
-			calendar.BeforeDate.InputValueYear != ""
+		return calendar.BeforeDate.Input.InputValueDay != "" ||
+			calendar.BeforeDate.Input.InputValueMonth != "" ||
+			calendar.BeforeDate.Input.InputValueYear != ""
 	}
 
 	isAfterDatePresent := func() bool {
-		return calendar.AfterDate.InputValueDay != "" ||
-			calendar.AfterDate.InputValueMonth != "" ||
-			calendar.AfterDate.InputValueYear != ""
+		return calendar.AfterDate.Input.InputValueDay != "" ||
+			calendar.AfterDate.Input.InputValueMonth != "" ||
+			calendar.AfterDate.Input.InputValueYear != ""
 	}
 
 	return isBeforeDatePresent() || isAfterDatePresent()

@@ -65,7 +65,7 @@
         id="filter-date"
         data-btn-close="Hide"
         data-group="accordion"
-        {{ if or  (.FuncIsFilterDatePresent) (.DateError.Show) }}
+        {{ if or  (.FuncIsFilterDatePresent) (.AfterDate.HasValidationErr) (.BeforeDate.HasValidationErr) }}
         data-open="true"
         {{ else }}
         data-open="false"

@@ -339,8 +339,10 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	}
 
 	if err != nil && errors.As(err, &queryparams.ErrInvalidDateInput{}) {
-		calendar.DateError.Show = true
-		calendar.DateError.Message = err.Error()
+		calendar.AfterDate.HasValidationErr = true
+		calendar.BeforeDate.HasValidationErr = true
+		calendar.AfterDate.ValidationErr.Description = err.Error()
+		calendar.BeforeDate.ValidationErr.Description = err.Error()
 
 		calendar.Error = coreModel.Error{
 			ErrorItems: []coreModel.ErrorItem{
@@ -355,7 +357,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		}
 	}
 
-	calendar.AfterDate = coreModel.InputDate{
+	calendar.AfterDate.Input = coreModel.InputDate{
 		Language:        calendar.Language,
 		Id:              "after-date",
 		InputNameDay:    "after-day",
@@ -374,7 +376,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		},
 	}
 
-	calendar.BeforeDate = coreModel.InputDate{
+	calendar.BeforeDate.Input = coreModel.InputDate{
 		Language:        calendar.Language,
 		Id:              "before-date",
 		InputNameDay:    "before-day",
