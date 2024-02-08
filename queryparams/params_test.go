@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/dp-renderer/v2/model"
 	. "github.com/smartystreets/goconvey/convey"
@@ -521,20 +522,6 @@ func TestGetDates(t *testing.T) {
 				exFromError: nil,
 				exToError:   nil,
 			},
-			{
-				testDescription: "for valid date range: start date before end date",
-				afterDay:        "28", afterMonth: "2", afterYear: "2021",
-				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
-				exFromDate: "2021-02-28", exToDate: "2021-12-31",
-				exFromError: nil,
-			},
-			{
-				testDescription: "for invalid date range: start date after end date",
-				afterDay:        "28", afterMonth: "2", afterYear: "2021",
-				beforeDay: "1", beforeMonth: "02", beforeYear: "2021",
-				exFromDate: "2021-02-28", exToDate: "2021-02-01",
-				exFromError: nil,
-			},
 		}
 
 		Convey("check that the validator correctly validates the dates, giving the expected results", func() {
@@ -555,6 +542,75 @@ func TestGetDates(t *testing.T) {
 					So(tErr, ShouldResemble, tc.exToError)
 					So(from.String(), ShouldEqual, tc.exFromDate)
 					So(to.String(), ShouldEqual, tc.exToDate)
+				})
+			}
+		})
+	})
+}
+
+func TestValidateDateRange(t *testing.T) {
+	Convey("given two dates to validate", t, func() {
+		testcases := []struct {
+			testDescription string
+			from            time.Time
+			to              time.Time
+			exError         error
+		}{
+			{
+				testDescription: "for missing dates",
+				from:            time.Time{},
+				to:              time.Time{},
+				exError:         nil,
+			},
+			{
+				testDescription: "for missing date from",
+				from:            time.Time{},
+				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				exError:         nil,
+			},
+			{
+				testDescription: "for missing date to",
+				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				to:              time.Time{},
+				exError:         fmt.Errorf("invalid dates: start date after end date"), // expected as an unset 'date' is 0001-01-01
+			},
+			{
+				testDescription: "for invalid date from",
+				from:            time.Date(-1, -1, -1, 0, 0, 0, 0, time.UTC),
+				to:              time.Time{},
+				exError:         &time.ParseError{Layout: "2006-01-02", Value: "-0002-10-30", LayoutElem: "2006", ValueElem: "-0002-10-30", Message: ""},
+			},
+			{
+				testDescription: "for invalid date to",
+				from:            time.Time{},
+				to:              time.Date(-1, -1, -1, 0, 0, 0, 0, time.UTC),
+				exError:         &time.ParseError{Layout: "2006-01-02", Value: "-0002-10-30", LayoutElem: "2006", ValueElem: "-0002-10-30", Message: ""},
+			},
+			{
+				testDescription: "for from date after to date",
+				from:            time.Date(2024, time.Month(10), 01, 0, 0, 0, 0, time.UTC),
+				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				exError:         fmt.Errorf("invalid dates: start date after end date"),
+			},
+			{
+				testDescription: "for from date before to date",
+				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				to:              time.Date(2024, time.Month(11), 01, 0, 0, 0, 0, time.UTC),
+				exError:         nil,
+			},
+		}
+
+		Convey("check that the validator correctly validates the date range, giving the expected result", func() {
+			for _, tc := range testcases {
+				Convey(tc.testDescription, func() {
+					dateFrom := Date{
+						date: tc.from,
+					}
+					dateTo := Date{
+						date: tc.to,
+					}
+					err := ValidateDateRange(dateFrom, dateTo)
+					So(err, ShouldResemble, tc.exError)
 				})
 			}
 		})
