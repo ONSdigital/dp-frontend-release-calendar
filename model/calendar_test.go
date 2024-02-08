@@ -29,44 +29,44 @@ func TestUnitMapper(t *testing.T) {
 
 		Convey("When an AfterDate is present", func() {
 			calendar := model.Calendar{}
-			calendar.AfterDate.InputValueDay = "01"
-			calendar.AfterDate.InputValueMonth = "01"
-			calendar.AfterDate.InputValueYear = "2000"
+			calendar.AfterDate.Input.InputValueDay = "01"
+			calendar.AfterDate.Input.InputValueMonth = "01"
+			calendar.AfterDate.Input.InputValueYear = "2000"
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.AfterDate.InputValueMonth = "01"
-			calendar.AfterDate.InputValueDay = ""
+			calendar.AfterDate.Input.InputValueMonth = "01"
+			calendar.AfterDate.Input.InputValueDay = ""
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.AfterDate.InputValueDay = "01"
-			calendar.AfterDate.InputValueYear = ""
+			calendar.AfterDate.Input.InputValueDay = "01"
+			calendar.AfterDate.Input.InputValueYear = ""
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 
 		Convey("When a BeforeDate is present", func() {
 			calendar := model.Calendar{}
-			calendar.BeforeDate.InputValueDay = "01"
-			calendar.BeforeDate.InputValueMonth = "01"
-			calendar.BeforeDate.InputValueYear = "2000"
+			calendar.BeforeDate.Input.InputValueDay = "01"
+			calendar.BeforeDate.Input.InputValueMonth = "01"
+			calendar.BeforeDate.Input.InputValueYear = "2000"
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.BeforeDate.InputValueMonth = "01"
-			calendar.BeforeDate.InputValueDay = ""
+			calendar.BeforeDate.Input.InputValueMonth = "01"
+			calendar.BeforeDate.Input.InputValueDay = ""
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 
-			calendar.BeforeDate.InputValueDay = "01"
-			calendar.BeforeDate.InputValueYear = ""
+			calendar.BeforeDate.Input.InputValueDay = "01"
+			calendar.BeforeDate.Input.InputValueYear = ""
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 
 		Convey("When both dates are present", func() {
 			calendar := model.Calendar{}
-			calendar.AfterDate.InputValueDay = "01"
-			calendar.AfterDate.InputValueMonth = "01"
-			calendar.AfterDate.InputValueYear = "2000"
-			calendar.BeforeDate.InputValueDay = "01"
-			calendar.BeforeDate.InputValueMonth = "01"
-			calendar.BeforeDate.InputValueYear = "2000"
+			calendar.AfterDate.Input.InputValueDay = "01"
+			calendar.AfterDate.Input.InputValueMonth = "01"
+			calendar.AfterDate.Input.InputValueYear = "2000"
+			calendar.BeforeDate.Input.InputValueDay = "01"
+			calendar.BeforeDate.Input.InputValueMonth = "01"
+			calendar.BeforeDate.Input.InputValueYear = "2000"
 			So(calendar.FuncIsFilterDatePresent(), ShouldBeTrue)
 		})
 	})
