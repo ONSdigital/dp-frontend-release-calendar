@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/ONSdigital/dp-renderer/v2/model"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -411,77 +412,128 @@ func TestGetDates(t *testing.T) {
 			afterDay, afterMonth, afterYear    string
 			beforeDay, beforeMonth, beforeYear string
 			exFromDate, exToDate               string
-			exError                            error
+			exFromError, exToError             []model.ErrorItem
 		}{
 			{
 				testDescription: "for missing year value",
 				afterDay:        "", afterMonth: "", afterYear: "",
 				beforeDay: "", beforeMonth: "", beforeYear: "",
 				exFromDate: "", exToDate: "",
-				exError: nil, // year is only required when day and/or month provided
+				exFromError: nil, // year is only required when day and/or month provided
+				exToError:   nil, // year is only required when day and/or month provided
 			},
 			{
 				testDescription: "for valid day and missing year value",
 				afterDay:        "1", afterMonth: "", afterYear: "",
 				beforeDay: "", beforeMonth: "", beforeYear: "",
 				exFromDate: "", exToDate: "",
-				exError: ErrInvalidDateInput{msg: "Enter a year"},
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "Enter a released AFTER year",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
 			},
 			{
 				testDescription: "for valid month and year value assumed day set",
 				afterDay:        "", afterMonth: "11", afterYear: "2021",
 				beforeDay: "", beforeMonth: "5", beforeYear: "2024",
 				exFromDate: "2021-11-01", exToDate: "2024-05-01",
-				exError: nil,
+				exFromError: nil,
+				exToError:   nil,
 			},
 			{
 				testDescription: "for valid day and year value assumed month set",
 				afterDay:        "5", afterMonth: "", afterYear: "2023",
 				beforeDay: "31", beforeMonth: "", beforeYear: "2024",
 				exFromDate: "2023-01-05", exToDate: "2024-01-31",
-				exError: nil,
+				exFromError: nil,
+				exToError:   nil,
 			},
 			{
 				testDescription: "for invalid day and valid year value",
 				afterDay:        "35", afterMonth: "", afterYear: "2023",
 				beforeDay: "", beforeMonth: "", beforeYear: "",
 				exFromDate: "", exToDate: "",
-				exError: ErrInvalidDateInput{msg: "invalid 35 parameter: value is above the maximum value (31)"},
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 35 parameter: value is above the maximum value (31)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (35) of month (1) in year (2023)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
+				exToError: nil,
 			},
 			{
 				testDescription: "for invalid day of month value",
 				afterDay:        "32", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
-				exFromDate: "", exToDate: "",
-				exError: ErrInvalidDateInput{msg: "invalid 32 parameter: value is above the maximum value (31)"},
+				exFromDate: "", exToDate: "2021-12-31",
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 32 parameter: value is above the maximum value (31)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (32) of month (2) in year (2021)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
 			},
 			{
 				testDescription: "for invalid 29th of February outside of leap year",
 				afterDay:        "29", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
-				exFromDate: "", exToDate: "",
-				exError: ErrInvalidDateInput{msg: "invalid day (29) of month (2) in year (2021)"},
+				exFromDate: "", exToDate: "2021-12-31",
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid day (29) of month (2) in year (2021)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
 			},
 			{
 				testDescription: "for valid 29th February on leap year",
 				afterDay:        "29", afterMonth: "2", afterYear: "2020",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2020",
 				exFromDate: "2020-02-29", exToDate: "2020-12-31",
-				exError: nil,
+				exFromError: nil,
+				exToError:   nil,
 			},
 			{
 				testDescription: "for valid date range: start date before end date",
 				afterDay:        "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
 				exFromDate: "2021-02-28", exToDate: "2021-12-31",
-				exError: nil,
+				exFromError: nil,
 			},
 			{
 				testDescription: "for invalid date range: start date after end date",
 				afterDay:        "28", afterMonth: "2", afterYear: "2021",
 				beforeDay: "1", beforeMonth: "02", beforeYear: "2021",
-				exFromDate: "", exToDate: "",
-				exError: errors.New("invalid dates: start date after end date"),
+				exFromDate: "2021-02-28", exToDate: "2021-02-01",
+				exFromError: nil,
 			},
 		}
 
@@ -496,9 +548,11 @@ func TestGetDates(t *testing.T) {
 					params.Set("before-month", tc.beforeMonth)
 					params.Set("before-day", tc.beforeDay)
 
-					from, to, err := GetDates(context.Background(), params)
+					from, fErr := GetStartDate(context.Background(), params)
+					to, tErr := GetEndDate(context.Background(), params)
 
-					So(err, ShouldResemble, tc.exError)
+					So(fErr, ShouldResemble, tc.exFromError)
+					So(tErr, ShouldResemble, tc.exToError)
 					So(from.String(), ShouldEqual, tc.exFromDate)
 					So(to.String(), ShouldEqual, tc.exToDate)
 				})
