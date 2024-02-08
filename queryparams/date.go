@@ -6,9 +6,9 @@ import (
 )
 
 type Date struct {
-	date                     time.Time
-	ys, ms, ds               string
-	assumedDay, assumedMonth bool
+	date                                       time.Time
+	ys, ms, ds                                 string
+	assumedDay, assumedMonth, hasValidationErr bool
 }
 
 const DateFormat = "2006-01-02"
@@ -69,4 +69,8 @@ func (d Date) DayString() string {
 		return ""
 	}
 	return d.ds
+}
+
+func (d Date) HasValidationErr() bool {
+	return d.hasValidationErr
 }
