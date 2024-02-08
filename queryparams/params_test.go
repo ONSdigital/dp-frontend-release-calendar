@@ -406,28 +406,22 @@ func TestGetReleaseType(t *testing.T) {
 	})
 }
 
-func TestGetDates(t *testing.T) {
+func TestGetStartDate(t *testing.T) {
 	Convey("given a set of date parameters as strings", t, func() {
 		testcases := []struct {
-			testDescription                    string
-			afterDay, afterMonth, afterYear    string
-			beforeDay, beforeMonth, beforeYear string
-			exFromDate, exToDate               string
-			exFromError, exToError             []model.ErrorItem
+			testDescription                 string
+			afterDay, afterMonth, afterYear string
+			exFromDate                      string
+			exFromError                     []model.ErrorItem
 		}{
 			{
 				testDescription: "for missing year value",
 				afterDay:        "", afterMonth: "", afterYear: "",
-				beforeDay: "", beforeMonth: "", beforeYear: "",
-				exFromDate: "", exToDate: "",
 				exFromError: nil, // year is only required when day and/or month provided
-				exToError:   nil, // year is only required when day and/or month provided
 			},
 			{
-				testDescription: "for valid day and missing year value",
+				testDescription: "for valid day and missing from year value",
 				afterDay:        "1", afterMonth: "", afterYear: "",
-				beforeDay: "", beforeMonth: "", beforeYear: "",
-				exFromDate: "", exToDate: "",
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
@@ -441,24 +435,19 @@ func TestGetDates(t *testing.T) {
 			{
 				testDescription: "for valid month and year value assumed day set",
 				afterDay:        "", afterMonth: "11", afterYear: "2021",
-				beforeDay: "", beforeMonth: "5", beforeYear: "2024",
-				exFromDate: "2021-11-01", exToDate: "2024-05-01",
+				exFromDate:  "2021-11-01",
 				exFromError: nil,
-				exToError:   nil,
 			},
 			{
 				testDescription: "for valid day and year value assumed month set",
 				afterDay:        "5", afterMonth: "", afterYear: "2023",
-				beforeDay: "31", beforeMonth: "", beforeYear: "2024",
-				exFromDate: "2023-01-05", exToDate: "2024-01-31",
+				exFromDate:  "2023-01-05",
 				exFromError: nil,
-				exToError:   nil,
 			},
 			{
 				testDescription: "for invalid day and valid year value",
 				afterDay:        "35", afterMonth: "", afterYear: "2023",
-				beforeDay: "", beforeMonth: "", beforeYear: "",
-				exFromDate: "", exToDate: "",
+				exFromDate: "",
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
@@ -475,13 +464,11 @@ func TestGetDates(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
-				exToError: nil,
 			},
 			{
 				testDescription: "for invalid day of month value",
 				afterDay:        "32", afterMonth: "2", afterYear: "2021",
-				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
-				exFromDate: "", exToDate: "2021-12-31",
+				exFromDate: "",
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
@@ -500,10 +487,44 @@ func TestGetDates(t *testing.T) {
 				},
 			},
 			{
+				testDescription: "for invalid month value",
+				afterDay:        "1", afterMonth: "13", afterYear: "2021",
+				exFromDate: "",
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 13 parameter: value is above the maximum value (12)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (1) of month (13) in year (2021)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for invalid year value",
+				afterDay:        "1", afterMonth: "01", afterYear: "2500",
+				exFromDate: "",
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
+			},
+			{
 				testDescription: "for invalid 29th of February outside of leap year",
 				afterDay:        "29", afterMonth: "2", afterYear: "2021",
-				beforeDay: "31", beforeMonth: "12", beforeYear: "2021",
-				exFromDate: "", exToDate: "2021-12-31",
+				exFromDate: "",
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
@@ -517,10 +538,165 @@ func TestGetDates(t *testing.T) {
 			{
 				testDescription: "for valid 29th February on leap year",
 				afterDay:        "29", afterMonth: "2", afterYear: "2020",
-				beforeDay: "31", beforeMonth: "12", beforeYear: "2020",
-				exFromDate: "2020-02-29", exToDate: "2020-12-31",
+				exFromDate:  "2020-02-29",
 				exFromError: nil,
-				exToError:   nil,
+			},
+		}
+
+		Convey("check that the validator correctly validates the start date, giving the expected results", func() {
+			for _, tc := range testcases {
+				Convey(tc.testDescription, func() {
+					params := make(url.Values)
+					params.Set("after-year", tc.afterYear)
+					params.Set("after-month", tc.afterMonth)
+					params.Set("after-day", tc.afterDay)
+
+					from, err := GetStartDate(context.Background(), params)
+
+					So(err, ShouldResemble, tc.exFromError)
+					So(from.String(), ShouldEqual, tc.exFromDate)
+				})
+			}
+		})
+	})
+}
+
+func TestGetEndDate(t *testing.T) {
+	Convey("given a set of end date parameters as strings", t, func() {
+		testcases := []struct {
+			testDescription                    string
+			beforeDay, beforeMonth, beforeYear string
+			exToDate                           string
+			exToError                          []model.ErrorItem
+		}{
+			{
+				testDescription: "for missing year value",
+				beforeDay:       "", beforeMonth: "", beforeYear: "",
+				exToDate:  "",
+				exToError: nil, // year is only required when day and/or month provided
+			},
+			{
+				testDescription: "for valid day and missing from year value",
+				beforeDay:       "1", beforeMonth: "", beforeYear: "",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "Enter a released BEFORE year",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for valid month and year value assumed day set",
+				beforeDay:       "", beforeMonth: "11", beforeYear: "2021",
+				exToDate:  "2021-11-01",
+				exToError: nil,
+			},
+			{
+				testDescription: "for valid day and year value assumed month set",
+				beforeDay:       "5", beforeMonth: "", beforeYear: "2023",
+				exToDate:  "2023-01-05",
+				exToError: nil,
+			},
+			{
+				testDescription: "for invalid day and valid year value",
+				beforeDay:       "35", beforeMonth: "", beforeYear: "2023",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 35 parameter: value is above the maximum value (31)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (35) of month (1) in year (2023)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for invalid day of month value",
+				beforeDay:       "32", beforeMonth: "2", beforeYear: "2021",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 32 parameter: value is above the maximum value (31)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (32) of month (2) in year (2021)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for invalid month value",
+				beforeDay:       "1", beforeMonth: "13", beforeYear: "2021",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 13 parameter: value is above the maximum value (12)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "invalid day (1) of month (13) in year (2021)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for invalid year value",
+				beforeDay:       "1", beforeMonth: "01", beforeYear: "2500",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for invalid 29th of February outside of leap year",
+				beforeDay:       "29", beforeMonth: "2", beforeYear: "2021",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "invalid day (29) of month (2) in year (2021)",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+			},
+			{
+				testDescription: "for valid 29th February on leap year",
+				beforeDay:       "29", beforeMonth: "2", beforeYear: "2020",
+				exToDate:  "2020-02-29",
+				exToError: nil,
 			},
 		}
 
@@ -528,19 +704,13 @@ func TestGetDates(t *testing.T) {
 			for _, tc := range testcases {
 				Convey(tc.testDescription, func() {
 					params := make(url.Values)
-					params.Set("after-year", tc.afterYear)
-					params.Set("after-month", tc.afterMonth)
-					params.Set("after-day", tc.afterDay)
 					params.Set("before-year", tc.beforeYear)
 					params.Set("before-month", tc.beforeMonth)
 					params.Set("before-day", tc.beforeDay)
 
-					from, fErr := GetStartDate(context.Background(), params)
-					to, tErr := GetEndDate(context.Background(), params)
+					to, err := GetEndDate(context.Background(), params)
 
-					So(fErr, ShouldResemble, tc.exFromError)
-					So(tErr, ShouldResemble, tc.exToError)
-					So(from.String(), ShouldEqual, tc.exFromDate)
+					So(err, ShouldResemble, tc.exToError)
 					So(to.String(), ShouldEqual, tc.exToDate)
 				})
 			}
