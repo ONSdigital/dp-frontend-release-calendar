@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"errors"
 	"fmt"
 	"html/template"
 	"strconv"
@@ -311,7 +310,7 @@ func mapLink(links []releasecalendar.Link) []model.Link {
 	return res
 }
 
-func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner, err error) model.Calendar {
+func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.ValidatedParams, response search.ReleaseResponse, cfg config.Config, lang, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner, validationErrs []coreModel.ErrorItem) model.Calendar {
 	calendar := model.Calendar{
 		Page: basePage,
 	}
@@ -338,23 +337,29 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Options: mapSortOptions(params),
 	}
 
-	if err != nil && errors.As(err, &queryparams.ErrInvalidDateInput{}) {
-		calendar.AfterDate.HasValidationErr = true
-		calendar.BeforeDate.HasValidationErr = true
-		calendar.AfterDate.ValidationErr.Description = err.Error()
-		calendar.BeforeDate.ValidationErr.Description = err.Error()
-
+	if len(validationErrs) > 0 {
 		calendar.Error = coreModel.Error{
-			ErrorItems: []coreModel.ErrorItem{
-				{
-					URL: "#duration-error",
-					Description: coreModel.Localisation{
-						Text: err.Error(),
-					},
-				},
-			},
-			Language: calendar.Language,
+			Title:      calendar.Metadata.Title,
+			ErrorItems: validationErrs,
+			Language:   lang,
 		}
+
+		var fdErrDescription, tdErrDescription []string
+		for _, err := range validationErrs {
+			switch err.ID {
+			case "fromDate-error":
+				fdErrDescription = append(fdErrDescription, err.Description.Text)
+			case "toDate-error":
+				tdErrDescription = append(tdErrDescription, err.Description.Text)
+			}
+		}
+
+		calendar.AfterDate.HasValidationErr = params.AfterDate.HasValidationErr()
+		calendar.AfterDate.ValidationErr.Description = strings.Join(fdErrDescription, " ")
+
+		calendar.BeforeDate.HasValidationErr = params.BeforeDate.HasValidationErr()
+		calendar.BeforeDate.ValidationErr.Description = strings.Join(tdErrDescription, " ")
+
 	}
 
 	calendar.AfterDate.Input = coreModel.InputDate{

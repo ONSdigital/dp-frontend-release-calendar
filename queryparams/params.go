@@ -2,12 +2,12 @@ package queryparams
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
 	"time"
 
+	core "github.com/ONSdigital/dp-renderer/v2/model"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
@@ -25,7 +25,9 @@ const (
 	Keywords    = "keywords"
 	Query       = "query"
 	DateFrom    = "fromDate"
+	DateFromErr = DateFrom + "-error"
 	DateTo      = "toDate"
+	DateToErr   = DateTo + "-error"
 	Type        = "release-type"
 	Census      = "census"
 	Highlight   = "highlight"
@@ -168,86 +170,137 @@ type ErrInvalidDateInput struct {
 
 func (e ErrInvalidDateInput) Error() string { return e.msg }
 
-// Assumed indicates whether values are assumed
-type Assumed struct {
-	isDay, isMonth bool
-}
-
-// GetDates finds the date from and date to parameters
-func GetDates(ctx context.Context, params url.Values) (startDate, endDate Date, err error) {
-	var (
-		startTime, endTime               time.Time
-		assumedStartTime, assumedEndTime Assumed
-	)
+// GetStartDate finds the date from and date to parameters
+func GetStartDate(ctx context.Context, params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
+	var startTime time.Time
 
 	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
-	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
-	logData := log.Data{
-		"year_after": yearAfterString, "month_after": monthAfterString, "day_after": dayAfterString,
-		"year_before": yearBeforeString, "month_before": monthBeforeString, "day_before": DayBefore,
+	startDate.ds = dayAfterString
+	startDate.ms = monthAfterString
+	startDate.ys = yearAfterString
+
+	if (monthAfterString != "" || dayAfterString != "") && yearAfterString == "" {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: "Enter a released AFTER year",
+			},
+			ID:  DateFromErr,
+			URL: fmt.Sprintf("#%s", DateFromErr),
+		})
+		startDate.hasValidationErr = true
+		return startDate, validationErrs
 	}
 
-	startTime, assumedStartTime, err = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString)
-	if err != nil {
-		log.Warn(ctx, "invalid date, startDate", log.FormatErrors([]error{err}), logData)
-		return Date{}, Date{}, err
+	var assumedDay, assumedMonth bool
+	if yearAfterString != "" && monthAfterString == "" {
+		monthAfterString = "1"
+		assumedMonth = true
+	}
+
+	if yearAfterString != "" && dayAfterString == "" {
+		dayAfterString = "1"
+		assumedDay = true
+	}
+
+	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, DateFromErr)
+	if len(validationErrs) > 0 {
+		startDate.hasValidationErr = true
+		return startDate, validationErrs
 	}
 
 	startDate = DateFromTime(startTime)
-	startDate.assumedDay = assumedStartTime.isDay
-	startDate.assumedMonth = assumedStartTime.isMonth
+	startDate.assumedDay = assumedDay
+	startDate.assumedMonth = assumedMonth
+	startDate.hasValidationErr = false
 
-	endTime, assumedEndTime, err = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString)
-	if err != nil {
-		log.Warn(ctx, "invalid date, endDate", log.FormatErrors([]error{err}), logData)
-		return Date{}, Date{}, err
+	return startDate, nil
+}
+
+// GetDates finds the date from and date to parameters
+func GetEndDate(ctx context.Context, params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
+	var endTime time.Time
+
+	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
+	endDate.ds = dayBeforeString
+	endDate.ms = monthBeforeString
+	endDate.ys = yearBeforeString
+
+	if (monthBeforeString != "" || dayBeforeString != "") && yearBeforeString == "" {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: "Enter a released BEFORE year",
+			},
+			ID:  DateToErr,
+			URL: fmt.Sprintf("#%s", DateToErr),
+		})
+		endDate.hasValidationErr = true
+		return endDate, validationErrs
+	}
+
+	var assumedDay, assumedMonth bool
+	if yearBeforeString != "" && monthBeforeString == "" {
+		monthBeforeString = "1"
+		assumedMonth = true
+	}
+
+	if yearBeforeString != "" && dayBeforeString == "" {
+		dayBeforeString = "1"
+		assumedDay = true
+	}
+
+	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, DateToErr)
+	if len(validationErrs) > 0 {
+		endDate.hasValidationErr = true
+		return endDate, validationErrs
 	}
 
 	endDate = DateFromTime(endTime)
-	endDate.assumedDay = assumedEndTime.isDay
-	endDate.assumedMonth = assumedEndTime.isMonth
+	endDate.assumedDay = assumedDay
+	endDate.assumedMonth = assumedMonth
+	endDate.hasValidationErr = false
 
-	if !startTime.IsZero() && !endTime.IsZero() && startTime.After(endTime) {
-		log.Warn(ctx, "invalid date range: start date after end date", log.Data{DateFrom: startDate, DateTo: endDate})
-		return Date{}, Date{}, errors.New("invalid dates: start date after end date")
-	}
-
-	return startDate, endDate, nil
+	return endDate, nil
 }
 
-func getValidTimestamp(year, month, day string) (time.Time, Assumed, error) {
-	if (month != "" || day != "") && year == "" {
-		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: "Enter a year"}
+// getValidTimestamp returns a valid timestamp or an error
+func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.ErrorItem) {
+	if year == "" || month == "" || day == "" {
+		return time.Time{}, []core.ErrorItem{}
 	}
 
-	if year == "" {
-		return time.Time{}, Assumed{}, nil
-	}
-
-	var aTimes Assumed
-	if year != "" && month == "" {
-		month = "1"
-		aTimes.isMonth = true
-	}
-
-	if year != "" && day == "" {
-		day = "1"
-		aTimes.isDay = true
-	}
+	var validationErrs []core.ErrorItem
 
 	y, err := yearValidator(year)
 	if err != nil {
-		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", year, err.Error())}
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: fmt.Sprintf("invalid %s parameter: %s", year, err.Error()),
+			},
+			ID:  fieldErrID,
+			URL: fmt.Sprintf("#%s", fieldErrID),
+		})
 	}
 
 	m, err := monthValidator(month)
 	if err != nil {
-		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", month, err.Error())}
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: fmt.Sprintf("invalid %s parameter: %s", month, err.Error()),
+			},
+			ID:  fieldErrID,
+			URL: fmt.Sprintf("#%s", fieldErrID),
+		})
 	}
 
 	d, err := dayValidator(day)
 	if err != nil {
-		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid %s parameter: %s", day, err.Error())}
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: fmt.Sprintf("invalid %s parameter: %s", day, err.Error()),
+			},
+			ID:  fieldErrID,
+			URL: fmt.Sprintf("#%s", fieldErrID),
+		})
 	}
 
 	timestamp := time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC)
@@ -255,10 +308,35 @@ func getValidTimestamp(year, month, day string) (time.Time, Assumed, error) {
 	// Check the day is valid for the month in the year, e.g. day 30 cannot be in month 2 (February)
 	_, mo, _ := timestamp.Date()
 	if mo != time.Month(m) {
-		return time.Time{}, Assumed{}, ErrInvalidDateInput{msg: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year)}
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year),
+			},
+			ID:  fieldErrID,
+			URL: fmt.Sprintf("#%s", fieldErrID),
+		})
 	}
 
-	return timestamp, aTimes, nil
+	return timestamp, validationErrs
+}
+
+// ValidateDateRange returns an error if the 'from' date is after than the 'to' date
+func ValidateDateRange(from, to Date) error {
+	startDate, err := ParseDate(from.String())
+	if err != nil {
+		return err
+	}
+	endDate, err := ParseDate(to.String())
+	if err != nil {
+		return err
+	}
+
+	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "")
+	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "")
+	if startTime.After(endTime) {
+		return fmt.Errorf("invalid dates: start date after end date")
+	}
+	return nil
 }
 
 // CalculateOffset returns the offset (0 based) into a list, given a page number (1 based) and the size of a page.

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,6 +16,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
+	core "github.com/ONSdigital/dp-renderer/v2/model"
 
 	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -109,17 +109,10 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			log.Warn(ctx, "unable to get homepage content", log.FormatErrors([]error{err}), log.Data{"homepage_content": err})
 		}
 
-		validatedParams, err := validateParams(ctx, params, cfg)
-		if err != nil {
-			if errors.As(err, &queryparams.ErrInvalidDateInput{}) {
-				calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, err)
-				setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey)
-				rc.BuildPage(w, calendar, "calendar")
-				return
-			}
-
-			setStatusCode(r, w, err)
-			calendar := mapper.CreateReleaseCalendarError(rc.NewBasePageModel(), lang, "ReleaseCalendarErrorTitleValidation", err)
+		validatedParams, validationErrs := validateParamsAsFrontend(ctx, params, cfg)
+		if len(validationErrs) > 0 {
+			calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, validationErrs)
+			setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey)
 			rc.BuildPage(w, calendar, "calendar")
 			return
 		}
@@ -167,6 +160,93 @@ func ReleaseCalendarData(cfg config.Config, api SearchAPI) http.HandlerFunc {
 	})
 }
 
+func validateParamsAsFrontend(ctx context.Context, params url.Values, cfg config.Config) (vp queryparams.ValidatedParams, validationErrs []core.ErrorItem) {
+	validatedParams := queryparams.ValidatedParams{}
+
+	limit, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, cfg.DefaultMaximumLimit)
+	if err != nil {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: err.Error(),
+			},
+		})
+	}
+	validatedParams.Limit = limit
+
+	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
+	if err != nil {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: err.Error(),
+			},
+		})
+	}
+	validatedParams.Page = pageNumber
+
+	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
+
+	fromDate, vErrs := queryparams.GetStartDate(ctx, params)
+	if len(vErrs) > 0 {
+		validationErrs = append(validationErrs, vErrs...)
+	}
+	validatedParams.AfterDate = fromDate
+
+	toDate, vErrs := queryparams.GetEndDate(ctx, params)
+	if len(vErrs) > 0 {
+		validationErrs = append(validationErrs, vErrs...)
+	}
+	validatedParams.BeforeDate = toDate
+
+	if fromDate.String() != "" && toDate.String() != "" {
+		err = queryparams.ValidateDateRange(fromDate, toDate)
+		if err != nil {
+			validationErrs = append(validationErrs, core.ErrorItem{
+				Description: core.Localisation{
+					Text: err.Error(),
+				},
+			})
+		}
+	}
+
+	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
+	if err != nil {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: err.Error(),
+			},
+		})
+	}
+	validatedParams.Sort = sort
+
+	keywords, err := queryparams.GetKeywords(ctx, params, "")
+	if err != nil {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: err.Error(),
+			},
+		})
+	}
+	validatedParams.Keywords = keywords
+
+	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
+	if err != nil {
+		validationErrs = append(validationErrs, core.ErrorItem{
+			Description: core.Localisation{
+				Text: err.Error(),
+			},
+		})
+	}
+	validatedParams.ReleaseType = releaseType
+
+	validatedParams.Provisional, _ = queryparams.GetBoolean(ctx, params, queryparams.Provisional.String(), false)
+	validatedParams.Confirmed, _ = queryparams.GetBoolean(ctx, params, queryparams.Confirmed.String(), false)
+	validatedParams.Postponed, _ = queryparams.GetBoolean(ctx, params, queryparams.Postponed.String(), false)
+	validatedParams.Census, _ = queryparams.GetBoolean(ctx, params, queryparams.Census, false)
+	validatedParams.Highlight, _ = queryparams.GetBoolean(ctx, params, queryparams.Highlight, true)
+
+	return validatedParams, validationErrs
+}
+
 func validateParams(ctx context.Context, params url.Values, cfg config.Config) (queryparams.ValidatedParams, error) {
 	validatedParams := queryparams.ValidatedParams{}
 
@@ -184,12 +264,30 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 
 	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
 
-	fromDate, toDate, err := queryparams.GetDates(ctx, params)
-	if err != nil {
-		return validatedParams, err
+	fromDate, vErrs := queryparams.GetStartDate(ctx, params)
+	if len(vErrs) > 0 {
+		for _, err := range vErrs {
+			log.Error(ctx, "invalid date", fmt.Errorf("startdate field error: %s", err.Description.Text))
+		}
+		return validatedParams, fmt.Errorf("invalid startDate")
 	}
 	validatedParams.AfterDate = fromDate
+
+	toDate, vErrs := queryparams.GetEndDate(ctx, params)
+	if len(vErrs) > 0 {
+		for _, err := range vErrs {
+			log.Error(ctx, "invalid date", fmt.Errorf("endDate field error: %s", err.Description.Text))
+		}
+		return validatedParams, fmt.Errorf("invalid endDate")
+	}
 	validatedParams.BeforeDate = toDate
+
+	if fromDate.String() != "" && toDate.String() != "" {
+		err = queryparams.ValidateDateRange(fromDate, toDate)
+		if err != nil {
+			return validatedParams, err
+		}
+	}
 
 	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
 	if err != nil {
