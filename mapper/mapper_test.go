@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -391,6 +392,53 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			for i, r := range calendar.Entries.Items {
 				So(r.PublicationState, ShouldResemble, expectedStates[i])
 			}
+		})
+
+		Convey("CreateReleaseCalendar maps validation errors correctly to a model Calendar object", func() {
+			validationErrs := []coreModel.ErrorItem{
+				{
+					Description: coreModel.Localisation{
+						Text: "This is a released AFTER error",
+					},
+					ID:  "fromDate-error",
+					URL: "#fromDate-error",
+				},
+				{
+					Description: coreModel.Localisation{
+						Text: "This is a released BEFORE error",
+					},
+					ID:  "toDate-error",
+					URL: "#toDate-error",
+				},
+				{
+					Description: coreModel.Localisation{
+						Text: "This is another released BEFORE error",
+					},
+					ID:  "toDate-error",
+					URL: "#toDate-error",
+				},
+				{
+					Description: coreModel.Localisation{
+						Text: "This is a non-date page error",
+					},
+					ID:  "input-error",
+					URL: "#input-error",
+				},
+			}
+
+			expectedAfterErr := coreModel.Error{
+				Description: validationErrs[0].Description.Text,
+			}
+
+			expectedBeforeErr := coreModel.Error{
+				Description: fmt.Sprintf("%s %s", validationErrs[1].Description.Text, validationErrs[2].Description.Text),
+			}
+
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "", "", zebedee.EmergencyBanner{}, validationErrs)
+
+			So(calendar.AfterDate.ValidationErr, ShouldResemble, expectedAfterErr)
+			So(calendar.BeforeDate.ValidationErr, ShouldResemble, expectedBeforeErr)
+			So(calendar.Page.Error.ErrorItems, ShouldResemble, validationErrs)
 		})
 	})
 }
