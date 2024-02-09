@@ -355,13 +355,13 @@ func TestUnitHandlers(t *testing.T) {
 				})
 
 				Convey("Given a request with parameters", func() {
-					Convey("When the limit parameter is negative", func() {
+					Convey("When parameters are invalid", func() {
 						mockRenderClient.EXPECT().NewBasePageModel()
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 						mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 
-						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), http.NoBody)
+						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1&release-type=type-sf&after-year=dad&before-day=44&after-month-99&sort=date-blah", endpoint), http.NoBody)
 
 						Convey("Then it returns 200", func() {
 							router.ServeHTTP(w, req)
