@@ -356,9 +356,11 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 		calendar.AfterDate.HasValidationErr = params.AfterDate.HasValidationErr()
 		calendar.AfterDate.ValidationErr.Description = strings.Join(fdErrDescription, " ")
+		calendar.AfterDate.ID = "fromDate-error"
 
 		calendar.BeforeDate.HasValidationErr = params.BeforeDate.HasValidationErr()
 		calendar.BeforeDate.ValidationErr.Description = strings.Join(tdErrDescription, " ")
+		calendar.BeforeDate.ID = "toDate-error"
 	}
 
 	calendar.AfterDate.Input = coreModel.InputDate{

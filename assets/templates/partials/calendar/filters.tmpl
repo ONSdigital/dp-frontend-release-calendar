@@ -83,7 +83,8 @@
           </div>
         </summary>
         <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
-          {{ template "partials/calendar/filter/date" . }}
+          {{ template "partials/calendar/filter/date" .AfterDate }}
+          {{ template "partials/calendar/filter/date" .BeforeDate }}
         </div>
       </details>
     </div>
