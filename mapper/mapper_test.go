@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"errors"
 	"testing"
 	"time"
 
@@ -392,29 +391,6 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			for i, r := range calendar.Entries.Items {
 				So(r.PublicationState, ShouldResemble, expectedStates[i])
 			}
-		})
-	})
-}
-
-func TestReleaseCalendarErrorMapper(t *testing.T) {
-	helper.InitialiseLocalisationsHelper(mocks.MockAssetFunction)
-	Convey("Given a Release Calendar and a base page", t, func() {
-		basePage := coreModel.NewPage("path/to/assets", "site-domain")
-
-		Convey("CreateReleaseCalendarError maps correctly to a model Calendar object", func() {
-			lang := "cy"
-			metaTitle := "Calendr datganiadau"
-			err := errors.New("test error message")
-			errTitleKey := "ReleaseCalendarErrorTitleValidation"
-
-			calendar := CreateReleaseCalendarError(basePage, lang, errTitleKey, err)
-
-			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
-			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
-			So(calendar.BetaBannerEnabled, ShouldBeTrue)
-			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
-			So(calendar.GlobalError.Title.LocaleKey, ShouldEqual, errTitleKey)
-			So(calendar.GlobalError.Message, ShouldEqual, err.Error())
 		})
 	})
 }

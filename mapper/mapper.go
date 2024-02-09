@@ -426,23 +426,6 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	return calendar
 }
 
-func CreateReleaseCalendarError(basePage coreModel.Page, lang, errorTitleKey string, globalError error) model.Calendar {
-	calendar := model.Calendar{
-		Page: basePage,
-	}
-	calendar.Language = lang
-	calendar.BetaBannerEnabled = true
-	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
-	calendar.GlobalError = model.GlobalError{
-		Title: coreModel.Localisation{
-			LocaleKey: errorTitleKey,
-			Plural:    1,
-		},
-		Message: globalError.Error(),
-	}
-	return calendar
-}
-
 // The current page number sits within a window, and the window size determines the
 // number of pages around the current page. For example a window size of 3 with the
 // current page shown in () would give:
