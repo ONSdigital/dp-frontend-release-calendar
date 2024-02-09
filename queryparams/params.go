@@ -163,13 +163,6 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 	return upcoming, nil
 }
 
-// ErrInvalidDateInput is return when input date is invalid e.g. 31 Feb
-type ErrInvalidDateInput struct {
-	msg string
-}
-
-func (e ErrInvalidDateInput) Error() string { return e.msg }
-
 // GetStartDate finds the date from and date to parameters
 func GetStartDate(params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
 	var startTime time.Time
