@@ -312,42 +312,44 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: mapSortOptions(params)})
-			So(calendar.BeforeDate, ShouldResemble, coreModel.InputDate{
-				Language:        lang,
-				Id:              "before-date",
-				InputNameDay:    "before-day",
-				InputNameMonth:  "before-month",
-				InputNameYear:   "before-year",
-				InputValueDay:   params.BeforeDate.DayString(),
-				InputValueMonth: params.BeforeDate.MonthString(),
-				InputValueYear:  params.BeforeDate.YearString(),
-				Title: coreModel.Localisation{
-					LocaleKey: "ReleasedBefore",
-					Plural:    1,
-				},
-				Description: coreModel.Localisation{
-					LocaleKey: "DateFilterDescription",
-					Plural:    1,
-				},
-			})
-			So(calendar.AfterDate, ShouldResemble, coreModel.InputDate{
-				Language:        lang,
-				Id:              "after-date",
-				InputNameDay:    "after-day",
-				InputNameMonth:  "after-month",
-				InputNameYear:   "after-year",
-				InputValueDay:   params.AfterDate.DayString(),
-				InputValueMonth: params.AfterDate.MonthString(),
-				InputValueYear:  params.AfterDate.YearString(),
-				Title: coreModel.Localisation{
-					LocaleKey: "ReleasedAfter",
-					Plural:    1,
-				},
-				Description: coreModel.Localisation{
-					LocaleKey: "DateFilterDescription",
-					Plural:    1,
-				},
-			})
+			So(calendar.BeforeDate, ShouldResemble, model.DateFieldset{
+				Input: coreModel.InputDate{
+					Language:        lang,
+					Id:              "before-date",
+					InputNameDay:    "before-day",
+					InputNameMonth:  "before-month",
+					InputNameYear:   "before-year",
+					InputValueDay:   params.BeforeDate.DayString(),
+					InputValueMonth: params.BeforeDate.MonthString(),
+					InputValueYear:  params.BeforeDate.YearString(),
+					Title: coreModel.Localisation{
+						LocaleKey: "ReleasedBefore",
+						Plural:    1,
+					},
+					Description: coreModel.Localisation{
+						LocaleKey: "DateFilterDescription",
+						Plural:    1,
+					},
+				}})
+			So(calendar.AfterDate, ShouldResemble, model.DateFieldset{
+				Input: coreModel.InputDate{
+					Language:        lang,
+					Id:              "after-date",
+					InputNameDay:    "after-day",
+					InputNameMonth:  "after-month",
+					InputNameYear:   "after-year",
+					InputValueDay:   params.AfterDate.DayString(),
+					InputValueMonth: params.AfterDate.MonthString(),
+					InputValueYear:  params.AfterDate.YearString(),
+					Title: coreModel.Localisation{
+						LocaleKey: "ReleasedAfter",
+						Plural:    1,
+					},
+					Description: coreModel.Localisation{
+						LocaleKey: "DateFilterDescription",
+						Plural:    1,
+					},
+				}})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, lang))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
