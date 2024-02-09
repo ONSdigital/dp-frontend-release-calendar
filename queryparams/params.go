@@ -182,7 +182,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 	if (monthAfterString != "" || dayAfterString != "") && yearAfterString == "" {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a released AFTER year",
+				Text: "Enter a released after year",
 			},
 			ID:  DateFromErr,
 			URL: fmt.Sprintf("#%s", DateFromErr),
@@ -228,7 +228,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 	if (monthBeforeString != "" || dayBeforeString != "") && yearBeforeString == "" {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a released BEFORE year",
+				Text: "Enter a released before year",
 			},
 			ID:  DateToErr,
 			URL: fmt.Sprintf("#%s", DateToErr),
