@@ -185,13 +185,13 @@ func validateParamsAsFrontend(ctx context.Context, params url.Values, cfg config
 
 	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
 
-	fromDate, vErrs := queryparams.GetStartDate(ctx, params)
+	fromDate, vErrs := queryparams.GetStartDate(params)
 	if len(vErrs) > 0 {
 		validationErrs = append(validationErrs, vErrs...)
 	}
 	validatedParams.AfterDate = fromDate
 
-	toDate, vErrs := queryparams.GetEndDate(ctx, params)
+	toDate, vErrs := queryparams.GetEndDate(params)
 	if len(vErrs) > 0 {
 		validationErrs = append(validationErrs, vErrs...)
 	}
@@ -264,7 +264,7 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 
 	validatedParams.Offset = queryparams.CalculateOffset(pageNumber, limit)
 
-	fromDate, vErrs := queryparams.GetStartDate(ctx, params)
+	fromDate, vErrs := queryparams.GetStartDate(params)
 	if len(vErrs) > 0 {
 		for _, err := range vErrs {
 			log.Error(ctx, "invalid date", fmt.Errorf("startdate field error: %s", err.Description.Text))
@@ -273,7 +273,7 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	}
 	validatedParams.AfterDate = fromDate
 
-	toDate, vErrs := queryparams.GetEndDate(ctx, params)
+	toDate, vErrs := queryparams.GetEndDate(params)
 	if len(vErrs) > 0 {
 		for _, err := range vErrs {
 			log.Error(ctx, "invalid date", fmt.Errorf("endDate field error: %s", err.Description.Text))

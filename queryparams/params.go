@@ -171,7 +171,7 @@ type ErrInvalidDateInput struct {
 func (e ErrInvalidDateInput) Error() string { return e.msg }
 
 // GetStartDate finds the date from and date to parameters
-func GetStartDate(ctx context.Context, params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
+func GetStartDate(params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
 	var startTime time.Time
 
 	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
@@ -217,7 +217,7 @@ func GetStartDate(ctx context.Context, params url.Values) (startDate Date, valid
 }
 
 // GetDates finds the date from and date to parameters
-func GetEndDate(ctx context.Context, params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
+func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
 	var endTime time.Time
 
 	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
