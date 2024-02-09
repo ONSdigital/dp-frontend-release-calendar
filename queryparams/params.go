@@ -163,7 +163,7 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 	return upcoming, nil
 }
 
-// GetStartDate finds the date from and date to parameters
+// GetStartDate returns the validated date from parameters
 func GetStartDate(params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
 	var startTime time.Time
 
@@ -209,7 +209,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 	return startDate, nil
 }
 
-// GetDates finds the date from and date to parameters
+// GetDates returns the validated date to parameters
 func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
 	var endTime time.Time
 
