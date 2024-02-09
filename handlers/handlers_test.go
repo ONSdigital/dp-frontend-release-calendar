@@ -420,7 +420,7 @@ func TestUnitHandlers(t *testing.T) {
 					})
 				})
 
-				Convey("it returns 500 when there is an error in one of the parameters", func() {
+				Convey("it returns 400 when there is an error in one of the parameters", func() {
 					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), http.NoBody)
 					if err := setRequestHeaders(req); err != nil {
 						t.Fatalf("unable to set request headers, error: %v", err)
@@ -428,7 +428,7 @@ func TestUnitHandlers(t *testing.T) {
 
 					router.ServeHTTP(w, req)
 
-					So(w.Code, ShouldEqual, http.StatusInternalServerError)
+					So(w.Code, ShouldEqual, http.StatusBadRequest)
 				})
 
 				Convey("it returns 500 when there is an error getting the releases from the search api", func() {

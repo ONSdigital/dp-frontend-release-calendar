@@ -31,9 +31,7 @@ const (
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
 	if err, ok := err.(ClientError); ok {
-		if err.Code() == http.StatusNotFound {
-			status = err.Code()
-		}
+		status = err.Code()
 	}
 	log.Error(req.Context(), "setting-response-status", err)
 	w.WriteHeader(status)
@@ -252,13 +250,13 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 
 	limit, err := queryparams.GetLimit(ctx, params, cfg.DefaultLimit, cfg.DefaultMaximumLimit)
 	if err != nil {
-		return validatedParams, err
+		return validatedParams, &clientErr{err}
 	}
 	validatedParams.Limit = limit
 
 	pageNumber, err := queryparams.GetPage(ctx, params, cfg.DefaultMaximumSearchResults/cfg.DefaultLimit)
 	if err != nil {
-		return validatedParams, err
+		return validatedParams, &clientErr{err}
 	}
 	validatedParams.Page = pageNumber
 
@@ -269,7 +267,7 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 		for _, err := range vErrs {
 			log.Error(ctx, "invalid date", fmt.Errorf("startdate field error: %s", err.Description.Text))
 		}
-		return validatedParams, fmt.Errorf("invalid startDate")
+		return validatedParams, &clientErr{fmt.Errorf("invalid startDate")}
 	}
 	validatedParams.AfterDate = fromDate
 
@@ -278,32 +276,32 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 		for _, err := range vErrs {
 			log.Error(ctx, "invalid date", fmt.Errorf("endDate field error: %s", err.Description.Text))
 		}
-		return validatedParams, fmt.Errorf("invalid endDate")
+		return validatedParams, &clientErr{fmt.Errorf("invalid endDate")}
 	}
 	validatedParams.BeforeDate = toDate
 
 	if fromDate.String() != "" && toDate.String() != "" {
 		err = queryparams.ValidateDateRange(fromDate, toDate)
 		if err != nil {
-			return validatedParams, err
+			return validatedParams, &clientErr{err}
 		}
 	}
 
 	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
 	if err != nil {
-		return validatedParams, err
+		return validatedParams, &clientErr{err}
 	}
 	validatedParams.Sort = sort
 
 	keywords, err := queryparams.GetKeywords(ctx, params, "")
 	if err != nil {
-		return validatedParams, err
+		return validatedParams, &clientErr{err}
 	}
 	validatedParams.Keywords = keywords
 
 	releaseType, err := queryparams.GetReleaseType(ctx, params, queryparams.Published)
 	if err != nil {
-		return validatedParams, err
+		return validatedParams, &clientErr{err}
 	}
 	validatedParams.ReleaseType = releaseType
 
