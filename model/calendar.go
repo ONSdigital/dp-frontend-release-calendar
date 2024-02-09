@@ -41,6 +41,7 @@ type DateFieldset struct {
 	Input            coreModel.InputDate
 	HasValidationErr bool
 	ValidationErr    coreModel.Error
+	ID               string
 }
 
 type Entries struct {

@@ -1,33 +1,16 @@
-{{ if .AfterDate.HasValidationErr}}
+{{ if .HasValidationErr}}
 <div
   class="ons-panel ons-panel--error ons-panel--no-title"
-  id="fromDate-error"
+  id="{{- .ID -}}"
 >
   <span class="ons-panel__assistive-text ons-u-vh">Error: </span>
   <div class="ons-panel__body">
     <p class="ons-panel__error">
-      <strong>{{ .AfterDate.ValidationErr.Description }}</strong>
+      <strong>{{- .ValidationErr.Description -}}</strong>
     </p>
-    {{ template "partials/inputs/input-date" .AfterDate.Input }}
+    {{ template "partials/inputs/input-date" .Input }}
   </div>
 </div>
 {{ else }}
-{{ template "partials/inputs/input-date" .AfterDate.Input }}
-{{ end }}
-
-{{ if .BeforeDate.HasValidationErr}}
-<div
-  class="ons-panel ons-panel--error ons-panel--no-title"
-  id="toDate-error"
->
-  <span class="ons-panel__assistive-text ons-u-vh">Error: </span>
-  <div class="ons-panel__body">
-    <p class="ons-panel__error">
-      <strong>{{ .BeforeDate.ValidationErr.Description }}</strong>
-    </p>
-    {{ template "partials/inputs/input-date" .BeforeDate.Input }}
-  </div>
-</div>
-{{ else }}
-{{ template "partials/inputs/input-date" .BeforeDate.Input }}
+{{ template "partials/inputs/input-date" .Input }}
 {{ end }}
