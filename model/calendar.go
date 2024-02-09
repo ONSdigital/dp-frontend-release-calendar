@@ -43,11 +43,6 @@ type DateFieldset struct {
 	ValidationErr    coreModel.Error
 }
 
-type GlobalError struct {
-	Title   coreModel.Localisation `json:"title"`
-	Message string                 `json:"message"`
-}
-
 type Entries struct {
 	Count int             `json:"count"`
 	Items []CalendarEntry `json:"items"`
@@ -64,7 +59,6 @@ type Calendar struct {
 	Entries             Entries                 `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
-	GlobalError         GlobalError             `json:"global_error"`
 }
 
 func (calendar Calendar) FuncIsFilterSearchPresent() bool {
