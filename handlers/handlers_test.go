@@ -359,16 +359,16 @@ func TestUnitHandlers(t *testing.T) {
 						mockRenderClient.EXPECT().NewBasePageModel()
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
+						mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
+
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1", endpoint), http.NoBody)
 
-						Convey("Then it returns 500", func() {
+						Convey("Then it returns 200", func() {
 							router.ServeHTTP(w, req)
 
-							So(w.Code, ShouldEqual, http.StatusInternalServerError)
+							So(w.Code, ShouldEqual, http.StatusOK)
 						})
 					})
-
-					//TODO: Add test cases for parameter validation
 				})
 			})
 
