@@ -551,7 +551,7 @@ func TestGetStartDate(t *testing.T) {
 					params.Set("after-month", tc.afterMonth)
 					params.Set("after-day", tc.afterDay)
 
-					from, err := GetStartDate(context.Background(), params)
+					from, err := GetStartDate(params)
 
 					So(err, ShouldResemble, tc.exFromError)
 					So(from.String(), ShouldEqual, tc.exFromDate)
@@ -708,7 +708,7 @@ func TestGetEndDate(t *testing.T) {
 					params.Set("before-month", tc.beforeMonth)
 					params.Set("before-day", tc.beforeDay)
 
-					to, err := GetEndDate(context.Background(), params)
+					to, err := GetEndDate(params)
 
 					So(err, ShouldResemble, tc.exToError)
 					So(to.String(), ShouldEqual, tc.exToDate)
