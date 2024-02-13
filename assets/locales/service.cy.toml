@@ -33,7 +33,7 @@ description = "Email alerts"
 one = "Hysbysiadau e-bost"
 
 [SubscriptionLinkICS]
-description = "Add to your calendar (ICS)"
+description = "Add to calendar"
 one = "Ychwanegu at eich calendr (ICS) Amserlennu<br>Calendr ar y Rhyngrwyd"
 
 [ApplyFilters]
