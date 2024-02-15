@@ -306,7 +306,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if mo != time.Month(m) {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year),
+				Text: "Enter a valid date",
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
