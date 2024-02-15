@@ -9,7 +9,7 @@
     The Sort button is hidden when JavaScript is enabled.
 */}}
 
-<form class="ons-u-pb-s">
+<form class="ons-grid ons-grid--flex@m ons-u-pb-s">
   {{/* Include all other page settings in the form submission */}}
   {{ template "partials/calendar/hidden-inputs/release-types" . }}
   {{ template "partials/calendar/hidden-inputs/keywords" . }}
@@ -17,32 +17,38 @@
   {{ template "partials/calendar/hidden-inputs/after-date" . }}
   {{ template "partials/calendar/hidden-inputs/census" . }}
 
-  <div class="ons-field ons-field--inline">
-    <label class="ons-label" for="select-calendar-item-order">
-      {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
-    </label>
-    <select
-      id="select-calendar-item-order"
-      name="sort"
-      class="ons-input ons-input--select ons-u-wa--@xxs ons-u-mr-xs"
-      onchange="this.form.submit()"
-    >
-      {{ $sortMode := .Sort.Mode }}
-      {{ range .Sort.Options }}
-        <option
-          value="{{ .Value }}"
-          {{ if eq .Value $sortMode }}selected{{ end }}
-          {{ if .Disabled }}disabled{{ end }}
-        >
-          {{- localise .LocaleKey $.Language .Plural -}}
-        </option>
-      {{ end }}
-    </select>
+  <div class="ons-grid__col ons-u-wa--">
+    <div class="ons-field--inline">
+      <label class="ons-label" for="select-calendar-item-order">
+        {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
+      </label>
+      <select
+        id="select-calendar-item-order"
+        name="sort"
+        class="ons-input ons-input--select ons-u-wa--@xxs ons-u-mr-xs"
+        onchange="this.form.submit()"
+      >
+        {{ $sortMode := .Sort.Mode }}
+        {{ range .Sort.Options }}
+          <option
+            value="{{ .Value }}"
+            {{ if eq .Value $sortMode }}selected{{ end }}
+            {{ if .Disabled }}disabled{{ end }}
+          >
+            {{- localise .LocaleKey $.Language .Plural -}}
+          </option>
+        {{ end }}
+      </select>
+    </div>
+  </div>
+  <div class="ons-grid__col ons-u-wa--@m ons-u-pl-no@m ons-u-pt-no@m ons-u-pt-s@xxs@m ons-u-pr-xs@l">
     <button
       type="submit"
-      class="ons-btn btn btn--primary btn--thin btn--small js--hide font-size--16 ons-u-ml-s"
+      class="ons-btn ons-btn--secondary font-size--14 btn--full-width"
     >
-      {{- localise "ReleaseCalendarSortBySubmit" .Language 1 -}}
+      <span class="ons-btn__inner">
+        {{- localise "ReleaseCalendarSortBySubmit" .Language 1 -}}
+      </span>
     </button>
   </div>
 </form>
