@@ -458,7 +458,7 @@ func TestGetStartDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (35) of month (1) in year (2023)",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -479,7 +479,7 @@ func TestGetStartDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (32) of month (2) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -500,7 +500,7 @@ func TestGetStartDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (1) of month (13) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -528,7 +528,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid day (29) of month (2) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -615,7 +615,7 @@ func TestGetEndDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (35) of month (1) in year (2023)",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -636,7 +636,7 @@ func TestGetEndDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (32) of month (2) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -657,7 +657,7 @@ func TestGetEndDate(t *testing.T) {
 					},
 					{
 						Description: model.Localisation{
-							Text: "invalid day (1) of month (13) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -685,7 +685,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid day (29) of month (2) in year (2021)",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
