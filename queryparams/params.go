@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	core "github.com/ONSdigital/dp-renderer/v2/model"
@@ -18,8 +19,10 @@ const (
 	SortName    = "sort"
 	DayBefore   = "before-day"
 	DayAfter    = "after-day"
-	MonthBefore = "before-month"
-	MonthAfter  = "after-month"
+	Before      = "before"
+	MonthBefore = Before + "-month"
+	After       = "after"
+	MonthAfter  = After + "-month"
 	YearBefore  = "before-year"
 	YearAfter   = "after-year"
 	Keywords    = "keywords"
@@ -40,7 +43,7 @@ func getIntValidator(minValue, maxValue int) intValidator {
 	return func(valueAsString string) (int, error) {
 		value, err := strconv.Atoi(valueAsString)
 		if err != nil {
-			return 0, fmt.Errorf("value contains non numeric characters")
+			return 0, fmt.Errorf("enter a number")
 		}
 		if value < minValue {
 			return 0, fmt.Errorf("value is below the minimum value (%d)", minValue)
@@ -195,7 +198,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 		assumedDay = true
 	}
 
-	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, DateFromErr)
+	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, DateFromErr, After)
 	if len(validationErrs) > 0 {
 		startDate.hasValidationErr = true
 		return startDate, validationErrs
@@ -241,7 +244,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 		assumedDay = true
 	}
 
-	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, DateToErr)
+	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, DateToErr, Before)
 	if len(validationErrs) > 0 {
 		endDate.hasValidationErr = true
 		return endDate, validationErrs
@@ -256,7 +259,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 }
 
 // getValidTimestamp returns a valid timestamp or an error
-func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.ErrorItem) {
+func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.Time, []core.ErrorItem) {
 	if year == "" || month == "" || day == "" {
 		return time.Time{}, []core.ErrorItem{}
 	}
@@ -267,10 +270,10 @@ func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.E
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("invalid %s parameter: %s", year, err.Error()),
+				Text: fmt.Sprintf("%s for released %s year", capitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
-			ID:  fieldErrID,
-			URL: fmt.Sprintf("#%s", fieldErrID),
+			ID:  fieldsetID,
+			URL: fmt.Sprintf("#%s", fieldsetID),
 		})
 	}
 
@@ -278,10 +281,10 @@ func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.E
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("invalid %s parameter: %s", month, err.Error()),
+				Text: fmt.Sprintf("%s for released %s month", capitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
-			ID:  fieldErrID,
-			URL: fmt.Sprintf("#%s", fieldErrID),
+			ID:  fieldsetID,
+			URL: fmt.Sprintf("#%s", fieldsetID),
 		})
 	}
 
@@ -289,10 +292,10 @@ func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.E
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("invalid %s parameter: %s", day, err.Error()),
+				Text: fmt.Sprintf("%s for released %s day", capitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
-			ID:  fieldErrID,
-			URL: fmt.Sprintf("#%s", fieldErrID),
+			ID:  fieldsetID,
+			URL: fmt.Sprintf("#%s", fieldsetID),
 		})
 	}
 
@@ -305,12 +308,19 @@ func getValidTimestamp(year, month, day, fieldErrID string) (time.Time, []core.E
 			Description: core.Localisation{
 				Text: fmt.Sprintf("invalid day (%s) of month (%s) in year (%s)", day, month, year),
 			},
-			ID:  fieldErrID,
-			URL: fmt.Sprintf("#%s", fieldErrID),
+			ID:  fieldsetID,
+			URL: fmt.Sprintf("#%s", fieldsetID),
 		})
 	}
 
 	return timestamp, validationErrs
+}
+
+func capitalizeFirstLetter(input string) string {
+	if len(input) <= 1 {
+		return ""
+	}
+	return strings.ToUpper(input[:1]) + strings.ToLower(input[1:])
 }
 
 // ValidateDateRange returns an error if the 'from' date is after than the 'to' date
@@ -324,8 +334,8 @@ func ValidateDateRange(from, to Date) error {
 		return err
 	}
 
-	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "")
-	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "")
+	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "", "")
+	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "", "")
 	if startTime.After(endTime) {
 		return fmt.Errorf("invalid dates: start date after end date")
 	}

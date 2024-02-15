@@ -23,7 +23,7 @@ func TestGetIntValidator(t *testing.T) {
 				exValue int
 				exError error
 			}{
-				{value: "XXX", exValue: 0, exError: errors.New("value contains non numeric characters")},
+				{value: "XXX", exValue: 0, exError: errors.New("enter a number")},
 				{value: "-1", exValue: 0, exError: errors.New("value is below the minimum value (0)")},
 				{value: "1001", exValue: 0, exError: fmt.Errorf("value is above the maximum value (1000)")},
 				{value: "0", exValue: 0, exError: nil},
@@ -107,7 +107,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid limit parameter: value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: enter a number")
 					})
 				})
 			})
@@ -178,7 +178,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid page parameter: value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid page parameter: enter a number")
 					})
 				})
 			})
@@ -451,7 +451,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 35 parameter: value is above the maximum value (31)",
+							Text: "Value is above the maximum value (31) for released after day",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -472,7 +472,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 32 parameter: value is above the maximum value (31)",
+							Text: "Value is above the maximum value (31) for released after day",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -493,7 +493,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 13 parameter: value is above the maximum value (12)",
+							Text: "Value is above the maximum value (12) for released after month",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -514,7 +514,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+							Text: "Value is above the maximum value (2150) for released after year",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -608,7 +608,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 35 parameter: value is above the maximum value (31)",
+							Text: "Value is above the maximum value (31) for released before day",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -629,7 +629,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 32 parameter: value is above the maximum value (31)",
+							Text: "Value is above the maximum value (31) for released before day",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -650,7 +650,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 13 parameter: value is above the maximum value (12)",
+							Text: "Value is above the maximum value (12) for released before month",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -671,7 +671,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+							Text: "Value is above the maximum value (2150) for released before year",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
