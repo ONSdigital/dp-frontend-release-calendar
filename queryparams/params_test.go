@@ -425,7 +425,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a released after year",
+							Text: "Enter the released after year",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -451,7 +451,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -465,7 +465,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -479,7 +479,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -507,7 +507,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -561,7 +561,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a released before year",
+							Text: "Enter the released before year",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -587,7 +587,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -601,7 +601,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -615,7 +615,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -643,7 +643,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a valid date",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",

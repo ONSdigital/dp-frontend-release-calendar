@@ -178,7 +178,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 	if (monthAfterString != "" || dayAfterString != "") && yearAfterString == "" {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a released after year",
+				Text: "Enter the released after year",
 			},
 			ID:  DateFromErr,
 			URL: fmt.Sprintf("#%s", DateFromErr),
@@ -224,7 +224,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 	if (monthBeforeString != "" || dayBeforeString != "") && yearBeforeString == "" {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a released before year",
+				Text: "Enter the released before year",
 			},
 			ID:  DateToErr,
 			URL: fmt.Sprintf("#%s", DateToErr),
@@ -311,7 +311,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if mo != time.Month(m) {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a valid date",
+				Text: "Enter a real date",
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
