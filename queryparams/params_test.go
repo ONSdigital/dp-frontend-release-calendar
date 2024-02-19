@@ -725,6 +725,7 @@ func TestValidateDateRange(t *testing.T) {
 			from            time.Time
 			to              time.Time
 			exError         error
+			exDate          Date
 		}{
 			{
 				testDescription: "for missing dates",
@@ -742,7 +743,10 @@ func TestValidateDateRange(t *testing.T) {
 				testDescription: "for missing date to",
 				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Time{},
-				exError:         fmt.Errorf("invalid dates: start date after end date"), // expected as an unset 'date' is 0001-01-01
+				exError:         fmt.Errorf("enter a released before year that is later than 2024"), // expected as an unset 'date' is 0001-01-01
+				exDate: Date{
+					hasValidationErr: true,
+				},
 			},
 			{
 				testDescription: "for invalid date from",
@@ -760,7 +764,11 @@ func TestValidateDateRange(t *testing.T) {
 				testDescription: "for from date after to date",
 				from:            time.Date(2024, time.Month(10), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
-				exError:         fmt.Errorf("invalid dates: start date after end date"),
+				exError:         fmt.Errorf("enter a released before year that is later than 2024"),
+				exDate: Date{
+					date:             time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+					hasValidationErr: true,
+				},
 			},
 			{
 				testDescription: "for from date before to date",
@@ -779,8 +787,9 @@ func TestValidateDateRange(t *testing.T) {
 					dateTo := Date{
 						date: tc.to,
 					}
-					err := ValidateDateRange(dateFrom, dateTo)
+					exDate, err := ValidateDateRange(dateFrom, dateTo)
 					So(err, ShouldResemble, tc.exError)
+					So(exDate, ShouldResemble, tc.exDate)
 				})
 			}
 		})
