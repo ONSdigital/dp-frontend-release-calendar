@@ -795,3 +795,46 @@ func TestValidateDateRange(t *testing.T) {
 		})
 	})
 }
+
+func TestCapitalizeFirstLetter(t *testing.T) {
+	Convey("given a string to capitalize", t, func() {
+		testcases := []struct {
+			testDescription, given, expected string
+		}{
+			{
+				testDescription: "for an empty string",
+				given:           "",
+				expected:        "",
+			},
+			{
+				testDescription: "for a one letter string",
+				given:           "a",
+				expected:        "A",
+			},
+			{
+				testDescription: "for a two letter string",
+				given:           "ab",
+				expected:        "Ab",
+			},
+			{
+				testDescription: "for a string with some words",
+				given:           "the quick brown fox jumps over the lazy dog",
+				expected:        "The quick brown fox jumps over the lazy dog",
+			},
+			{
+				testDescription: "for a multi case string with some words",
+				given:           "the QUICK brown fOx jumps OVER the lazy dog",
+				expected:        "The QUICK brown fOx jumps OVER the lazy dog",
+			},
+		}
+
+		Convey("check that the helper function correctly capitalizes the string, giving the expected result", func() {
+			for _, tc := range testcases {
+				Convey(tc.testDescription, func() {
+					sut := CapitalizeFirstLetter(tc.given)
+					So(sut, ShouldResemble, tc.expected)
+				})
+			}
+		})
+	})
+}
