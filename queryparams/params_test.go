@@ -451,7 +451,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (31) for released after day",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -465,7 +465,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (31) for released after day",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -479,7 +479,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (12) for released after month",
+							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -587,7 +587,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (31) for released before day",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -601,7 +601,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (31) for released before day",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -615,7 +615,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Value is above the maximum value (12) for released before month",
+							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",

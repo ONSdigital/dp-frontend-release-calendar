@@ -57,8 +57,8 @@ func getIntValidator(minValue, maxValue int) intValidator {
 }
 
 var (
-	dayValidator   = getIntValidator(1, 31)
-	monthValidator = getIntValidator(1, 12)
+	dayValidator   = getIntValidator(1, 99)
+	monthValidator = getIntValidator(1, 99)
 	yearValidator  = getIntValidator(1900, 2150)
 )
 
