@@ -5,9 +5,12 @@
 >
   <span class="ons-panel__assistive-text ons-u-vh">Error: </span>
   <div class="ons-panel__body">
-    <p class="ons-panel__error">
-      <strong>{{- .ValidationErr.Description -}}</strong>
+    {{ $length := len .ValidationDescription }}
+    {{ range $i, $d := .ValidationDescription }}
+    <p class="ons-panel__error{{if notLastItem $length $i}} ons-u-mb-no{{end}}">
+      <strong>{{- $d -}}</strong>
     </p>
+    {{ end }}
     {{ template "partials/inputs/input-date" .Input }}
   </div>
 </div>

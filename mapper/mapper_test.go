@@ -1,7 +1,6 @@
 package mapper
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -426,18 +425,18 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				},
 			}
 
-			expectedAfterErr := coreModel.Error{
-				Description: validationErrs[0].Description.Text,
+			expectedAfterErr := model.DateFieldset{
+				ValidationDescription: []string{validationErrs[0].Description.Text},
 			}
 
-			expectedBeforeErr := coreModel.Error{
-				Description: fmt.Sprintf("%s %s", validationErrs[1].Description.Text, validationErrs[2].Description.Text),
+			expectedBeforeErr := model.DateFieldset{
+				ValidationDescription: []string{validationErrs[1].Description.Text, validationErrs[2].Description.Text},
 			}
 
 			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "", "", zebedee.EmergencyBanner{}, validationErrs)
 
-			So(calendar.AfterDate.ValidationErr, ShouldResemble, expectedAfterErr)
-			So(calendar.BeforeDate.ValidationErr, ShouldResemble, expectedBeforeErr)
+			So(calendar.AfterDate.ValidationDescription, ShouldResemble, expectedAfterErr.ValidationDescription)
+			So(calendar.BeforeDate.ValidationDescription, ShouldResemble, expectedBeforeErr.ValidationDescription)
 			So(calendar.Page.Error.ErrorItems, ShouldResemble, validationErrs)
 		})
 	})
