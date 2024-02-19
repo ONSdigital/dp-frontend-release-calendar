@@ -299,6 +299,11 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 		})
 	}
 
+	// Throw errors back to user before further validation
+	if len(validationErrs) > 0 {
+		return time.Time{}, validationErrs
+	}
+
 	timestamp := time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC)
 
 	// Check the day is valid for the month in the year, e.g. day 30 cannot be in month 2 (February)

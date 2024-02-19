@@ -456,13 +456,6 @@ func TestGetStartDate(t *testing.T) {
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
 					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
 				},
 			},
 			{
@@ -477,13 +470,6 @@ func TestGetStartDate(t *testing.T) {
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
 					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
 				},
 			},
 			{
@@ -494,13 +480,6 @@ func TestGetStartDate(t *testing.T) {
 					{
 						Description: model.Localisation{
 							Text: "Value is above the maximum value (12) for released after month",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -613,13 +592,6 @@ func TestGetEndDate(t *testing.T) {
 						ID:  "toDate-error",
 						URL: "#toDate-error",
 					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
 				},
 			},
 			{
@@ -634,13 +606,6 @@ func TestGetEndDate(t *testing.T) {
 						ID:  "toDate-error",
 						URL: "#toDate-error",
 					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
 				},
 			},
 			{
@@ -651,13 +616,6 @@ func TestGetEndDate(t *testing.T) {
 					{
 						Description: model.Localisation{
 							Text: "Value is above the maximum value (12) for released before month",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "Enter a valid date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
