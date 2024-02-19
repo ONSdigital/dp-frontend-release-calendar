@@ -324,7 +324,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 // CapitalizeFirstLetter is a helper function that transforms the first letter of a string to uppercase
 func CapitalizeFirstLetter(input string) string {
 	switch {
-	case len(input) <= 0:
+	case input == "":
 		return input
 	case len(input) == 1:
 		return strings.ToUpper(input)
