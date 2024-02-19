@@ -696,6 +696,9 @@ func TestValidateDateRange(t *testing.T) {
 				from:            time.Time{},
 				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				exError:         nil,
+				exDate: Date{
+					date: time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				},
 			},
 			{
 				testDescription: "for missing date to",
@@ -733,6 +736,9 @@ func TestValidateDateRange(t *testing.T) {
 				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Date(2024, time.Month(11), 01, 0, 0, 0, 0, time.UTC),
 				exError:         nil,
+				exDate: Date{
+					date: time.Date(2024, time.Month(11), 01, 0, 0, 0, 0, time.UTC),
+				},
 			},
 		}
 

@@ -351,7 +351,7 @@ func ValidateDateRange(from, to Date) (end Date, err error) {
 		end.hasValidationErr = true
 		return end, fmt.Errorf("enter a released before year that is later than %s", startDate.YearString())
 	}
-	return Date{}, nil
+	return to, nil
 }
 
 // CalculateOffset returns the offset (0 based) into a list, given a page number (1 based) and the size of a page.
