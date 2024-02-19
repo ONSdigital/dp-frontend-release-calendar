@@ -270,7 +270,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s year", capitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
@@ -281,7 +281,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s month", capitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s month", CapitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
@@ -292,7 +292,7 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s day", capitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
@@ -316,30 +316,33 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	return timestamp, validationErrs
 }
 
-func capitalizeFirstLetter(input string) string {
+// CapitalizeFirstLetter is a helper function that transforms the first letter of a string to uppercase
+func CapitalizeFirstLetter(input string) string {
 	if len(input) <= 1 {
 		return ""
 	}
 	return strings.ToUpper(input[:1]) + strings.ToLower(input[1:])
 }
 
-// ValidateDateRange returns an error if the 'from' date is after than the 'to' date
-func ValidateDateRange(from, to Date) error {
+// ValidateDateRange returns an error and 'to' date if the 'from' date is after than the 'to' date
+func ValidateDateRange(from, to Date) (end Date, err error) {
 	startDate, err := ParseDate(from.String())
 	if err != nil {
-		return err
+		return Date{}, err
 	}
 	endDate, err := ParseDate(to.String())
 	if err != nil {
-		return err
+		return Date{}, err
 	}
 
 	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "", "")
 	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "", "")
 	if startTime.After(endTime) {
-		return fmt.Errorf("invalid dates: start date after end date")
+		end = to
+		end.hasValidationErr = true
+		return end, fmt.Errorf("enter a released before year that is later than %s", startDate.YearString())
 	}
-	return nil
+	return Date{}, nil
 }
 
 // CalculateOffset returns the offset (0 based) into a list, given a page number (1 based) and the size of a page.
