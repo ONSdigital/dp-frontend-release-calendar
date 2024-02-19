@@ -266,11 +266,11 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 
 	var validationErrs []core.ErrorItem
 
-	y, err := yearValidator(year)
+	d, err := dayValidator(day)
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
@@ -288,11 +288,11 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 		})
 	}
 
-	d, err := dayValidator(day)
+	y, err := yearValidator(year)
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), fieldsetStr),
 			},
 			ID:  fieldsetID,
 			URL: fmt.Sprintf("#%s", fieldsetID),
