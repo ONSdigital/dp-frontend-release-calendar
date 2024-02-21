@@ -52,6 +52,7 @@ type Entries struct {
 type Calendar struct {
 	coreModel.Page
 
+	RSSLink	            string                  `json:"rss_link"`
 	ReleaseTypes        map[string]ReleaseType  `json:"release_types"`
 	Sort                Sort                    `json:"sort"`
 	Keywords            string                  `json:"keywords"`
