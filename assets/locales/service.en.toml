@@ -90,11 +90,11 @@ one = "Date (oldest)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Alphabetical (A to Z)"
+one = "A to Z"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Alphabetical (Z to A)"
+one = "Z to A"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
