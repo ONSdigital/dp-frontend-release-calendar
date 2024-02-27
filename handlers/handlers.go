@@ -127,7 +127,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 
 		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
-
+			setStatusCode(r, w, err)
 			return
 		}
 
