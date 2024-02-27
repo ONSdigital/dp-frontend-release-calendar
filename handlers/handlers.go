@@ -100,6 +100,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 
 func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		var err error
 		ctx := r.Context()
 		params := r.URL.Query()
 
@@ -118,7 +119,7 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 
 		if _, rssParam := params["rss"]; rssParam {
 			r.Header.Set("Accept", "application/rss+xml")
-			if err := createRSSFeed(ctx, w, r, lang, collectionID, accessToken, api, validatedParams); err != nil {
+			if err = createRSSFeed(ctx, w, r, lang, collectionID, accessToken, api, validatedParams); err != nil {
 				setStatusCode(r, w, err)
 				return
 			}
@@ -420,6 +421,7 @@ func releaseStatus(r search.Release) string {
 }
 
 func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string, api SearchAPI, validatedParams queryparams.ValidatedParams) error {
+	var err error
 	uriPrefix := "https://www.ons.gov.uk"
 	releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 	if err != nil {
@@ -436,11 +438,11 @@ func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 	}
 
 	feed.Items = []*feeds.Item{}
-	for _, release := range releases.Releases {
-		date, err := time.Parse("2006-01-02T15:04:05.000Z", release.Description.ReleaseDate)
-		if err != nil {
-			fmt.Println(err)
-			return err
+	for i := range releases.Releases {
+		release := &releases.Releases[i] // Use a pointer to the release variable
+		date, parseErr := time.Parse("2006-01-02T15:04:05.000Z", release.Description.ReleaseDate)
+		if parseErr != nil {
+			return fmt.Errorf("error parsing time: %s", parseErr)
 		}
 		item := &feeds.Item{
 			Title:       release.Description.Title,
@@ -455,8 +457,7 @@ func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 
 	rss, err := feed.ToRss()
 	if err != nil {
-		fmt.Printf("error converting to rss: ", err)
-		return err
+		return fmt.Errorf("error converting to rss: %s", err)
 	}
 
 	w.Header().Set("Content-Type", "application/rss+xml")
@@ -464,10 +465,8 @@ func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 
 	_, err = w.Write([]byte(rss))
 	if err != nil {
-		fmt.Printf("error writing rss to response: ", err)
-		return err
+		return fmt.Errorf("error writing rss to response: %s", err)
 	}
 
 	return nil
-
 }

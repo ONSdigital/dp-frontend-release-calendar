@@ -650,7 +650,7 @@ func TestCreateRSSFeed(t *testing.T) {
 				gomock.Any(),
 			).Return(sitesearch.ReleaseResponse{}, nil)
 
-			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			req := httptest.NewRequest("GET", "http://localhost:27700", http.NoBody)
 			w := httptest.NewRecorder()
 
 			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
@@ -668,7 +668,7 @@ func TestCreateRSSFeed(t *testing.T) {
 		Convey("when GetReleases returns an error", func() {
 			mockSearchClient.EXPECT().GetReleases(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(sitesearch.ReleaseResponse{}, errors.New("mocked error"))
 
-			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			req := httptest.NewRequest("GET", "http://localhost:27700", http.NoBody)
 			w := httptest.NewRecorder()
 
 			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
@@ -683,7 +683,7 @@ func TestCreateRSSFeed(t *testing.T) {
 				Releases: []sitesearch.Release{{Description: sitesearch.ReleaseDescription{ReleaseDate: "invalid date"}}},
 			}, nil)
 
-			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			req := httptest.NewRequest("GET", "http://localhost:27700", http.NoBody)
 			w := httptest.NewRecorder()
 
 			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
