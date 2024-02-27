@@ -630,3 +630,67 @@ func TestToICSFile(t *testing.T) {
 		})
 	})
 }
+
+func TestCreateRSSFeed(t *testing.T) {
+	Convey("test createRSSFeed", t, func() {
+		lang := "en"
+		collectionID := "collection"
+		accessToken := "token"
+		validatedParams := queryparams.ValidatedParams{}
+
+		mockCtrl := gomock.NewController(t)
+		mockSearchClient := NewMockSearchAPI(mockCtrl)
+
+		Convey("when GetReleases returns success", func() {
+			mockSearchClient.EXPECT().GetReleases(
+				gomock.Any(),
+				accessToken,
+				collectionID,
+				lang,
+				gomock.Any(),
+			).Return(sitesearch.ReleaseResponse{}, nil)
+
+			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			w := httptest.NewRecorder()
+
+			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
+
+			Convey("it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("it should set the Content-Type header to 'application/rss+xml'", func() {
+				contentType := w.Header().Get("Content-Type")
+				So(contentType, ShouldEqual, "application/rss+xml")
+			})
+		})
+
+		Convey("when GetReleases returns an error", func() {
+			mockSearchClient.EXPECT().GetReleases(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(sitesearch.ReleaseResponse{}, errors.New("mocked error"))
+
+			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			w := httptest.NewRecorder()
+
+			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
+
+			Convey("it should return an error", func() {
+				So(err, ShouldNotBeNil)
+			})
+		})
+
+		Convey("when parsing release date fails", func() {
+			mockSearchClient.EXPECT().GetReleases(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(sitesearch.ReleaseResponse{
+				Releases: []sitesearch.Release{{Description: sitesearch.ReleaseDescription{ReleaseDate: "invalid date"}}},
+			}, nil)
+
+			req := httptest.NewRequest("GET", "http://localhost:27700", nil)
+			w := httptest.NewRecorder()
+
+			err := createRSSFeed(context.Background(), w, req, lang, collectionID, accessToken, mockSearchClient, validatedParams)
+
+			Convey("it should return an error", func() {
+				So(err, ShouldNotBeNil)
+			})
+		})
+	})
+}

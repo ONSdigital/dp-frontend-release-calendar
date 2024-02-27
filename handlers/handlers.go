@@ -17,6 +17,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	core "github.com/ONSdigital/dp-renderer/v2/model"
+	"github.com/gorilla/feeds"
 
 	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -115,9 +116,18 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			return
 		}
 
+		if _, rssParam := params["rss"]; rssParam {
+			r.Header.Set("Accept", "application/rss+xml")
+			if err := createRSSFeed(ctx, w, r, lang, collectionID, accessToken, api, validatedParams); err != nil {
+				setStatusCode(r, w, err)
+				return
+			}
+			return
+		}
+
 		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
 		if err != nil {
-			setStatusCode(r, w, err)
+
 			return
 		}
 
@@ -407,4 +417,57 @@ func releaseStatus(r search.Release) string {
 	default:
 		return queryparams.Provisional.Label()
 	}
+}
+
+func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string, api SearchAPI, validatedParams queryparams.ValidatedParams) error {
+	uriPrefix := "https://www.ons.gov.uk"
+	releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
+	if err != nil {
+		setStatusCode(r, w, err)
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/rss+xml")
+
+	feed := &feeds.Feed{
+		Title:       "ONS Release Calendar RSS Feed.",
+		Link:        &feeds.Link{Href: "https://www.ons.gov.uk/releasecalendar"},
+		Description: "Latest ONS releases",
+	}
+
+	feed.Items = []*feeds.Item{}
+	for _, release := range releases.Releases {
+		date, err := time.Parse("2006-01-02T15:04:05.000Z", release.Description.ReleaseDate)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		item := &feeds.Item{
+			Title:       release.Description.Title,
+			Link:        &feeds.Link{Href: uriPrefix + release.URI},
+			Description: release.Description.Summary,
+			Id:          uriPrefix + release.URI,
+			Created:     date,
+		}
+
+		feed.Items = append(feed.Items, item)
+	}
+
+	rss, err := feed.ToRss()
+	if err != nil {
+		fmt.Printf("error converting to rss: ", err)
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/rss+xml")
+	w.WriteHeader(http.StatusOK)
+
+	_, err = w.Write([]byte(rss))
+	if err != nil {
+		fmt.Printf("error writing rss to response: ", err)
+		return err
+	}
+
+	return nil
+
 }
