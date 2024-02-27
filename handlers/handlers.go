@@ -204,18 +204,19 @@ func validateParamsAsFrontend(ctx context.Context, params url.Values, cfg config
 	if len(vErrs) > 0 {
 		validationErrs = append(validationErrs, vErrs...)
 	}
-	validatedParams.BeforeDate = toDate
-
 	if fromDate.String() != "" && toDate.String() != "" {
-		err = queryparams.ValidateDateRange(fromDate, toDate)
+		toDate, err = queryparams.ValidateDateRange(fromDate, toDate)
 		if err != nil {
 			validationErrs = append(validationErrs, core.ErrorItem{
 				Description: core.Localisation{
-					Text: err.Error(),
+					Text: queryparams.CapitalizeFirstLetter(err.Error()),
 				},
+				ID:  queryparams.DateToErr,
+				URL: fmt.Sprintf("#%s", queryparams.DateToErr),
 			})
 		}
 	}
+	validatedParams.BeforeDate = toDate
 
 	sort, err := queryparams.GetSortOrder(ctx, params, cfg.DefaultSort)
 	if err != nil {
@@ -292,7 +293,7 @@ func validateParams(ctx context.Context, params url.Values, cfg config.Config) (
 	validatedParams.BeforeDate = toDate
 
 	if fromDate.String() != "" && toDate.String() != "" {
-		err = queryparams.ValidateDateRange(fromDate, toDate)
+		_, err = queryparams.ValidateDateRange(fromDate, toDate)
 		if err != nil {
 			return validatedParams, &clientErr{err}
 		}

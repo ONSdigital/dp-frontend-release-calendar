@@ -23,7 +23,7 @@ func TestGetIntValidator(t *testing.T) {
 				exValue int
 				exError error
 			}{
-				{value: "XXX", exValue: 0, exError: errors.New("value contains non numeric characters")},
+				{value: "XXX", exValue: 0, exError: errors.New("enter a number")},
 				{value: "-1", exValue: 0, exError: errors.New("value is below the minimum value (0)")},
 				{value: "1001", exValue: 0, exError: fmt.Errorf("value is above the maximum value (1000)")},
 				{value: "0", exValue: 0, exError: nil},
@@ -107,7 +107,7 @@ func TestGetLimit(t *testing.T) {
 					_, err := GetLimit(ctx, params, defaultValue, maxValue)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid limit parameter: value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid limit parameter: enter a number")
 					})
 				})
 			})
@@ -178,7 +178,7 @@ func TestGetPage(t *testing.T) {
 					_, err := GetPage(ctx, params, maxPage)
 					Convey("Then an error is returned", func() {
 						So(err, ShouldNotBeNil)
-						So(err.Error(), ShouldEqual, "invalid page parameter: value contains non numeric characters")
+						So(err.Error(), ShouldEqual, "invalid page parameter: enter a number")
 					})
 				})
 			})
@@ -425,7 +425,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a released after year",
+							Text: "Enter the released after year",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -451,14 +451,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 35 parameter: value is above the maximum value (31)",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (35) of month (1) in year (2023)",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -472,14 +465,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 32 parameter: value is above the maximum value (31)",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (32) of month (2) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -493,14 +479,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 13 parameter: value is above the maximum value (12)",
-						},
-						ID:  "fromDate-error",
-						URL: "#fromDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (1) of month (13) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -514,7 +493,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+							Text: "Value is above the maximum value (2150) for released after year",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -528,7 +507,7 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid day (29) of month (2) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -582,7 +561,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a released before year",
+							Text: "Enter the released before year",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -608,14 +587,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 35 parameter: value is above the maximum value (31)",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (35) of month (1) in year (2023)",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -629,14 +601,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 32 parameter: value is above the maximum value (31)",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (32) of month (2) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -650,14 +615,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 13 parameter: value is above the maximum value (12)",
-						},
-						ID:  "toDate-error",
-						URL: "#toDate-error",
-					},
-					{
-						Description: model.Localisation{
-							Text: "invalid day (1) of month (13) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -671,7 +629,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid 2500 parameter: value is above the maximum value (2150)",
+							Text: "Value is above the maximum value (2150) for released before year",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -685,7 +643,7 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "invalid day (29) of month (2) in year (2021)",
+							Text: "Enter a real date",
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -725,6 +683,7 @@ func TestValidateDateRange(t *testing.T) {
 			from            time.Time
 			to              time.Time
 			exError         error
+			exDate          Date
 		}{
 			{
 				testDescription: "for missing dates",
@@ -737,12 +696,18 @@ func TestValidateDateRange(t *testing.T) {
 				from:            time.Time{},
 				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				exError:         nil,
+				exDate: Date{
+					date: time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+				},
 			},
 			{
 				testDescription: "for missing date to",
 				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Time{},
-				exError:         fmt.Errorf("invalid dates: start date after end date"), // expected as an unset 'date' is 0001-01-01
+				exError:         fmt.Errorf("enter a released before year that is later than 2024"), // expected as an unset 'date' is 0001-01-01
+				exDate: Date{
+					hasValidationErr: true,
+				},
 			},
 			{
 				testDescription: "for invalid date from",
@@ -760,13 +725,20 @@ func TestValidateDateRange(t *testing.T) {
 				testDescription: "for from date after to date",
 				from:            time.Date(2024, time.Month(10), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
-				exError:         fmt.Errorf("invalid dates: start date after end date"),
+				exError:         fmt.Errorf("enter a released before year that is later than 2024"),
+				exDate: Date{
+					date:             time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+					hasValidationErr: true,
+				},
 			},
 			{
 				testDescription: "for from date before to date",
 				from:            time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				to:              time.Date(2024, time.Month(11), 01, 0, 0, 0, 0, time.UTC),
 				exError:         nil,
+				exDate: Date{
+					date: time.Date(2024, time.Month(11), 01, 0, 0, 0, 0, time.UTC),
+				},
 			},
 		}
 
@@ -779,8 +751,52 @@ func TestValidateDateRange(t *testing.T) {
 					dateTo := Date{
 						date: tc.to,
 					}
-					err := ValidateDateRange(dateFrom, dateTo)
+					exDate, err := ValidateDateRange(dateFrom, dateTo)
 					So(err, ShouldResemble, tc.exError)
+					So(exDate, ShouldResemble, tc.exDate)
+				})
+			}
+		})
+	})
+}
+
+func TestCapitalizeFirstLetter(t *testing.T) {
+	Convey("given a string to capitalize", t, func() {
+		testcases := []struct {
+			testDescription, given, expected string
+		}{
+			{
+				testDescription: "for an empty string",
+				given:           "",
+				expected:        "",
+			},
+			{
+				testDescription: "for a one letter string",
+				given:           "a",
+				expected:        "A",
+			},
+			{
+				testDescription: "for a two letter string",
+				given:           "ab",
+				expected:        "Ab",
+			},
+			{
+				testDescription: "for a string with some words",
+				given:           "the quick brown fox jumps over the lazy dog",
+				expected:        "The quick brown fox jumps over the lazy dog",
+			},
+			{
+				testDescription: "for a multi case string with some words",
+				given:           "the QUICK brown fOx jumps OVER the lazy dog",
+				expected:        "The QUICK brown fOx jumps OVER the lazy dog",
+			},
+		}
+
+		Convey("check that the helper function correctly capitalizes the string, giving the expected result", func() {
+			for _, tc := range testcases {
+				Convey(tc.testDescription, func() {
+					sut := CapitalizeFirstLetter(tc.given)
+					So(sut, ShouldResemble, tc.expected)
 				})
 			}
 		})

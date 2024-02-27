@@ -1,34 +1,20 @@
-{{/*
-  "Sort by" drop-down menu submits all filters and sort order in query parameters.
-
-  With JavaScript enabled:
-    Form submission occurs on change of the drop-down.
-
-  With JavaScript disabled:
-    Form submission occurs on click of the Sort button.
-    The Sort button is hidden when JavaScript is enabled.
-*/}}
-
-<form class="ons-u-pb-s">
-  {{/* Include all other page settings in the form submission */}}
-  {{ template "partials/calendar/hidden-inputs/release-types" . }}
-  {{ template "partials/calendar/hidden-inputs/keywords" . }}
-  {{ template "partials/calendar/hidden-inputs/before-date" . }}
-  {{ template "partials/calendar/hidden-inputs/after-date" . }}
-  {{ template "partials/calendar/hidden-inputs/census" . }}
-
-  <div class="ons-field ons-field--inline">
-    <label class="ons-label" for="select-calendar-item-order">
-      {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
-    </label>
-    <select
-      id="select-calendar-item-order"
-      name="sort"
-      class="ons-input ons-input--select ons-u-wa--@xxs ons-u-mr-xs"
-      onchange="this.form.submit()"
-    >
-      {{ $sortMode := .Sort.Mode }}
-      {{ range .Sort.Options }}
+<div class="ons-grid ons-grid--flex@m ons-u-pb-s">
+  <div class="ons-grid__col ons-u-wa--">
+    <div class="ons-field--inline">
+      <label
+        class="ons-label"
+        for="select-calendar-item-order"
+      >
+        {{- localise "ReleaseCalendarSortByLabel" .Language 1 -}}
+      </label>
+      <select
+        id="select-calendar-item-order"
+        name="sort"
+        class="ons-input ons-input--select ons-u-wa--@xxs ons-u-mr-s"
+        onchange="this.form.submit()"
+      >
+        {{ $sortMode := .Sort.Mode }}
+        {{ range .Sort.Options }}
         <option
           value="{{ .Value }}"
           {{ if eq .Value $sortMode }}selected{{ end }}
@@ -36,13 +22,8 @@
         >
           {{- localise .LocaleKey $.Language .Plural -}}
         </option>
-      {{ end }}
-    </select>
-    <button
-      type="submit"
-      class="ons-btn btn btn--primary btn--thin btn--small js--hide font-size--16 ons-u-ml-s"
-    >
-      {{- localise "ReleaseCalendarSortBySubmit" .Language 1 -}}
-    </button>
+        {{ end }}
+      </select>
+    </div>
   </div>
-</form>
+</div>
