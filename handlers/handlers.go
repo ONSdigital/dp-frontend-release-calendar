@@ -17,6 +17,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	core "github.com/ONSdigital/dp-renderer/v2/model"
+	"github.com/gorilla/feeds"
 
 	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -99,6 +100,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 
 func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		var err error
 		ctx := r.Context()
 		params := r.URL.Query()
 
@@ -112,6 +114,15 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 			calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, validationErrs)
 			setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey)
 			rc.BuildPage(w, calendar, "calendar")
+			return
+		}
+
+		if _, rssParam := params["rss"]; rssParam {
+			r.Header.Set("Accept", "application/rss+xml")
+			if err = createRSSFeed(ctx, w, r, lang, collectionID, accessToken, api, validatedParams); err != nil {
+				setStatusCode(r, w, err)
+				return
+			}
 			return
 		}
 
@@ -408,4 +419,54 @@ func releaseStatus(r search.Release) string {
 	default:
 		return queryparams.Provisional.Label()
 	}
+}
+
+func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string, api SearchAPI, validatedParams queryparams.ValidatedParams) error {
+	var err error
+	uriPrefix := "https://www.ons.gov.uk"
+	releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, validatedParams.AsBackendQuery())
+	if err != nil {
+		setStatusCode(r, w, err)
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/rss+xml")
+
+	feed := &feeds.Feed{
+		Title:       "ONS Release Calendar RSS Feed.",
+		Link:        &feeds.Link{Href: "https://www.ons.gov.uk/releasecalendar"},
+		Description: "Latest ONS releases",
+	}
+
+	feed.Items = []*feeds.Item{}
+	for i := range releases.Releases {
+		release := &releases.Releases[i]
+		date, parseErr := time.Parse("2006-01-02T15:04:05.000Z", release.Description.ReleaseDate)
+		if parseErr != nil {
+			return fmt.Errorf("error parsing time: %s", parseErr)
+		}
+		item := &feeds.Item{
+			Title:       release.Description.Title,
+			Link:        &feeds.Link{Href: uriPrefix + release.URI},
+			Description: release.Description.Summary,
+			Id:          uriPrefix + release.URI,
+			Created:     date,
+		}
+
+		feed.Items = append(feed.Items, item)
+	}
+
+	rss, err := feed.ToRss()
+	if err != nil {
+		return fmt.Errorf("error converting to rss: %s", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	_, err = w.Write([]byte(rss))
+	if err != nil {
+		return fmt.Errorf("error writing rss to response: %s", err)
+	}
+
+	return nil
 }

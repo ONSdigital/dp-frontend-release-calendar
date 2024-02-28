@@ -4,13 +4,18 @@
       {{ template "partials/error-summary" .Error }}
     {{ end }}
     <h1 class="ons-u-fs-xxxl ons-u-mt-m ons-u-mb-xl">{{ localise "ReleaseCalendarPageTitle" .Language 1 }}</h1>
-    {{/* Left column */}}
-    <div class="ons-grid__col ons-col-4@m ons-u-p-no">
-      {{ template "partials/calendar/filters" . }}
-    </div>
-    {{/* Right column */}}
-    <div class="ons-grid__col ons-col-8@m ons-u-pl-no@xxs@m ons-u-bt@xxs@m ons-u-pt-s@xxs@m">
-      {{ template "partials/calendar/items" . }}
-    </div>
+    <form
+      id="release-calendar__filters"
+      novalidate
+    >
+      {{/* Left column */}}
+      <div class="ons-grid__col ons-col-4@m ons-u-p-no">
+        {{ template "partials/calendar/filters" . }}
+      </div>
+      {{/* Right column */}}
+      <div class="ons-grid__col ons-col-8@m ons-u-pl-no@xxs@m ons-u-bt@xxs@m ons-u-pt-s@xxs@m">
+        {{ template "partials/calendar/items" . }}
+      </div>
+    </form>
   </div>
 </div>
