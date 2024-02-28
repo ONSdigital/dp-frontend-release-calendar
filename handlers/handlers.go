@@ -461,7 +461,6 @@ func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 		return fmt.Errorf("error converting to rss: %s", err)
 	}
 
-	w.Header().Set("Content-Type", "application/rss+xml")
 	w.WriteHeader(http.StatusOK)
 
 	_, err = w.Write([]byte(rss))
