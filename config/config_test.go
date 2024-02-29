@@ -31,7 +31,7 @@ func TestConfig(t *testing.T) {
 				So(cfg.GracefulShutdownTimeout, ShouldEqual, 5*time.Second)
 				So(cfg.HealthCheckInterval, ShouldEqual, 30*time.Second)
 				So(cfg.HealthCheckCriticalTimeout, ShouldEqual, 90*time.Second)
-				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/f79a9f3")
+				So(cfg.PatternLibraryAssetsPath, ShouldEqual, "//cdn.ons.gov.uk/dp-design-system/c9ea175")
 				So(cfg.RoutingPrefix, ShouldEqual, "")
 				So(cfg.SiteDomain, ShouldEqual, "localhost")
 				So(cfg.SupportedLanguages, ShouldResemble, []string{"en", "cy"})
