@@ -26,15 +26,15 @@ one = "Search release calendar"
 
 [SubscriptionLinkRSS]
 description = "RSS feed"
-one = "RSS feed"
+one = "RSS"
 
 [SubscriptionLinkEmail]
 description = "Email alerts"
 one = "Email alerts"
 
 [SubscriptionLinkICS]
-description = "Add to your calendar (ICS)"
-one = "Add to your calendar (ICS)"
+description = "Add to calendar"
+one = "Add to calendar"
 
 [ApplyFilters]
 description = "Apply filters"
@@ -90,11 +90,11 @@ one = "Date (oldest)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Alphabetical (A to Z)"
+one = "A to Z"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Alphabetical (Z to A)"
+one = "Z to A"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"

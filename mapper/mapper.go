@@ -419,7 +419,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.LimitOptions = []int{10, 25}
 	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
 	calendar.Entries.Count = response.Breakdown.Total
-
+	calendar.RSSLink = fmt.Sprintf("releasecalendar?rss&%s", params.AsFrontendQuery().Encode())
 	for i := range response.Releases {
 		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
 	}

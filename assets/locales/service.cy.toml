@@ -26,14 +26,14 @@ one = "Chwilio calendr rhyddhau"
 
 [SubscriptionLinkRSS]
 description = "RSS feed"
-one = "Ffrwd RSS"
+one = "RSS"
 
 [SubscriptionLinkEmail]
 description = "Email alerts"
 one = "Hysbysiadau e-bost"
 
 [SubscriptionLinkICS]
-description = "Add to your calendar (ICS)"
+description = "Add to calendar"
 one = "Ychwanegu at eich calendr (ICS) Amserlennu<br>Calendr ar y Rhyngrwyd"
 
 [ApplyFilters]
@@ -90,11 +90,11 @@ one = "Dyddiad (hynaf)"
 
 [ReleaseCalendarSortOptionAlphabeticalAZ]
 description = "Alphabetical (A to Z)"
-one = "Yn nhrefn yr wyddor (A i Y)"
+one = "A i Y"
 
 [ReleaseCalendarSortOptionAlphabeticalZA]
 description = "Alphabetical (Z to A)"
-one = "Yn nhrefn yr wyddor (Y i A)"
+one = "Y i A"
 
 [ReleaseCalendarSortOptionRelevance]
 description = "Relevance"
