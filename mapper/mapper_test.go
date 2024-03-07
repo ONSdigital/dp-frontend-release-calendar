@@ -311,7 +311,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.Metadata.Title, ShouldEqual, metaTitle)
 			So(calendar.KeywordSearch.SearchTerm, ShouldEqual, params.Keywords)
 			So(calendar.Sort, ShouldResemble, model.Sort{Mode: params.Sort.String(), Options: mapSortOptions(params)})
-			So(calendar.BeforeDate, ShouldResemble, model.DateFieldset{
+			So(calendar.BeforeDate, ShouldResemble, coreModel.DateFieldset{
 				Input: coreModel.InputDate{
 					Language:        lang,
 					Id:              "before-date",
@@ -329,8 +329,11 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						LocaleKey: "DateFilterDescription",
 						Plural:    1,
 					},
-				}})
-			So(calendar.AfterDate, ShouldResemble, model.DateFieldset{
+				},
+				ErrorID:  "toDate-error",
+				Language: lang,
+			})
+			So(calendar.AfterDate, ShouldResemble, coreModel.DateFieldset{
 				Input: coreModel.InputDate{
 					Language:        lang,
 					Id:              "after-date",
@@ -348,7 +351,10 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						LocaleKey: "DateFilterDescription",
 						Plural:    1,
 					},
-				}})
+				},
+				ErrorID:  "fromDate-error",
+				Language: lang,
+			})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, lang))
 			So(calendar.Pagination.TotalPages, ShouldEqual, 3)
 			So(calendar.Pagination.CurrentPage, ShouldEqual, 1)
@@ -425,18 +431,29 @@ func TestReleaseCalendarMapper(t *testing.T) {
 				},
 			}
 
-			expectedAfterErr := model.DateFieldset{
-				ValidationDescription: []string{validationErrs[0].Description.Text},
+			expectedAfterErr := coreModel.DateFieldset{
+				ValidationErrDescription: []coreModel.Localisation{
+					{
+						Text: validationErrs[0].Description.Text,
+					},
+				},
 			}
 
-			expectedBeforeErr := model.DateFieldset{
-				ValidationDescription: []string{validationErrs[1].Description.Text, validationErrs[2].Description.Text},
+			expectedBeforeErr := coreModel.DateFieldset{
+				ValidationErrDescription: []coreModel.Localisation{
+					{
+						Text: validationErrs[1].Description.Text,
+					},
+					{
+						Text: validationErrs[2].Description.Text,
+					},
+				},
 			}
 
 			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "", "", zebedee.EmergencyBanner{}, validationErrs)
 
-			So(calendar.AfterDate.ValidationDescription, ShouldResemble, expectedAfterErr.ValidationDescription)
-			So(calendar.BeforeDate.ValidationDescription, ShouldResemble, expectedBeforeErr.ValidationDescription)
+			So(calendar.AfterDate.ValidationErrDescription, ShouldResemble, expectedAfterErr.ValidationErrDescription)
+			So(calendar.BeforeDate.ValidationErrDescription, ShouldResemble, expectedBeforeErr.ValidationErrDescription)
 			So(calendar.Page.Error.ErrorItems, ShouldResemble, validationErrs)
 		})
 	})
