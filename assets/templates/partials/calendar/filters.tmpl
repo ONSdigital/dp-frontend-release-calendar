@@ -63,7 +63,7 @@
       id="filter-date"
       data-btn-close="Hide"
       data-group="accordion"
-      {{ if or  (.FuncIsFilterDatePresent) (.AfterDate.HasValidationErr) (.BeforeDate.HasValidationErr) }}
+      {{ if .FuncIsFilterDatePresent }}
       data-open="true"
       {{ else }}
       data-open="false"
@@ -81,8 +81,8 @@
         </div>
       </summary>
       <div class="ons-collapsible__content ons-js-collapsible-content ons-u-mb-s">
-        {{ template "partials/calendar/filter/date" .AfterDate }}
-        {{ template "partials/calendar/filter/date" .BeforeDate }}
+        {{ template "partials/fields/fieldset-date" .AfterDate }}
+        {{ template "partials/fields/fieldset-date" .BeforeDate }}
       </div>
     </details>
   </div>

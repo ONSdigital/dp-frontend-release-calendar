@@ -337,6 +337,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Options: mapSortOptions(params),
 	}
 
+	var fdErrDescription, tdErrDescription []coreModel.Localisation
 	if len(validationErrs) > 0 {
 		calendar.Error = coreModel.Error{
 			Title:      calendar.Metadata.Title,
@@ -344,60 +345,67 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			Language:   lang,
 		}
 
-		var fdErrDescription, tdErrDescription []string
 		for _, err := range validationErrs {
 			switch err.ID {
 			case "fromDate-error":
-				fdErrDescription = append(fdErrDescription, err.Description.Text)
+				fdErrDescription = append(fdErrDescription, err.Description)
 			case "toDate-error":
-				tdErrDescription = append(tdErrDescription, err.Description.Text)
+				tdErrDescription = append(tdErrDescription, err.Description)
 			}
 		}
-
-		calendar.AfterDate.HasValidationErr = params.AfterDate.HasValidationErr()
-		calendar.AfterDate.ValidationDescription = fdErrDescription
-		calendar.AfterDate.ID = "fromDate-error"
-
-		calendar.BeforeDate.HasValidationErr = params.BeforeDate.HasValidationErr()
-		calendar.BeforeDate.ValidationDescription = tdErrDescription
-		calendar.BeforeDate.ID = "toDate-error"
 	}
 
-	calendar.AfterDate.Input = coreModel.InputDate{
-		Language:        calendar.Language,
-		Id:              "after-date",
-		InputNameDay:    "after-day",
-		InputNameMonth:  "after-month",
-		InputNameYear:   "after-year",
-		InputValueDay:   params.AfterDate.DayString(),
-		InputValueMonth: params.AfterDate.MonthString(),
-		InputValueYear:  params.AfterDate.YearString(),
-		Title: coreModel.Localisation{
-			LocaleKey: "ReleasedAfter",
-			Plural:    1,
-		},
-		Description: coreModel.Localisation{
-			LocaleKey: "DateFilterDescription",
-			Plural:    1,
+	calendar.AfterDate = coreModel.DateFieldset{
+		Language:                 lang,
+		ValidationErrDescription: fdErrDescription,
+		ErrorID:                  "fromDate-error",
+		Input: coreModel.InputDate{
+			Language:              lang,
+			Id:                    "after-date",
+			InputNameDay:          "after-day",
+			InputNameMonth:        "after-month",
+			InputNameYear:         "after-year",
+			InputValueDay:         params.AfterDate.DayString(),
+			InputValueMonth:       params.AfterDate.MonthString(),
+			InputValueYear:        params.AfterDate.YearString(),
+			HasDayValidationErr:   params.AfterDate.HasValidationErr(),
+			HasMonthValidationErr: params.AfterDate.HasValidationErr(),
+			HasYearValidationErr:  params.AfterDate.HasValidationErr(),
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleasedAfter",
+				Plural:    1,
+			},
+			Description: coreModel.Localisation{
+				LocaleKey: "DateFilterDescription",
+				Plural:    1,
+			},
 		},
 	}
 
-	calendar.BeforeDate.Input = coreModel.InputDate{
-		Language:        calendar.Language,
-		Id:              "before-date",
-		InputNameDay:    "before-day",
-		InputNameMonth:  "before-month",
-		InputNameYear:   "before-year",
-		InputValueDay:   params.BeforeDate.DayString(),
-		InputValueMonth: params.BeforeDate.MonthString(),
-		InputValueYear:  params.BeforeDate.YearString(),
-		Title: coreModel.Localisation{
-			LocaleKey: "ReleasedBefore",
-			Plural:    1,
-		},
-		Description: coreModel.Localisation{
-			LocaleKey: "DateFilterDescription",
-			Plural:    1,
+	calendar.BeforeDate = coreModel.DateFieldset{
+		Language:                 lang,
+		ValidationErrDescription: tdErrDescription,
+		ErrorID:                  "toDate-error",
+		Input: coreModel.InputDate{
+			Language:              lang,
+			Id:                    "before-date",
+			InputNameDay:          "before-day",
+			InputNameMonth:        "before-month",
+			InputNameYear:         "before-year",
+			InputValueDay:         params.BeforeDate.DayString(),
+			InputValueMonth:       params.BeforeDate.MonthString(),
+			InputValueYear:        params.BeforeDate.YearString(),
+			HasDayValidationErr:   params.BeforeDate.HasValidationErr(),
+			HasMonthValidationErr: params.BeforeDate.HasValidationErr(),
+			HasYearValidationErr:  params.BeforeDate.HasValidationErr(),
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleasedBefore",
+				Plural:    1,
+			},
+			Description: coreModel.Localisation{
+				LocaleKey: "DateFilterDescription",
+				Plural:    1,
+			},
 		},
 	}
 

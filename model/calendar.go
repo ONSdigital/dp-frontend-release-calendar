@@ -37,13 +37,6 @@ type Sort struct {
 	Options []SortOption `json:"options"`
 }
 
-type DateFieldset struct {
-	Input                 coreModel.InputDate
-	HasValidationErr      bool
-	ValidationDescription []string
-	ID                    string
-}
-
 type Entries struct {
 	Count int             `json:"count"`
 	Items []CalendarEntry `json:"items"`
@@ -56,8 +49,8 @@ type Calendar struct {
 	ReleaseTypes        map[string]ReleaseType  `json:"release_types"`
 	Sort                Sort                    `json:"sort"`
 	Keywords            string                  `json:"keywords"`
-	BeforeDate          DateFieldset            `json:"before_date"`
-	AfterDate           DateFieldset            `json:"after_date"`
+	BeforeDate          coreModel.DateFieldset  `json:"before_date"`
+	AfterDate           coreModel.DateFieldset  `json:"after_date"`
 	Entries             Entries                 `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
