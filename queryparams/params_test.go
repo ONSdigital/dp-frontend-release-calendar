@@ -706,7 +706,7 @@ func TestValidateDateRange(t *testing.T) {
 				to:              time.Time{},
 				exError:         fmt.Errorf("enter a released before year that is later than 2024"), // expected as an unset 'date' is 0001-01-01
 				exDate: Date{
-					hasValidationErr: true,
+					hasYearValidationErr: true,
 				},
 			},
 			{
@@ -727,8 +727,8 @@ func TestValidateDateRange(t *testing.T) {
 				to:              time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 				exError:         fmt.Errorf("enter a released before year that is later than 2024"),
 				exDate: Date{
-					date:             time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
-					hasValidationErr: true,
+					date:                 time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
+					hasYearValidationErr: true,
 				},
 			},
 			{

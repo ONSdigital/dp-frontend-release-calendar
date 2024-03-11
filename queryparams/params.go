@@ -201,7 +201,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 		assumedDay = true
 	}
 
-	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, "", "", &startDate)
+	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, &startDate)
 	if len(validationErrs) > 0 {
 		return startDate, validationErrs
 	}
@@ -248,7 +248,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 		assumedDay = true
 	}
 
-	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, "", "", &endDate)
+	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, &endDate)
 	if len(validationErrs) > 0 {
 		return endDate, validationErrs
 	}
@@ -261,7 +261,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 }
 
 // getValidTimestamp returns a valid timestamp or an error
-func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string, date *Date) (time.Time, []core.ErrorItem) {
+func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.ErrorItem) {
 	if year == "" || month == "" || day == "" {
 		return time.Time{}, []core.ErrorItem{}
 	}
@@ -352,8 +352,8 @@ func ValidateDateRange(from, to Date) (end Date, err error) {
 		return Date{}, err
 	}
 
-	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "", "", &Date{})
-	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "", "", &Date{})
+	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), &Date{})
+	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), &Date{})
 	if startTime.After(endTime) {
 		end = to
 		end.hasYearValidationErr = true
