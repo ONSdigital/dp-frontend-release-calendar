@@ -170,6 +170,9 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 func GetStartDate(params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
 	var startTime time.Time
 
+	startDate.fieldsetErrId = DateFromErr
+	startDate.fieldsetStr = After
+
 	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
 	startDate.ds = dayAfterString
 	startDate.ms = monthAfterString
@@ -183,7 +186,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 			ID:  DateFromErr,
 			URL: fmt.Sprintf("#%s", DateFromErr),
 		})
-		startDate.hasValidationErr = true
+		startDate.hasYearValidationErr = true
 		return startDate, validationErrs
 	}
 
@@ -198,16 +201,14 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 		assumedDay = true
 	}
 
-	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, DateFromErr, After)
+	startTime, validationErrs = getValidTimestamp(yearAfterString, monthAfterString, dayAfterString, "", "", &startDate)
 	if len(validationErrs) > 0 {
-		startDate.hasValidationErr = true
 		return startDate, validationErrs
 	}
 
 	startDate = DateFromTime(startTime)
 	startDate.assumedDay = assumedDay
 	startDate.assumedMonth = assumedMonth
-	startDate.hasValidationErr = false
 
 	return startDate, nil
 }
@@ -215,6 +216,9 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 // GetDates returns the validated date to parameters
 func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
 	var endTime time.Time
+
+	endDate.fieldsetErrId = DateToErr
+	endDate.fieldsetStr = Before
 
 	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
 	endDate.ds = dayBeforeString
@@ -229,7 +233,7 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 			ID:  DateToErr,
 			URL: fmt.Sprintf("#%s", DateToErr),
 		})
-		endDate.hasValidationErr = true
+		endDate.hasYearValidationErr = true
 		return endDate, validationErrs
 	}
 
@@ -244,22 +248,20 @@ func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorIte
 		assumedDay = true
 	}
 
-	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, DateToErr, Before)
+	endTime, validationErrs = getValidTimestamp(yearBeforeString, monthBeforeString, dayBeforeString, "", "", &endDate)
 	if len(validationErrs) > 0 {
-		endDate.hasValidationErr = true
 		return endDate, validationErrs
 	}
 
 	endDate = DateFromTime(endTime)
 	endDate.assumedDay = assumedDay
 	endDate.assumedMonth = assumedMonth
-	endDate.hasValidationErr = false
 
 	return endDate, nil
 }
 
 // getValidTimestamp returns a valid timestamp or an error
-func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.Time, []core.ErrorItem) {
+func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string, date *Date) (time.Time, []core.ErrorItem) {
 	if year == "" || month == "" || day == "" {
 		return time.Time{}, []core.ErrorItem{}
 	}
@@ -270,33 +272,36 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  fieldsetID,
-			URL: fmt.Sprintf("#%s", fieldsetID),
+			ID:  date.fieldsetErrId,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
 		})
+		date.hasDayValidationErr = true
 	}
 
 	m, err := monthValidator(month)
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s month", CapitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s month", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  fieldsetID,
-			URL: fmt.Sprintf("#%s", fieldsetID),
+			ID:  date.fieldsetErrId,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
 		})
+		date.hasMonthValidationErr = true
 	}
 
 	y, err := yearValidator(year)
 	if err != nil {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), fieldsetStr),
+				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  fieldsetID,
-			URL: fmt.Sprintf("#%s", fieldsetID),
+			ID:  date.fieldsetErrId,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
 		})
+		date.hasYearValidationErr = true
 	}
 
 	// Throw errors back to user before further validation
@@ -313,9 +318,12 @@ func getValidTimestamp(year, month, day, fieldsetID, fieldsetStr string) (time.T
 			Description: core.Localisation{
 				Text: "Enter a real date",
 			},
-			ID:  fieldsetID,
-			URL: fmt.Sprintf("#%s", fieldsetID),
+			ID:  date.fieldsetErrId,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
 		})
+		date.hasDayValidationErr = true
+		date.hasMonthValidationErr = true
+		date.hasYearValidationErr = true
 	}
 
 	return timestamp, validationErrs
@@ -344,11 +352,11 @@ func ValidateDateRange(from, to Date) (end Date, err error) {
 		return Date{}, err
 	}
 
-	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "", "")
-	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "", "")
+	startTime, _ := getValidTimestamp(startDate.YearString(), startDate.MonthString(), startDate.DayString(), "", "", &Date{})
+	endTime, _ := getValidTimestamp(endDate.YearString(), endDate.MonthString(), endDate.DayString(), "", "", &Date{})
 	if startTime.After(endTime) {
 		end = to
-		end.hasValidationErr = true
+		end.hasYearValidationErr = true
 		return end, fmt.Errorf("enter a released before year that is later than %s", startDate.YearString())
 	}
 	return to, nil

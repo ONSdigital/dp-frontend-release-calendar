@@ -347,9 +347,9 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 		for _, err := range validationErrs {
 			switch err.ID {
-			case "fromDate-error":
+			case params.AfterDate.GetFieldsetErrId():
 				fdErrDescription = append(fdErrDescription, err.Description)
-			case "toDate-error":
+			case params.BeforeDate.GetFieldsetErrId():
 				tdErrDescription = append(tdErrDescription, err.Description)
 			}
 		}
@@ -358,7 +358,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.AfterDate = coreModel.DateFieldset{
 		Language:                 lang,
 		ValidationErrDescription: fdErrDescription,
-		ErrorID:                  "fromDate-error",
+		ErrorID:                  params.AfterDate.GetFieldsetErrId(),
 		Input: coreModel.InputDate{
 			Language:              lang,
 			Id:                    "after-date",
@@ -368,9 +368,9 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			InputValueDay:         params.AfterDate.DayString(),
 			InputValueMonth:       params.AfterDate.MonthString(),
 			InputValueYear:        params.AfterDate.YearString(),
-			HasDayValidationErr:   params.AfterDate.HasValidationErr(),
-			HasMonthValidationErr: params.AfterDate.HasValidationErr(),
-			HasYearValidationErr:  params.AfterDate.HasValidationErr(),
+			HasDayValidationErr:   params.AfterDate.HasDayValidationErr(),
+			HasMonthValidationErr: params.AfterDate.HasMonthValidationErr(),
+			HasYearValidationErr:  params.AfterDate.HasYearValidationErr(),
 			Title: coreModel.Localisation{
 				LocaleKey: "ReleasedAfter",
 				Plural:    1,
@@ -385,7 +385,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.BeforeDate = coreModel.DateFieldset{
 		Language:                 lang,
 		ValidationErrDescription: tdErrDescription,
-		ErrorID:                  "toDate-error",
+		ErrorID:                  params.BeforeDate.GetFieldsetErrId(),
 		Input: coreModel.InputDate{
 			Language:              lang,
 			Id:                    "before-date",
@@ -395,9 +395,9 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			InputValueDay:         params.BeforeDate.DayString(),
 			InputValueMonth:       params.BeforeDate.MonthString(),
 			InputValueYear:        params.BeforeDate.YearString(),
-			HasDayValidationErr:   params.BeforeDate.HasValidationErr(),
-			HasMonthValidationErr: params.BeforeDate.HasValidationErr(),
-			HasYearValidationErr:  params.BeforeDate.HasValidationErr(),
+			HasDayValidationErr:   params.BeforeDate.HasDayValidationErr(),
+			HasMonthValidationErr: params.BeforeDate.HasMonthValidationErr(),
+			HasYearValidationErr:  params.BeforeDate.HasYearValidationErr(),
 			Title: coreModel.Localisation{
 				LocaleKey: "ReleasedBefore",
 				Plural:    1,
