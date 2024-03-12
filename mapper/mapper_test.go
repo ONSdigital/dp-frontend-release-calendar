@@ -330,7 +330,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Plural:    1,
 					},
 				},
-				ErrorID:  "toDate-error",
+				ErrorID:  params.BeforeDate.GetFieldsetErrID(),
 				Language: lang,
 			})
 			So(calendar.AfterDate, ShouldResemble, coreModel.DateFieldset{
@@ -352,7 +352,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Plural:    1,
 					},
 				},
-				ErrorID:  "fromDate-error",
+				ErrorID:  params.AfterDate.GetFieldsetErrID(),
 				Language: lang,
 			})
 			So(calendar.ReleaseTypes, ShouldResemble, mapReleases(params, releaseResponse, lang))
@@ -400,6 +400,9 @@ func TestReleaseCalendarMapper(t *testing.T) {
 		})
 
 		Convey("CreateReleaseCalendar maps validation errors correctly to a model Calendar object", func() {
+			params.AfterDate = queryparams.MustSetFieldsetErrID("fromDate-error")
+			params.BeforeDate = queryparams.MustSetFieldsetErrID("toDate-error")
+
 			validationErrs := []coreModel.ErrorItem{
 				{
 					Description: coreModel.Localisation{

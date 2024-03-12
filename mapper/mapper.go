@@ -347,9 +347,9 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 
 		for _, err := range validationErrs {
 			switch err.ID {
-			case params.AfterDate.GetFieldsetErrId():
+			case params.AfterDate.GetFieldsetErrID():
 				fdErrDescription = append(fdErrDescription, err.Description)
-			case params.BeforeDate.GetFieldsetErrId():
+			case params.BeforeDate.GetFieldsetErrID():
 				tdErrDescription = append(tdErrDescription, err.Description)
 			}
 		}
@@ -358,7 +358,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.AfterDate = coreModel.DateFieldset{
 		Language:                 lang,
 		ValidationErrDescription: fdErrDescription,
-		ErrorID:                  params.AfterDate.GetFieldsetErrId(),
+		ErrorID:                  params.AfterDate.GetFieldsetErrID(),
 		Input: coreModel.InputDate{
 			Language:              lang,
 			Id:                    "after-date",
@@ -385,7 +385,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.BeforeDate = coreModel.DateFieldset{
 		Language:                 lang,
 		ValidationErrDescription: tdErrDescription,
-		ErrorID:                  params.BeforeDate.GetFieldsetErrId(),
+		ErrorID:                  params.BeforeDate.GetFieldsetErrID(),
 		Input: coreModel.InputDate{
 			Language:              lang,
 			Id:                    "before-date",

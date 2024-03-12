@@ -8,7 +8,7 @@ import (
 type Date struct {
 	date                                                             time.Time
 	ys, ms, ds                                                       string
-	fieldsetErrId, fieldsetStr                                       string
+	fieldsetErrID, fieldsetStr                                       string
 	assumedDay, assumedMonth                                         bool
 	hasDayValidationErr, hasMonthValidationErr, hasYearValidationErr bool
 }
@@ -47,6 +47,11 @@ func DateFromTime(t time.Time) Date {
 	return date
 }
 
+func MustSetFieldsetErrID(id string) (d Date) {
+	d.fieldsetErrID = id
+	return d
+}
+
 func (d Date) String() string {
 	if d.date.IsZero() {
 		return ""
@@ -73,8 +78,8 @@ func (d Date) DayString() string {
 	return d.ds
 }
 
-func (d Date) GetFieldsetErrId() string {
-	return d.fieldsetErrId
+func (d Date) GetFieldsetErrID() string {
+	return d.fieldsetErrID
 }
 
 func (d Date) HasDayValidationErr() bool {

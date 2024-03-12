@@ -170,7 +170,7 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 func GetStartDate(params url.Values) (startDate Date, validationErrs []core.ErrorItem) {
 	var startTime time.Time
 
-	startDate.fieldsetErrId = DateFromErr
+	startDate.fieldsetErrID = DateFromErr
 	startDate.fieldsetStr = After
 
 	yearAfterString, monthAfterString, dayAfterString := params.Get(YearAfter), params.Get(MonthAfter), params.Get(DayAfter)
@@ -217,7 +217,7 @@ func GetStartDate(params url.Values) (startDate Date, validationErrs []core.Erro
 func GetEndDate(params url.Values) (endDate Date, validationErrs []core.ErrorItem) {
 	var endTime time.Time
 
-	endDate.fieldsetErrId = DateToErr
+	endDate.fieldsetErrID = DateToErr
 	endDate.fieldsetStr = Before
 
 	yearBeforeString, monthBeforeString, dayBeforeString := params.Get(YearBefore), params.Get(MonthBefore), params.Get(DayBefore)
@@ -274,8 +274,8 @@ func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.E
 			Description: core.Localisation{
 				Text: fmt.Sprintf("%s for released %s day", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  date.fieldsetErrId,
-			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
+			ID:  date.fieldsetErrID,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrID),
 		})
 		date.hasDayValidationErr = true
 	}
@@ -286,8 +286,8 @@ func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.E
 			Description: core.Localisation{
 				Text: fmt.Sprintf("%s for released %s month", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  date.fieldsetErrId,
-			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
+			ID:  date.fieldsetErrID,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrID),
 		})
 		date.hasMonthValidationErr = true
 	}
@@ -298,8 +298,8 @@ func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.E
 			Description: core.Localisation{
 				Text: fmt.Sprintf("%s for released %s year", CapitalizeFirstLetter(err.Error()), date.fieldsetStr),
 			},
-			ID:  date.fieldsetErrId,
-			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
+			ID:  date.fieldsetErrID,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrID),
 		})
 		date.hasYearValidationErr = true
 	}
@@ -318,8 +318,8 @@ func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.E
 			Description: core.Localisation{
 				Text: "Enter a real date",
 			},
-			ID:  date.fieldsetErrId,
-			URL: fmt.Sprintf("#%s", date.fieldsetErrId),
+			ID:  date.fieldsetErrID,
+			URL: fmt.Sprintf("#%s", date.fieldsetErrID),
 		})
 		date.hasDayValidationErr = true
 		date.hasMonthValidationErr = true
