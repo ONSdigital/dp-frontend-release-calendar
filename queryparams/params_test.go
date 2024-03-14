@@ -411,6 +411,7 @@ func TestGetStartDate(t *testing.T) {
 		testcases := []struct {
 			testDescription                 string
 			afterDay, afterMonth, afterYear string
+			exDayErr, exMonthErr, exYearErr bool
 			exFromDate                      string
 			exFromError                     []model.ErrorItem
 		}{
@@ -431,6 +432,9 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   false,
+				exMonthErr: false,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for valid month and year value assumed day set",
@@ -457,6 +461,9 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid day of month value",
@@ -471,6 +478,9 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid month value",
@@ -485,6 +495,9 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid year value",
@@ -499,6 +512,33 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   false,
+				exMonthErr: false,
+				exYearErr:  true,
+			},
+			{
+				testDescription: "for invalid day and month values",
+				afterDay:        "ab", afterMonth: "c", afterYear: "2024",
+				exFromDate: "",
+				exFromError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "Enter a number for released after day",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "Enter a number for released after month",
+						},
+						ID:  "fromDate-error",
+						URL: "#fromDate-error",
+					},
+				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  false,
 			},
 			{
 				testDescription: "for invalid 29th of February outside of leap year",
@@ -513,6 +553,9 @@ func TestGetStartDate(t *testing.T) {
 						URL: "#fromDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for valid 29th February on leap year",
@@ -534,6 +577,9 @@ func TestGetStartDate(t *testing.T) {
 
 					So(err, ShouldResemble, tc.exFromError)
 					So(from.String(), ShouldEqual, tc.exFromDate)
+					So(from.hasDayValidationErr, ShouldEqual, tc.exDayErr)
+					So(from.hasMonthValidationErr, ShouldEqual, tc.exMonthErr)
+					So(from.hasYearValidationErr, ShouldEqual, tc.exYearErr)
 				})
 			}
 		})
@@ -545,6 +591,7 @@ func TestGetEndDate(t *testing.T) {
 		testcases := []struct {
 			testDescription                    string
 			beforeDay, beforeMonth, beforeYear string
+			exDayErr, exMonthErr, exYearErr    bool
 			exToDate                           string
 			exToError                          []model.ErrorItem
 		}{
@@ -567,6 +614,9 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   false,
+				exMonthErr: false,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for valid month and year value assumed day set",
@@ -593,6 +643,9 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid day of month value",
@@ -607,6 +660,9 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid month value",
@@ -621,6 +677,9 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for invalid year value",
@@ -635,6 +694,33 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   false,
+				exMonthErr: false,
+				exYearErr:  true,
+			},
+			{
+				testDescription: "for invalid day and month values",
+				beforeDay:       "ab", beforeMonth: "c", beforeYear: "2024",
+				exToDate: "",
+				exToError: []model.ErrorItem{
+					{
+						Description: model.Localisation{
+							Text: "Enter a number for released before day",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+					{
+						Description: model.Localisation{
+							Text: "Enter a number for released before month",
+						},
+						ID:  "toDate-error",
+						URL: "#toDate-error",
+					},
+				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  false,
 			},
 			{
 				testDescription: "for invalid 29th of February outside of leap year",
@@ -649,6 +735,9 @@ func TestGetEndDate(t *testing.T) {
 						URL: "#toDate-error",
 					},
 				},
+				exDayErr:   true,
+				exMonthErr: true,
+				exYearErr:  true,
 			},
 			{
 				testDescription: "for valid 29th February on leap year",
@@ -670,6 +759,9 @@ func TestGetEndDate(t *testing.T) {
 
 					So(err, ShouldResemble, tc.exToError)
 					So(to.String(), ShouldEqual, tc.exToDate)
+					So(to.hasDayValidationErr, ShouldEqual, tc.exDayErr)
+					So(to.hasMonthValidationErr, ShouldEqual, tc.exMonthErr)
+					So(to.hasYearValidationErr, ShouldEqual, tc.exYearErr)
 				})
 			}
 		})
