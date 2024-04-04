@@ -39,17 +39,17 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 }
 
 func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageAPI, uri, key string, cfg config.Config) {
-    if cfg.EnableBabbageCalculatedMaxAge {
-        maxAge, err := babbage.GetMaxAge(ctx, uri, key)
-        if err != nil {
-            // Do not cache
-            maxAge = defaultMaxAge
-            log.Warn(ctx,
-                fmt.Sprintf("Couldn't find max age from Babbage, using default %d sec", maxAge),
-                log.Data{"uri": uri, "err": err.Error()})
-        }
-        w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
-    }
+	if cfg.EnableBabbageCalculatedMaxAge {
+		maxAge, err := babbage.GetMaxAge(ctx, uri, key)
+		if err != nil {
+			// Do not cache
+			maxAge = defaultMaxAge
+			log.Warn(ctx,
+				fmt.Sprintf("Couldn't find max age from Babbage, using default %d sec", maxAge),
+				log.Data{"uri": uri, "err": err.Error()})
+		}
+		w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
+	}
 }
 
 // Release will load a release page
