@@ -48,9 +48,13 @@ one = "Cyhoeddwyd cyn"
 description = "Released after"
 one = "Cyhoeddwyd ar ôl"
 
-[DateFilterDescription]
-description = "For example: 2006 or 19 07 2010"
-one = "Er enghraifft: 2006 neu 19 07 2010"
+[DateFilterBeforeDescription]
+description = "For example: 2020 or 01 07 2020"
+one = "Er enghraifft: 2020 neu 01 07 2020"
+
+[DateFilterAfterDescription]
+description = "For example: 2016 or 01 03 2016"
+one = "Er enghraifft: 2016 neu 01 03 2016"
 
 [ReleaseCalendarFiltersTitle]
 description = "Filter results"
