@@ -326,7 +326,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Plural:    1,
 					},
 					Description: coreModel.Localisation{
-						LocaleKey: "DateFilterDescription",
+						LocaleKey: "DateFilterBeforeDescription",
 						Plural:    1,
 					},
 				},
@@ -348,7 +348,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 						Plural:    1,
 					},
 					Description: coreModel.Localisation{
-						LocaleKey: "DateFilterDescription",
+						LocaleKey: "DateFilterAfterDescription",
 						Plural:    1,
 					},
 				},

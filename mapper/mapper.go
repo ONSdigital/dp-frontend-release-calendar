@@ -376,7 +376,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 				Plural:    1,
 			},
 			Description: coreModel.Localisation{
-				LocaleKey: "DateFilterDescription",
+				LocaleKey: "DateFilterAfterDescription",
 				Plural:    1,
 			},
 		},
@@ -403,7 +403,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 				Plural:    1,
 			},
 			Description: coreModel.Localisation{
-				LocaleKey: "DateFilterDescription",
+				LocaleKey: "DateFilterBeforeDescription",
 				Plural:    1,
 			},
 		},
