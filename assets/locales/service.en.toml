@@ -293,12 +293,12 @@ description = "This release has been written with contributions of analysis and 
 one = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 
 [AboutDataNationalStatisticsBody1]
-description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
-one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the "
+description = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the "
+one = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the "
 
 [AboutDataNationalStatisticsBody2]
-description = "They meet the highest standards of trustworthiness, quality and public value."
-one = " They meet the highest standards of trustworthiness, quality and public value."
+description = "This broadly means that the statistics:"
+one = " This broadly means that the statistics:"
 
 [AboutDataNationalStatisticsBody3]
 description = "This means that they:"
@@ -309,16 +309,16 @@ description = "Code of Practice for Statistics"
 one = "Code of Practice for Statistics"
 
 [AboutDataNationalStatisticsIdentified]
-description = "meet identified user needs"
-one = "meet identified user needs"
+description = "meet user needs"
+one = "meet user needs"
 
 [AboutDataNationalStatisticsExplained]
-description = "are well explained and easily accessible"
-one = "are well explained and easily accessible"
+description = "are presented clearly and accessibly"
+one = "are presented clearly and accessibly"
 
 [AboutDataNationalStatisticsProduced]
-description = "are produced based on appropriate data and methods"
-one = "are produced based on appropriate data and methods"
+description = "are produced using appropriate data and sound methods"
+one = "are produced using appropriate data and sound methods"
 
 [AboutDataNationalStatisticsManaged]
 description = "are managed impartially and objectively in the public interest"

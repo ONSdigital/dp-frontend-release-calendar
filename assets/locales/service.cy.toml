@@ -293,32 +293,32 @@ description = "This release has been written with contributions of analysis and 
 one = "Mae'r datganiad hwn wedi cael ei ysgrifennu â chyfraniadau o waith dadansoddi a data a ddarparwyd gan Lywodraeth Cymru."
 
 [AboutDataNationalStatisticsBody1]
-description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
-one = "Mae'r ystadegau hyn wedi cael statws Ystadegau Gwladol gan y Swyddfa Rheoleiddio Ystadegau. Maent wedi cael eu cynhyrchu yn unol â'r safonau a nodir yn y "
+description = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the "
+one = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the "
 
 [AboutDataNationalStatisticsBody2]
-description = "They meet the highest standards of trustworthiness, quality and public value."
-one = " Maent yn cyrraedd y safonau uchaf o ran dibynadwyedd, ansawdd a gwerth cyhoeddus."
-
-[AboutDataNationalStatisticsBody3]
-description = "This means that they:"
-one = "Y'n golygu eu bod:"
+description = "This broadly means that the statistics:"
+one = " This broadly means that the statistics:"
 
 [AboutDataNationalStatisticsBodyLink]
 description = "Code of Practice for Statistics"
 one = "Cod Ymarfer ar gyfer Ystadegau"
 
 [AboutDataNationalStatisticsIdentified]
-description = "meet identified user needs"
-one = "yn diwallu anghenion defnyddwyr a nodwyd"
+description = "meet user needs"
+one = "meet user needs"
 
 [AboutDataNationalStatisticsExplained]
-description = "are well explained and easily accessible"
-one = "wedi'u hesbonio'n dda ac ar gael yn hawdd"
+description = "are presented clearly and accessibly"
+one = "are presented clearly and accessibly"
 
 [AboutDataNationalStatisticsProduced]
-description = "are produced based on appropriate data and methods"
-one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol"
+description = "are produced using appropriate data and sound methods"
+one = "are produced using appropriate data and sound methods"
+
+[AboutDataNationalStatisticsManaged]
+description = "are managed impartially and objectively in the public interest"
+one = "are managed impartially and objectively in the public interest"
 
 [AboutDataNationalStatisticsManaged]
 description = "are managed impartially and objectively in the public interest"
