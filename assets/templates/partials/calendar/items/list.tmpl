@@ -25,7 +25,13 @@
       </a>
       <div class="ons-u-mt-xs">
         <span class="ons-u-fs-r--b">{{ localise "ReleaseDate" $.Language 1 }}:</span>
-        <span>{{ dateTimeOnsDatePatternFormat .Description.ReleaseDate $.Language }}</span>
+        <span>
+          {{ if eq .PublicationState.SubType "provisional" }}
+              {{ .Description.ProvisionalDate $.Language }}
+          {{ else }}
+              {{ dateTimeOnsDatePatternFormat .Description.ReleaseDate $.Language }}
+          {{ end }}
+        </span>
         <span>|</span>
         {{/* template "partials/releasestate/type" .PublicationState */}}
         {{ if eq .PublicationState.Type "published" }}
