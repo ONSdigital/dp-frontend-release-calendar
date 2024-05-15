@@ -27,7 +27,7 @@
         <span class="ons-u-fs-r--b">{{ localise "ReleaseDate" $.Language 1 }}:</span>
         <span>
           {{ if eq .PublicationState.SubType "provisional" }}
-              {{ dateTimeOnsDatePatternFormat .Description.ProvisionalDate $.Language }}
+              {{ .Description.ProvisionalDate $.Language }}
           {{ else }}
               {{ dateTimeOnsDatePatternFormat .Description.ReleaseDate $.Language }}
           {{ end }}
