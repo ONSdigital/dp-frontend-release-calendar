@@ -116,6 +116,7 @@ func TestUnitMapper(t *testing.T) {
 		}
 
 		Convey("CreateRelease maps correctly to a model object", func() {
+			cfg, _ := config.Get()
 			lang := "cy"
 			crumbLabelHome := "Hafan"
 			crumbLabelReleaseCalendar := "Calendr datganiadau"
@@ -133,7 +134,7 @@ func TestUnitMapper(t *testing.T) {
 				URI:         emergencyBannerURI,
 				LinkText:    emergencyBannerLinkText,
 			}
-			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData)
+			release := CreateRelease(*cfg, basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData)
 
 			So(release.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(release.SiteDomain, ShouldEqual, basePage.SiteDomain)

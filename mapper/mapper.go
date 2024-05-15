@@ -199,7 +199,7 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 	}
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
+func CreateRelease(cfg config.Config, basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -211,16 +211,17 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 				Name:      release.Description.Contact.Name,
 				Telephone: release.Description.Contact.Telephone,
 			},
-			NationalStatistic:  release.Description.NationalStatistic,
-			WelshStatistic:     release.Description.WelshStatistic,
-			Census2021:         release.Census(),
-			ReleaseDate:        release.Description.ReleaseDate,
-			NextRelease:        release.Description.NextRelease,
-			Published:          release.Description.Published,
-			Finalised:          release.Description.Finalised,
-			Cancelled:          release.Description.Cancelled,
-			CancellationNotice: release.Description.CancellationNotice,
-			ProvisionalDate:    release.Description.ProvisionalDate,
+			NationalStatistic:            release.Description.NationalStatistic,
+			EnableOfficialStatisticsLogo: cfg.EnableOfficialStatisticsLogo,
+			WelshStatistic:               release.Description.WelshStatistic,
+			Census2021:                   release.Census(),
+			ReleaseDate:                  release.Description.ReleaseDate,
+			NextRelease:                  release.Description.NextRelease,
+			Published:                    release.Description.Published,
+			Finalised:                    release.Description.Finalised,
+			Cancelled:                    release.Description.Cancelled,
+			CancellationNotice:           release.Description.CancellationNotice,
+			ProvisionalDate:              release.Description.ProvisionalDate,
 		},
 	}
 	result.Language = lang
