@@ -133,8 +133,9 @@ func TestUnitMapper(t *testing.T) {
 				URI:         emergencyBannerURI,
 				LinkText:    emergencyBannerLinkText,
 			}
-			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData)
+			release := CreateRelease(basePage, releaseResponse, lang, "/prefix/releasecalendar", serviceMessage, bannerData, true)
 
+			So(release.FeatureFlags.IsPublishing, ShouldBeTrue)
 			So(release.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(release.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(release.BetaBannerEnabled, ShouldBeTrue)
@@ -299,6 +300,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 
 			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, lang, serviceMessage, bannerData, nil)
 
+			So(calendar.FeatureFlags.IsPublishing, ShouldBeFalse)
 			So(calendar.PatternLibraryAssetsPath, ShouldEqual, basePage.PatternLibraryAssetsPath)
 			So(calendar.SiteDomain, ShouldEqual, basePage.SiteDomain)
 			So(calendar.BetaBannerEnabled, ShouldBeTrue)

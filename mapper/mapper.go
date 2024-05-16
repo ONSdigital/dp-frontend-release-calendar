@@ -199,7 +199,7 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 	}
 }
 
-func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
+func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner, isPublishing bool) model.Release {
 	result := model.Release{
 		Page:     basePage,
 		Markdown: release.Markdown,
@@ -223,6 +223,7 @@ func CreateRelease(basePage coreModel.Page, release releasecalendar.Release, lan
 			ProvisionalDate:    release.Description.ProvisionalDate,
 		},
 	}
+	result.FeatureFlags.IsPublishing = isPublishing
 	result.Language = lang
 	result.Type = "releaseCalendar"
 	result.ServiceMessage = serviceMessage
@@ -314,6 +315,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar := model.Calendar{
 		Page: basePage,
 	}
+	calendar.FeatureFlags.IsPublishing = cfg.IsPublishing
 	calendar.Language = lang
 	calendar.Type = "releaseCalendar"
 	calendar.URI = "/releasecalendar"

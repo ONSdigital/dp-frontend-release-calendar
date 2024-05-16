@@ -70,7 +70,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 		}
 
 		basePage := rc.NewBasePageModel()
-		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
+		m := mapper.CreateRelease(basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner, cfg.IsPublishing)
 
 		setCacheHeader(ctx, w, babbage, releaseURI, cfg.BabbageMaxAgeKey, cfg)
 
