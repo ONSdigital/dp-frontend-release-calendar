@@ -23,6 +23,7 @@ type Config struct {
 	GracefulShutdownTimeout       time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckCriticalTimeout    time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	HealthCheckInterval           time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
+	IsPublishing                  bool          `envconfig:"IS_PUBLISHING"`
 	PatternLibraryAssetsPath      string        `envconfig:"PATTERN_LIBRARY_ASSETS_PATH"`
 	RoutingPrefix                 string        `envconfig:"ROUTING_PREFIX"`
 	SiteDomain                    string        `envconfig:"SITE_DOMAIN"`
@@ -72,6 +73,7 @@ func get() (*Config, error) {
 		GracefulShutdownTimeout:       5 * time.Second,
 		HealthCheckCriticalTimeout:    90 * time.Second,
 		HealthCheckInterval:           30 * time.Second,
+		IsPublishing:                  false,
 		RoutingPrefix:                 "",
 		SiteDomain:                    "localhost",
 		SupportedLanguages:            []string{"en", "cy"},

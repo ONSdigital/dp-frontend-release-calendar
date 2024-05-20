@@ -224,6 +224,7 @@ func CreateRelease(cfg config.Config, basePage coreModel.Page, release releaseca
 			ProvisionalDate:              release.Description.ProvisionalDate,
 		},
 	}
+	result.FeatureFlags.IsPublishing = cfg.IsPublishing
 	result.Language = lang
 	result.Type = "releaseCalendar"
 	result.ServiceMessage = serviceMessage
@@ -315,6 +316,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar := model.Calendar{
 		Page: basePage,
 	}
+	calendar.FeatureFlags.IsPublishing = cfg.IsPublishing
 	calendar.Language = lang
 	calendar.Type = "releaseCalendar"
 	calendar.URI = "/releasecalendar"

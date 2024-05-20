@@ -43,6 +43,7 @@ Run `make help` to see full list of make targets.
 | GRACEFUL_SHUTDOWN_TIMEOUT      | 5s                        | The graceful shutdown timeout in seconds (`time.Duration` format)                                                  |
 | HEALTHCHECK_CRITICAL_TIMEOUT   | 90s                       | Time to wait until an unhealthy dependent propagates its state to make this app unhealthy (`time.Duration` format) |
 | HEALTHCHECK_INTERVAL           | 30s                       | Time between self-healthchecks (`time.Duration` format)                                                            |
+| IS_PUBLISHING                  | false                     | Mode in which the service is running  										   |
 | PATTERN_LIBRARY_ASSETS_PATH    | ""                        | Pattern library location                                                                                           |
 | ROUTING_PREFIX                 | ""                        | Any routing prefix for the service                                                                                 |
 | SITE_DOMAIN                    | localhost                 |                                                                                                                    |
