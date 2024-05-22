@@ -358,6 +358,7 @@ func ValidateDateRange(from, to Date) (end Date, err error) {
 	if startTime.After(endTime) {
 		end = to
 		end.hasYearValidationErr = true
+		end.fieldsetErrID = DateToErr
 		return end, fmt.Errorf("enter a released before year that is later than %s", startDate.YearString())
 	}
 	return to, nil
