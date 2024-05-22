@@ -325,6 +325,52 @@ func TestReleaseCalendarMapper(t *testing.T) {
 					InputValueDay:   params.BeforeDate.DayString(),
 					InputValueMonth: params.BeforeDate.MonthString(),
 					InputValueYear:  params.BeforeDate.YearString(),
+					DataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "invalid-range",
+							Value: coreModel.Localisation{
+								LocaleKey: "ValidationInvalidDateRange",
+								Plural:    1,
+							},
+						},
+						{
+							Key: "invalid-date",
+							Value: coreModel.Localisation{
+								LocaleKey: "ValidationInvalidDate",
+								Plural:    1,
+							},
+						},
+					},
+					DayDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "day"),
+							},
+						},
+					},
+					MonthDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "month"),
+							},
+						},
+					},
+					YearDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "value-missing",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationYearMissing", lang, 1, "before"),
+							},
+						},
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "year"),
+							},
+						},
+					},
 					Title: coreModel.Localisation{
 						LocaleKey: "ReleasedBefore",
 						Plural:    1,
@@ -347,6 +393,45 @@ func TestReleaseCalendarMapper(t *testing.T) {
 					InputValueDay:   params.AfterDate.DayString(),
 					InputValueMonth: params.AfterDate.MonthString(),
 					InputValueYear:  params.AfterDate.YearString(),
+					DataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "invalid-date",
+							Value: coreModel.Localisation{
+								LocaleKey: "ValidationInvalidDate",
+								Plural:    1,
+							},
+						},
+					},
+					DayDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "day"),
+							},
+						},
+					},
+					MonthDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "month"),
+							},
+						},
+					},
+					YearDataAttributes: []coreModel.DataAttribute{
+						{
+							Key: "value-missing",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationYearMissing", lang, 1, "after"),
+							},
+						},
+						{
+							Key: "pattern-mismatch",
+							Value: coreModel.Localisation{
+								Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "year"),
+							},
+						},
+					},
 					Title: coreModel.Localisation{
 						LocaleKey: "ReleasedAfter",
 						Plural:    1,

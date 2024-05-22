@@ -343,3 +343,19 @@ one = "are produced using appropriate data and sound methods"
 [AboutDataAccreditedStatisticsBulletPoint4]
 description = "are managed impartially and objectively in the public interest"
 one = "are managed impartially and objectively in the public interest"
+
+[ValidationPatternMismatch]
+description = "Enter a number for released {{fieldset}} {{field}}"
+one = "Enter a number for released {{.arg0}} {{.arg1}}"
+
+[ValidationYearMissing]
+description = "Enter the released {{fieldset}} year"
+one = "Enter the released {{.arg0}} year"
+
+[ValidationInvalidDate]
+description = "Enter a real date"
+one = "Enter a real date"
+
+[ValidationInvalidDateRange]
+description = "Enter a released before year that is later than (after year value injected by JS)"
+one = "Enter a released before year that is later than"
