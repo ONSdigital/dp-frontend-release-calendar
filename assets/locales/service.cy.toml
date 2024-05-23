@@ -324,6 +324,10 @@ one = "wedi'u cynhyrchu yn seiliedig ar ddata a dulliau priodol"
 description = "are managed impartially and objectively in the public interest"
 one = "yn cael eu rheoli mewn modd diduedd a gwrthrychol er budd y cyhoedd"
 
+[AccreditedOfficialStatistics]
+description = "Accredited Official Statistics"
+one = "Accredited Official Statistics"
+
 [AboutDataAccreditedStatisticsBody]
 description = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the <a href=\"https://code.statisticsauthority.gov.uk/the-code/\">Code of Practice for Statistics</a>. This broadly means that the statistics:"
 one = "These are accredited official statistics. They have been independently reviewed by the Office for Statistics Regulation (OSR) and found to comply with the standards of trustworthiness, quality and value in the <a href=\"https://code.statisticsauthority.gov.uk/the-code/\">Code of Practice for Statistics</a>. This broadly means that the statistics:"

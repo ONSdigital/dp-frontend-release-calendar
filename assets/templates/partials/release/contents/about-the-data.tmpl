@@ -32,7 +32,7 @@
   {{ if .Description.NationalStatistic }}
     <div class="ons-u-mb-l national-statistics">
       <h2 class="ons-u-fs-m ons-u-flex-ai-c">
-        <span>National Statistics</span>
+        <span>{{ if .Description.EnableOfficialStatisticsLogo }}{{ localise "AccreditedOfficialStatistics" $.Language 1 }}</p>{{ else }}National Statistics{{ end }}</span>
         <a
           href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/"
           class="national-statistics__link ons-u-ml-s"
