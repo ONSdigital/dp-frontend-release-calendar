@@ -374,6 +374,45 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			HasDayValidationErr:   params.AfterDate.HasDayValidationErr(),
 			HasMonthValidationErr: params.AfterDate.HasMonthValidationErr(),
 			HasYearValidationErr:  params.AfterDate.HasYearValidationErr(),
+			DataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "invalid-date",
+					Value: coreModel.Localisation{
+						LocaleKey: "ValidationInvalidDate",
+						Plural:    1,
+					},
+				},
+			},
+			DayDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "day"),
+					},
+				},
+			},
+			MonthDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "month"),
+					},
+				},
+			},
+			YearDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "value-missing",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationYearMissing", lang, 1, "after"),
+					},
+				},
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "year"),
+					},
+				},
+			},
 			Title: coreModel.Localisation{
 				LocaleKey: "ReleasedAfter",
 				Plural:    1,
@@ -408,6 +447,52 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			Description: coreModel.Localisation{
 				LocaleKey: "DateFilterBeforeDescription",
 				Plural:    1,
+			},
+			DataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "invalid-range",
+					Value: coreModel.Localisation{
+						LocaleKey: "ValidationInvalidDateRange",
+						Plural:    1,
+					},
+				},
+				{
+					Key: "invalid-date",
+					Value: coreModel.Localisation{
+						LocaleKey: "ValidationInvalidDate",
+						Plural:    1,
+					},
+				},
+			},
+			DayDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "day"),
+					},
+				},
+			},
+			MonthDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "month"),
+					},
+				},
+			},
+			YearDataAttributes: []coreModel.DataAttribute{
+				{
+					Key: "value-missing",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationYearMissing", lang, 1, "before"),
+					},
+				},
+				{
+					Key: "pattern-mismatch",
+					Value: coreModel.Localisation{
+						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "year"),
+					},
+				},
 			},
 		},
 	}

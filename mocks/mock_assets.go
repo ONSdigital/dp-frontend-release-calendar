@@ -27,6 +27,12 @@ var cyLocale = []string{
 	"one = \"Canslwyd\"",
 	"[FilterReleaseTypeCensus]",
 	"one = \"Cyfrifiad\"",
+	"[ValidationPatternMismatch]",
+	"one = \"Enter a number\"",
+	"[ValidationYearMissing]",
+	"one = \"Enter a year\"",
+	"[ValidationInvalidDate]",
+	"one = \"Enter a real date\"",
 }
 
 var enLocale = []string{
@@ -54,6 +60,12 @@ var enLocale = []string{
 	"one = \"Cancelled\"",
 	"[FilterReleaseTypeCensus]",
 	"one = \"Census\"",
+	"[ValidationPatternMismatch]",
+	"one = \"Enter a number\"",
+	"[ValidationYearMissing]",
+	"one = \"Enter a year\"",
+	"[ValidationInvalidDate]",
+	"one = \"Enter a real date\"",
 }
 
 func MockAssetFunction(name string) ([]byte, error) {

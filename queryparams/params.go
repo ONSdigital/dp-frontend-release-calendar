@@ -316,7 +316,8 @@ func getValidTimestamp(year, month, day string, date *Date) (time.Time, []core.E
 	if mo != time.Month(m) {
 		validationErrs = append(validationErrs, core.ErrorItem{
 			Description: core.Localisation{
-				Text: "Enter a real date",
+				LocaleKey: "ValidationInvalidDate",
+				Plural:    1,
 			},
 			ID:  date.fieldsetErrID,
 			URL: fmt.Sprintf("#%s", date.fieldsetErrID),
@@ -357,6 +358,7 @@ func ValidateDateRange(from, to Date) (end Date, err error) {
 	if startTime.After(endTime) {
 		end = to
 		end.hasYearValidationErr = true
+		end.fieldsetErrID = DateToErr
 		return end, fmt.Errorf("enter a released before year that is later than %s", startDate.YearString())
 	}
 	return to, nil

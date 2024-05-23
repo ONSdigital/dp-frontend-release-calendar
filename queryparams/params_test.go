@@ -455,7 +455,8 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -472,7 +473,8 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -489,7 +491,8 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -547,7 +550,8 @@ func TestGetStartDate(t *testing.T) {
 				exFromError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "fromDate-error",
 						URL: "#fromDate-error",
@@ -637,7 +641,8 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -654,7 +659,8 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -671,7 +677,8 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -729,7 +736,8 @@ func TestGetEndDate(t *testing.T) {
 				exToError: []model.ErrorItem{
 					{
 						Description: model.Localisation{
-							Text: "Enter a real date",
+							LocaleKey: "ValidationInvalidDate",
+							Plural:    1,
 						},
 						ID:  "toDate-error",
 						URL: "#toDate-error",
@@ -799,6 +807,7 @@ func TestValidateDateRange(t *testing.T) {
 				exError:         fmt.Errorf("enter a released before year that is later than 2024"), // expected as an unset 'date' is 0001-01-01
 				exDate: Date{
 					hasYearValidationErr: true,
+					fieldsetErrID:        "toDate-error",
 				},
 			},
 			{
@@ -821,6 +830,7 @@ func TestValidateDateRange(t *testing.T) {
 				exDate: Date{
 					date:                 time.Date(2024, time.Month(1), 01, 0, 0, 0, 0, time.UTC),
 					hasYearValidationErr: true,
+					fieldsetErrID:        "toDate-error",
 				},
 			},
 			{
