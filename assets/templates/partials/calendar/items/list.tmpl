@@ -39,10 +39,8 @@
         {{ else if eq .PublicationState.Type "upcoming" }}
           {{ if eq .PublicationState.SubType "provisional" }}
             <span>{{ localise "ReleaseStateProvisional" $.Language 1 }}</span>
-          {{ else if eq .PublicationState.SubType "confirmed" }}
+          {{ else if or (eq .PublicationState.SubType "confirmed") (eq .PublicationState.SubType "postponed") }}
             <span>{{ localise "ReleaseStateConfirmed" $.Language 1 }}</span>
-          {{ else if eq .PublicationState.SubType "postponed" }}
-            <span>{{ localise "ReleaseStatePostponed" $.Language 1 }}</span>
           {{ else }}
             <span>{{ localise "ReleaseStateUpcoming" $.Language 1 }}</span>
           {{ end }}

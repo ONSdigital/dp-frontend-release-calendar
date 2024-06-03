@@ -248,10 +248,6 @@ one = "Confirmed"
 description = "Provisional"
 one = "Provisional"
 
-[ReleaseStatePostponed]
-description = "Postponed"
-one = "Postponed"
-
 [ReleaseStateCancelled]
 description = "Cancelled"
 one = "Cancelled"

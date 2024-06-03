@@ -248,10 +248,6 @@ one = "Cadarnhawyd"
 description = "Provisional"
 one = "Dros dro"
 
-[ReleaseStatePostponed]
-description = "Postponed"
-one = "Gohiriwyd"
-
 [ReleaseStateCancelled]
 description = "Cancelled"
 one = "Canslwyd"
