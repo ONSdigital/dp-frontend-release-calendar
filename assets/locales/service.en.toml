@@ -288,38 +288,6 @@ one = "This release includes data from Census 2021."
 description = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 one = "This release has been written with contributions of analysis and data supplied by the Welsh Government."
 
-[AboutDataNationalStatisticsBody1]
-description = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the"
-one = "These statistics have been given National Statistics status by the Office for Statistics Regulation. They have been produced by following the standards set out in the "
-
-[AboutDataNationalStatisticsBody2]
-description = "They meet the highest standards of trustworthiness, quality and public value."
-one = " They meet the highest standards of trustworthiness, quality and public value."
-
-[AboutDataNationalStatisticsBody3]
-description = "This means that they:"
-one = "This means that they:"
-
-[AboutDataNationalStatisticsBodyLink]
-description = "Code of Practice for Statistics"
-one = "Code of Practice for Statistics"
-
-[AboutDataNationalStatisticsIdentified]
-description = "meet identified user needs"
-one = "meet identified user needs"
-
-[AboutDataNationalStatisticsExplained]
-description = "are well explained and easily accessible"
-one = "are well explained and easily accessible"
-
-[AboutDataNationalStatisticsProduced]
-description = "are produced based on appropriate data and methods"
-one = "are produced based on appropriate data and methods"
-
-[AboutDataNationalStatisticsManaged]
-description = "are managed impartially and objectively in the public interest"
-one = "are managed impartially and objectively in the public interest"
-
 [AccreditedOfficialStatistics]
 description = "Accredited Official Statistics"
 one = "Accredited Official Statistics"

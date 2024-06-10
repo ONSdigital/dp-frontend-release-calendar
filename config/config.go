@@ -28,7 +28,6 @@ type Config struct {
 	RoutingPrefix                 string        `envconfig:"ROUTING_PREFIX"`
 	SiteDomain                    string        `envconfig:"SITE_DOMAIN"`
 	SupportedLanguages            []string      `envconfig:"SUPPORTED_LANGUAGES"`
-	EnableOfficialStatisticsLogo  bool          `envconfig:"ENABLE_OFFICIAL_STATISTICS_LOGO"`
 }
 
 var cfg *Config
@@ -77,7 +76,6 @@ func get() (*Config, error) {
 		RoutingPrefix:                 "",
 		SiteDomain:                    "localhost",
 		SupportedLanguages:            []string{"en", "cy"},
-		EnableOfficialStatisticsLogo:  false,
 	}
 
 	return cfg, envconfig.Process("", cfg)

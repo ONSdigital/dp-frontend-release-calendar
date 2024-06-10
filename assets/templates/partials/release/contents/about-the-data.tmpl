@@ -32,57 +32,34 @@
   {{ if .Description.NationalStatistic }}
     <div class="ons-u-mb-l national-statistics">
       <h2 class="ons-u-fs-m ons-u-flex-ai-c">
-        <span>{{ if .Description.EnableOfficialStatisticsLogo }}{{ localise "AccreditedOfficialStatistics" $.Language 1 }}</p>{{ else }}National Statistics{{ end }}</span>
+        <span>{{ localise "AccreditedOfficialStatistics" $.Language 1 }}</p></span>
         <a
           href="https://uksa.statisticsauthority.gov.uk/about-the-authority/uk-statistical-system/types-of-official-statistics/"
           class="national-statistics__link ons-u-ml-s"
         >
-        {{ if .Description.EnableOfficialStatisticsLogo }}
-          {{ if eq .Language "en" }}
-            <img
-              src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg"
-              alt="UK Statistics Authority Kitemark"
-              class="osr__logo"
-            >
-          {{ else }}
-            <img
-              src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-cy.svg"
-              alt="UK Statistics Authority Kitemark"
-              class="osr__logo"
-            >
-          {{ end }}
+        {{ if eq .Language "en" }}
+          <img
+            src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-en.svg"
+            alt="UK Statistics Authority Kitemark"
+            class="osr__logo"
+          >
         {{ else }}
           <img
-            src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/uksa-kitemark.svg"
+            src="https://cdn.ons.gov.uk/assets/images/ons-logo/kitemark/v2/uksa-kitemark-cy.svg"
             alt="UK Statistics Authority Kitemark"
-            class="national-statistics__logo"
+            class="osr__logo"
           >
         {{ end }}
         </a>
       </h2>
-      {{ if .Description.EnableOfficialStatisticsLogo }} 
-        <p>{{ localise "AboutDataAccreditedStatisticsBody" $.Language 1 | safeHTML }}</p>
+      <p>{{ localise "AboutDataAccreditedStatisticsBody" $.Language 1 | safeHTML }}</p>
 
-        <ul class="ons-list">
-          <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint1" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint2" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint3" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint4" $.Language 1 -}}</li>
-        </ul>
-      {{ else }}
-        <p>
-          {{- localise "AboutDataNationalStatisticsBody1" $.Language 1 -}}<a href="https://code.statisticsauthority.gov.uk/the-code/">{{- localise "AboutDataNationalStatisticsBodyLink" $.Language 1 -}}</a>.
-          {{- localise "AboutDataNationalStatisticsBody2" $.Language 1 -}}
-        </p>
-
-        <p>{{- localise "AboutDataNationalStatisticsBody3" $.Language 1 -}}</p>
-        <ul class="ons-list">
-          <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsIdentified" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsExplained" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsProduced" $.Language 1 -}}</li>
-          <li class="ons-list__item">{{- localise "AboutDataNationalStatisticsManaged" $.Language 1 -}}</li>
-        </ul>
-      {{ end }}
+      <ul class="ons-list">
+        <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint1" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint2" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint3" $.Language 1 -}}</li>
+        <li class="ons-list__item">{{- localise "AboutDataAccreditedStatisticsBulletPoint4" $.Language 1 -}}</li>
+      </ul>
     </div>
   {{ end }}
 </div>

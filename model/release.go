@@ -44,20 +44,19 @@ type DateChange struct {
 }
 
 type ReleaseDescription struct {
-	CancellationNotice           []string       `json:"cancellation_notice"`
-	Cancelled                    bool           `json:"cancelled"`
-	Contact                      ContactDetails `json:"contact"`
-	Finalised                    bool           `json:"finalised"`
-	NationalStatistic            bool           `json:"national_statistic"`
-	WelshStatistic               bool           `json:"welsh_statistic"`
-	Census2021                   bool           `json:"census_2021"`
-	NextRelease                  string         `json:"next_release"`
-	ProvisionalDate              string         `json:"provisional_date"`
-	Published                    bool           `json:"published"`
-	ReleaseDate                  string         `json:"release_date"`
-	Summary                      string         `json:"summary"`
-	Title                        string         `json:"title"`
-	EnableOfficialStatisticsLogo bool           `json:"enable_official_statistics_logo"`
+	CancellationNotice []string       `json:"cancellation_notice"`
+	Cancelled          bool           `json:"cancelled"`
+	Contact            ContactDetails `json:"contact"`
+	Finalised          bool           `json:"finalised"`
+	NationalStatistic  bool           `json:"national_statistic"`
+	WelshStatistic     bool           `json:"welsh_statistic"`
+	Census2021         bool           `json:"census_2021"`
+	NextRelease        string         `json:"next_release"`
+	ProvisionalDate    string         `json:"provisional_date"`
+	Published          bool           `json:"published"`
+	ReleaseDate        string         `json:"release_date"`
+	Summary            string         `json:"summary"`
+	Title              string         `json:"title"`
 }
 
 // FuncGetPostponementReason Gets the most recent postponement reason, if available
