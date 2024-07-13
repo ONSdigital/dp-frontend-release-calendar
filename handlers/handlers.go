@@ -38,22 +38,8 @@ func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	w.WriteHeader(status)
 }
 
-func setCacheHeader(ctx context.Context, w http.ResponseWriter, babbage BabbageAPI, uri, key string, cfg config.Config) {
-	if cfg.EnableBabbageCalculatedMaxAge {
-		maxAge, err := babbage.GetMaxAge(ctx, uri, key)
-		if err != nil {
-			// Do not cache
-			maxAge = defaultMaxAge
-			log.Warn(ctx,
-				fmt.Sprintf("Couldn't find max age from Babbage, using default %d sec", maxAge),
-				log.Data{"uri": uri, "err": err.Error()})
-		}
-		w.Header().Add("Cache-Control", fmt.Sprintf("public, max-age=%d", maxAge))
-	}
-}
-
 // Release will load a release page
-func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
+func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		ctx := r.Context()
 		releaseURI := strings.TrimPrefix(r.URL.EscapedPath(), cfg.RoutingPrefix)
@@ -71,8 +57,6 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, babbage
 
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(cfg, basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
-
-		setCacheHeader(ctx, w, babbage, releaseURI, cfg.BabbageMaxAgeKey, cfg)
 
 		rc.BuildPage(w, m, "release")
 	})
@@ -100,7 +84,7 @@ func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	})
 }
 
-func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage BabbageAPI, zc ZebedeeClient) http.HandlerFunc {
+func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, zc ZebedeeClient) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
 		var err error
 		ctx := r.Context()
@@ -114,7 +98,6 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		validatedParams, validationErrs := validateParamsAsFrontend(ctx, params, cfg)
 		if len(validationErrs) > 0 {
 			calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, search.ReleaseResponse{}, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, validationErrs)
-			setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey, cfg)
 			rc.BuildPage(w, calendar, "calendar")
 			return
 		}
@@ -135,7 +118,6 @@ func ReleaseCalendar(cfg config.Config, rc RenderClient, api SearchAPI, babbage 
 		}
 
 		calendar := mapper.CreateReleaseCalendar(rc.NewBasePageModel(), validatedParams, releases, cfg, lang, homepageContent.ServiceMessage, homepageContent.EmergencyBanner, nil)
-		setCacheHeader(ctx, w, babbage, "/releasecalendar", cfg.BabbageMaxAgeKey, cfg)
 		rc.BuildPage(w, calendar, "calendar")
 	})
 }

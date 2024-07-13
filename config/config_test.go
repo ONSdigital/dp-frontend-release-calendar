@@ -20,8 +20,6 @@ func TestConfig(t *testing.T) {
 
 			Convey("Then the values should be set to the expected defaults", func() {
 				So(cfg.APIRouterURL, ShouldEqual, "http://localhost:23200/v1")
-				So(cfg.BabbageMaxAgeKey, ShouldEqual, "")
-				So(cfg.BabbageURL, ShouldEqual, "http://localhost:8080")
 				So(cfg.BindAddr, ShouldEqual, ":27700")
 				So(cfg.Debug, ShouldBeFalse)
 				So(cfg.DefaultLimit, ShouldEqual, 10)

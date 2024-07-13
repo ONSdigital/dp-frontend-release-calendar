@@ -72,7 +72,6 @@ func TestUnitHandlers(t *testing.T) {
 
 	Convey("test API", t, func() {
 		mockRenderClient := NewMockRenderClient(mockCtrl)
-		mockBabbageAPI := NewMockBabbageAPI(mockCtrl)
 		mockConfig, _ := config.Get()
 
 		w := httptest.NewRecorder()
@@ -82,7 +81,6 @@ func TestUnitHandlers(t *testing.T) {
 			mockZebedeeClient := NewMockZebedeeClient(mockCtrl)
 			mockAPIClient := NewMockReleaseCalendarAPI(mockCtrl)
 			root := "/releases"
-			maxAge := 670
 			r := releasecalendar.Release{
 				Description: releasecalendar.ReleaseDescription{
 					Title: "Test release",
@@ -92,7 +90,7 @@ func TestUnitHandlers(t *testing.T) {
 			r.URI = fmt.Sprintf("%s/%s", root, titleSegment)
 
 			Convey("test '/releases'", func() {
-				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockAPIClient, mockBabbageAPI, mockZebedeeClient))
+				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockAPIClient, mockZebedeeClient))
 
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), http.NoBody)
 				Convey("When there is an error getting the release from the release calendar API", func() {
@@ -134,27 +132,10 @@ func TestUnitHandlers(t *testing.T) {
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 						mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
 
-						Convey("And Babbage calculates the cache max age successfully", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
-							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+						Convey("Then it returns 200", func() {
+							router.ServeHTTP(w, req)
 
-							Convey("Then it returns 200 and the right cache header", func() {
-								router.ServeHTTP(w, req)
-
-								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
-							})
-						})
-
-						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
-
-							Convey("Then it returns 200 and the default cache header", func() {
-								router.ServeHTTP(w, req)
-
-								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
-							})
+							So(w.Code, ShouldEqual, http.StatusOK)
 						})
 					})
 
@@ -162,26 +143,10 @@ func TestUnitHandlers(t *testing.T) {
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 						mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
 
-						Convey("And Babbage calculates the cache max age successfully", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
-							expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+						Convey("Then it returns 200", func() {
+							router.ServeHTTP(w, req)
 
-							Convey("Then it returns 200 and the right cache header", func() {
-								router.ServeHTTP(w, req)
-								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
-							})
-						})
-
-						Convey("And there is an error calling Babbage", func() {
-							mockBabbageAPI.EXPECT().GetMaxAge(ctx, r.URI, mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
-
-							Convey("Then it returns 200 and the default cache header", func() {
-								router.ServeHTTP(w, req)
-
-								So(w.Code, ShouldEqual, http.StatusOK)
-								So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
-							})
+							So(w.Code, ShouldEqual, http.StatusOK)
 						})
 					})
 				})
@@ -246,8 +211,7 @@ func TestUnitHandlers(t *testing.T) {
 
 			Convey("test '/releasecalendar' endpoint", func() {
 				endpoint := "/releasecalendar"
-				maxAge := 422
-				router.HandleFunc(endpoint, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient, mockBabbageAPI, mockZebedeeClient))
+				router.HandleFunc(endpoint, ReleaseCalendar(*mockConfig, mockRenderClient, mockSearchClient, mockZebedeeClient))
 				r := sitesearch.ReleaseResponse{
 					Releases: []sitesearch.Release{
 						{
@@ -300,27 +264,10 @@ func TestUnitHandlers(t *testing.T) {
 							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, accessToken, collectionID, lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, accessToken, collectionID, lang, defaultParams()).Return(r, nil)
 
-							Convey("And Babbage calculates the cache max age successfully", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
-								expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+							Convey("Then it returns 200", func() {
+								router.ServeHTTP(w, req)
 
-								Convey("Then it returns 200 and the right cache header", func() {
-									router.ServeHTTP(w, req)
-
-									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
-								})
-							})
-
-							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
-
-								Convey("Then it returns 200 and the default cache header", func() {
-									router.ServeHTTP(w, req)
-
-									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
-								})
+								So(w.Code, ShouldEqual, http.StatusOK)
 							})
 						})
 
@@ -328,27 +275,10 @@ func TestUnitHandlers(t *testing.T) {
 							mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 							mockSearchClient.EXPECT().GetReleases(ctx, "", "", lang, defaultParams()).Return(r, nil)
 
-							Convey("And Babbage calculates the cache max age successfully", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
-								expectedCacheControlHeader := fmt.Sprintf("public, max-age=%d", maxAge)
+							Convey("Then it returns 200", func() {
+								router.ServeHTTP(w, req)
 
-								Convey("Then it returns 200 and the right cache header", func() {
-									router.ServeHTTP(w, req)
-
-									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, expectedCacheControlHeader)
-								})
-							})
-
-							Convey("And there is an error calling Babbage", func() {
-								mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, errors.New("Error on Babbage"))
-
-								Convey("Then it returns 200 and the default cache header", func() {
-									router.ServeHTTP(w, req)
-
-									So(w.Code, ShouldEqual, http.StatusOK)
-									So(w.Header().Get("Cache-Control"), ShouldEqual, "public, max-age=5")
-								})
+								So(w.Code, ShouldEqual, http.StatusOK)
 							})
 						})
 					})
@@ -359,7 +289,6 @@ func TestUnitHandlers(t *testing.T) {
 						mockRenderClient.EXPECT().NewBasePageModel()
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
-						mockBabbageAPI.EXPECT().GetMaxAge(ctx, "/releasecalendar", mockConfig.BabbageMaxAgeKey).Return(maxAge, nil)
 
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1&release-type=type-sf&after-year=dad&before-day=44&after-month-99&sort=date-blah", endpoint), http.NoBody)
 
