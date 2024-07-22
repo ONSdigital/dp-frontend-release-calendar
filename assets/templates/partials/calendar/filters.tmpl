@@ -1,8 +1,11 @@
 <div class="ons-pl-grid-col release-calendar__filters">
-  <div class="ons-u-fs-r--b release-calendar__filters__heading">
-    <div class="release-calendar__filters__heading--margin-one-fix">
-      {{- localise "ReleaseCalendarFiltersTitle" .Language 4 -}}
-    </div>
+  <div class="ons-u-p-xs search__filter__heading">
+    <span class="ons-u-fs-r--b">{{- localise "ReleaseCalendarFiltersTitle" .Language 4 -}}</span>
+    <a
+      href="?"
+      id="clear-search"
+      class="float-right font-size--18"
+    >Clear All</a>
   </div>
 
   <div class="ons-u-bt ons-u-pt-s ons-u-mb-s">
