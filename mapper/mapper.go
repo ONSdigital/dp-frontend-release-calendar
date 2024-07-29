@@ -267,7 +267,7 @@ func CreateRelease(cfg config.Config, basePage coreModel.Page, release releaseca
 	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 
 	if !result.Description.Finalised && result.Description.ProvisionalDate == "" {
-		result.Description.ProvisionalDate = result.Description.ReleaseDate
+		result.Description.ProvisionalDate = helper.DateTimeOnsDatePatternFormat(result.Description.ReleaseDate, result.Language )
 	}
 	return result
 }
