@@ -24,7 +24,7 @@ func TestUnitMapper(t *testing.T) {
 
 		releaseResponse := releasecalendar.Release{
 			URI:      "/releases/test",
-			Markdown: []string{"markdown1", "markdown 2"},
+			Markdown: []string{"<p>markdown1</p>\n", "<p>markdown 2</p>\n"},
 			RelatedDocuments: []releasecalendar.Link{
 				{
 					Title:   "Document 1",
