@@ -160,6 +160,10 @@ one = "Changes to this release date"
 description = "About the data"
 one = "About the data"
 
+[ReleaseSectionPreReleaseAccessList]
+description = "Pre-release access list"
+one = "Pre-release access list"
+
 [ReleaseSectionMoreOnThisTopic]
 description = "More on this topic"
 one = "More on this topic"

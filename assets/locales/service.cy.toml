@@ -160,6 +160,10 @@ one = "Newidiadau i ddyddiad y datganiad hwn"
 description = "About the data"
 one = "Ynglŷn â'r data"
 
+[ReleaseSectionPreReleaseAccessList]
+description = "Pre-release access list"
+one = "Pre-release access list"
+
 [ReleaseSectionMoreOnThisTopic]
 description = "More on this topic"
 one = "Mwy am y pwnc hwn"
