@@ -14,6 +14,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
 	"github.com/ONSdigital/dp-renderer/v2/helper"
 	coreModel "github.com/ONSdigital/dp-renderer/v2/model"
+	"github.com/russross/blackfriday/v2"
 )
 
 func createTableOfContents(
@@ -27,6 +28,7 @@ func createTableOfContents(
 	relatedMethodology []model.Link,
 	relatedMethodologyArticle []model.Link,
 	links []model.Link,
+	markdown []string,
 ) coreModel.TableOfContents {
 	toc := coreModel.TableOfContents{
 		AriaLabel: coreModel.Localisation{
@@ -119,6 +121,17 @@ func createTableOfContents(
 		displayOrder = append(displayOrder, "aboutthedata")
 	}
 
+	if len(markdown) > 0 {
+		sections["prereleaseaccesslist"] = coreModel.ContentSection{
+			Current: false,
+			Title: coreModel.Localisation{
+				LocaleKey: "ReleaseSectionPreReleaseAccessList",
+				Plural:    1,
+			},
+		}
+		displayOrder = append(displayOrder, "prereleaseaccesslist")
+	}
+
 	if len(links) > 0 {
 		sections["links"] = coreModel.ContentSection{
 			Current: false,
@@ -202,7 +215,7 @@ func createPreGTMJavaScript(title string, description model.ReleaseDescription) 
 func CreateRelease(cfg config.Config, basePage coreModel.Page, release releasecalendar.Release, lang, path, serviceMessage string, emergencyBannerContent zebedee.EmergencyBanner) model.Release {
 	result := model.Release{
 		Page:     basePage,
-		Markdown: release.Markdown,
+		Markdown: convertMarkdownToHTML(release.Markdown),
 		Description: model.ReleaseDescription{
 			Title:   release.Description.Title,
 			Summary: release.Description.Summary,
@@ -263,6 +276,7 @@ func CreateRelease(cfg config.Config, basePage coreModel.Page, release releaseca
 		result.RelatedMethodology,
 		result.RelatedMethodologyArticle,
 		result.Links,
+		result.Markdown,
 	)
 	result.PreGTMJavaScript = createPreGTMJavaScript(result.Metadata.Title, result.Description)
 
@@ -743,4 +757,13 @@ func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
 			}(params.Keywords),
 		},
 	}
+}
+
+func convertMarkdownToHTML(markdowns []string) []string {
+	markdownHTML := []string{}
+	for _, markdown := range markdowns {
+		html := blackfriday.Run([]byte(markdown))
+		markdownHTML = append(markdownHTML, string(html))
+	}
+	return markdownHTML
 }
