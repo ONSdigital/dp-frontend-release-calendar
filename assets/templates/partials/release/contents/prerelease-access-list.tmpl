@@ -1,16 +1,6 @@
 <div>
-  <p>
-    The phrase 'Pre-release Access' refers to the practice whereby official statistics
-    in their final form, and any accompanying written commentary, are made available to
-    an eligible person in advance of their publication. The rules and principles
-    which govern pre-release access are featured within the Pre-release Access to
-    Official Statistics Order 2008.
-  </p>
-
-  <p>
-    Besides ONS staff, the following persons are given pre-release access by
-    the period indicated before release.
-  </p>
+  <p>{{ localise "PreReleaseAccessListExplanation1" .Language 1 }}</p>
+  <p>{{ localise "PreReleaseAccessListExplanation2" .Language 1 }}</p>
   {{ range $markdown := .Markdown }}
   <div class="ons-u-mb-l">
     {{ $markdown | safeHTML }}
