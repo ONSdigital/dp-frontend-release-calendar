@@ -335,3 +335,11 @@ one = "Enter a released before year that is later than"
 [ClearAll]
 description = "Clear all"
 one = "Clirio'r cyfan"
+
+[PreReleaseAccessListExplanation1]
+description = "Explanation of what 'Pre-release Access' means"
+one = "The phrase 'Pre-release Access' refers to the practice whereby official statistics in their final form, and any accompanying written commentary, are made available to an eligible person in advance of their publication. The rules and principles which govern pre-release access are featured within the Pre-release Access to Official Statistics Order 2008."
+
+[PreReleaseAccessListExplanation2]
+description = "Who gets pre-release access and when"
+one = "Besides ONS staff, the following persons are given pre-release access by the period indicated before release."
