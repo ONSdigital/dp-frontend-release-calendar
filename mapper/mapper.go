@@ -357,6 +357,38 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		Options: mapSortOptions(params),
 	}
 
+	itemsPerPage := params.Limit
+
+	totalResults := cfg.DefaultMaximumSearchResults
+	if totalResults > response.Breakdown.Total {
+		totalResults = response.Breakdown.Total
+	}
+	currentPage := queryparams.CalculatePageNumber(params.Offset, itemsPerPage)
+
+	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, itemsPerPage)
+	calendar.Pagination.CurrentPage = currentPage
+	calendar.Pagination.Limit = itemsPerPage
+	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, cfg.CalendarPath(), calendar.Pagination.TotalPages, defaultWindowSize)
+	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
+	calendar.Pagination.LimitOptions = []int{10, 25}
+	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
+	calendar.Entries.Count = response.Breakdown.Total
+	calendar.RSSLink = fmt.Sprintf("releasecalendar?rss&%s", params.AsFrontendQuery().Encode())
+	for i := range response.Releases {
+		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
+	}
+	if currentPage > calendar.Pagination.TotalPages {
+		validationErrs = append(validationErrs, coreModel.ErrorItem{
+			Description: coreModel.Localisation{
+				Text: fmt.Sprintf("invalid page parameter: value is above total pages (%d)", calendar.Pagination.TotalPages),
+			},
+		})
+		calendar.Entries.Count = 0
+		response.Breakdown.Published = 0
+	}
+
+	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
+
 	var fdErrDescription, tdErrDescription []coreModel.Localisation
 	if len(validationErrs) > 0 {
 		calendar.Error = coreModel.Error{
@@ -514,29 +546,6 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 		},
 	}
 
-	itemsPerPage := params.Limit
-
-	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
-
-	totalResults := cfg.DefaultMaximumSearchResults
-	if totalResults > response.Breakdown.Total {
-		totalResults = response.Breakdown.Total
-	}
-	currentPage := queryparams.CalculatePageNumber(params.Offset, itemsPerPage)
-
-	calendar.Pagination.TotalPages = queryparams.CalculatePageNumber(totalResults-1, itemsPerPage)
-	calendar.Pagination.CurrentPage = currentPage
-	calendar.Pagination.Limit = itemsPerPage
-	calendar.Pagination.PagesToDisplay = getPagesToDisplay(params, cfg.CalendarPath(), calendar.Pagination.TotalPages, defaultWindowSize)
-	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
-	calendar.Pagination.LimitOptions = []int{10, 25}
-	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
-	calendar.Entries.Count = response.Breakdown.Total
-	calendar.RSSLink = fmt.Sprintf("releasecalendar?rss&%s", params.AsFrontendQuery().Encode())
-	for i := range response.Releases {
-		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
-	}
-
 	return calendar
 }
 
@@ -584,7 +593,7 @@ func getFirstAndLastPages(params queryparams.ValidatedParams, path string, total
 // whose current page is currentPage, and whose size is totalPages
 // It is an error to pass a parameter whose value is < 1, or a currentPage > totalPages, and the function will panic in this case
 func getWindowStartEndPage(currentPage, totalPages, windowSize int) (start, end int) {
-	if currentPage < 1 || totalPages < 1 || windowSize < 1 || currentPage > totalPages {
+	if totalPages < 1 || windowSize < 1 {
 		panic("invalid parameters for getWindowStartEndPage - see documentation")
 	}
 	switch {
