@@ -372,21 +372,22 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.Pagination.FirstAndLastPages = getFirstAndLastPages(params, cfg.CalendarPath(), calendar.Pagination.TotalPages)
 	calendar.Pagination.LimitOptions = []int{10, 25}
 	calendar.TotalSearchPosition = getTotalSearchPosition(currentPage, itemsPerPage)
-	calendar.Entries.Count = response.Breakdown.Total
 	calendar.RSSLink = fmt.Sprintf("releasecalendar?rss&%s", params.AsFrontendQuery().Encode())
-	for i := range response.Releases {
-		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
-	}
+
 	if currentPage > calendar.Pagination.TotalPages {
 		validationErrs = append(validationErrs, coreModel.ErrorItem{
 			Description: coreModel.Localisation{
 				Text: fmt.Sprintf("invalid page parameter: value is above total pages (%d)", calendar.Pagination.TotalPages),
 			},
 		})
-		calendar.Entries.Count = 0
-		response.Breakdown.Published = 0
+		response = search.ReleaseResponse{}
 	}
 
+	for i := range response.Releases {
+		calendar.Entries.Items = append(calendar.Entries.Items, calendarEntryFromRelease(response.Releases[i], cfg.RoutingPrefix))
+	}
+
+	calendar.Entries.Count = response.Breakdown.Total
 	calendar.ReleaseTypes = mapReleases(params, response, calendar.Language)
 
 	var fdErrDescription, tdErrDescription []coreModel.Localisation
