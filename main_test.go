@@ -24,7 +24,6 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 		fmt.Printf("failed to create release calendar component - error: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("controllerComponent Config: %+v\n", controllerComponent.Config)
 
 	apiFeature := controllerComponent.InitAPIFeature()
 
@@ -39,13 +38,11 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	controllerComponent.RegisterSteps(ctx)
 
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		fmt.Println("Before scenario:", sc.Name)
 		uiFeature.Reset()
 		return ctx, nil
 	})
 
 	ctx.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
-		fmt.Println("After scenario:", sc.Name)
 		uiFeature.Close()
 		controllerComponent.Close()
 		return ctx, nil

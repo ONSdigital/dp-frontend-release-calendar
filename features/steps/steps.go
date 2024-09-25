@@ -71,7 +71,6 @@ func (c *Component) theReleaseCalendarIsRunning() error {
 		return err
 	}
 
-	fmt.Println("Starting service")
 	svcErrors := make(chan error, 1)
 
 	c.StartTime = time.Now()

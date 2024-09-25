@@ -137,7 +137,6 @@ func (c *Component) getHTTPServer(bindAddr string, router http.Handler) service.
 }
 
 func generateSearchItem(num int) searchModels.Item {
-
 	title := fmt.Sprintf("Test Bulletin %d", num)
 	uri := fmt.Sprintf("http://localhost://test-bulletin-%d", num)
 	cdid := fmt.Sprintf("AA%d", num)
@@ -153,7 +152,6 @@ func generateSearchItem(num int) searchModels.Item {
 }
 
 func generateReleaseItem(num int) search.Release {
-
 	title := fmt.Sprintf("Test Bulletin %d", num)
 	description :=
 		search.ReleaseDescription{
