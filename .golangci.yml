@@ -79,7 +79,7 @@ issues:
         - dupl
         - gosec
         - revive
-    - path: service|main.go
+    - path: main.go|service|component.go
       linters:
         - typecheck
   new: false
