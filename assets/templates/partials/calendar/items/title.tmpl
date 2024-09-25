@@ -1,4 +1,4 @@
-<h2 class="ons-u-bb ons-u-pb-s" aria-live="polite">
+<h2 class="ons-u-bb ons-u-pb-s" aria-live="polite" id="results">
     {{ .Entries.Count }} 
     {{ if eq .Entries.Count 1 }} result {{ else }} results {{ end }} 
     {{ if .KeywordSearch.SearchTerm }} for <strong>'{{ .KeywordSearch.SearchTerm }}'</strong> {{ end }}
