@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -281,7 +282,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			ReleaseType: queryparams.Upcoming,
 		}
 
-		cfg := config.Config{DefaultMaximumSearchResults: 1000}
+		cfg := config.Config{DefaultMaximumSearchResults: 1000, DefaultMaximumLimit: 100}
 
 		Convey("CreateReleaseCalendar maps correctly to a model Calendar object", func() {
 			lang := "cy"
@@ -547,6 +548,16 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			So(calendar.AfterDate.ValidationErrDescription, ShouldResemble, expectedAfterErr.ValidationErrDescription)
 			So(calendar.BeforeDate.ValidationErrDescription, ShouldResemble, expectedBeforeErr.ValidationErrDescription)
 			So(calendar.Page.Error.ErrorItems, ShouldResemble, validationErrs)
+		})
+
+		Convey("CreateReleaseCalendar handles invalid page parameter correctly", func() {
+			params.Page = 4
+			params.Offset = queryparams.CalculateOffset(params.Page, params.Limit)
+			validationErrs := []coreModel.ErrorItem{}
+
+			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "", "", zebedee.EmergencyBanner{}, validationErrs)
+			So(calendar.Page.Error.ErrorItems, ShouldNotBeEmpty)
+			So(calendar.Page.Error.ErrorItems[0].Description.Text, ShouldEqual, fmt.Sprintf("invalid page parameter: value is above total pages (%d)", calendar.Pagination.TotalPages))
 		})
 	})
 }

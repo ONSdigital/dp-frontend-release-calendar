@@ -290,7 +290,7 @@ func TestUnitHandlers(t *testing.T) {
 						mockRenderClient.EXPECT().BuildPage(w, gomock.Any(), "calendar")
 						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
 
-						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1&release-type=type-sf&after-year=dad&before-day=44&after-month-99&sort=date-blah", endpoint), http.NoBody)
+						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s?limit=-1&release-type=type-sf&after-year=dad&before-day=44&after-month-99&sort=date-blah&page=dogs", endpoint), http.NoBody)
 
 						Convey("Then it returns 200", func() {
 							router.ServeHTTP(w, req)
