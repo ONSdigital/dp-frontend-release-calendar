@@ -37,15 +37,15 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 
 	controllerComponent.RegisterSteps(ctx)
 
-	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+	ctx.Before(func(context context.Context, sc *godog.Scenario) (context.Context, error) {
 		uiFeature.Reset()
-		return ctx, nil
+		return context, nil
 	})
 
-	ctx.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
+	ctx.After(func(context context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		uiFeature.Close()
 		controllerComponent.Close()
-		return ctx, nil
+		return context, nil
 	})
 }
 

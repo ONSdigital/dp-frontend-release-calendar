@@ -71,9 +71,6 @@ func NewReleaseCalendarComponent() (c *Component, err error) {
 
 	c.FakeAPIRouter.navigationRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/data")
 
-	// Please use the step to start the service - this is down to
-	// the auto updates against backing services are hard to predict so
-	// it is easier to provision them first and then start the service.
 	return c, nil
 }
 

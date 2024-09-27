@@ -2,7 +2,7 @@ Feature: Healthcheck endpoint should inform the health of service
 
     Scenario: Returning a OK (200) status when health endpoint called  
         Given the release calendar is running
-        And all of the downstream services are healthy
+        And the downstream service is healthy
         And I wait 2 seconds for the healthcheck to be available
         When I GET "/health"
         Then the HTTP status code should be "200"
@@ -30,7 +30,7 @@ Feature: Healthcheck endpoint should inform the health of service
 
     Scenario: Returning a WARNING (429) status when one downstream service is warning
         Given the release calendar is running  
-        And one of the downstream services is warning
+        And the downstream service is warning
         And I wait 2 seconds for the healthcheck to be available
         When I GET "/health"
         Then the HTTP status code should be "429"
@@ -58,7 +58,7 @@ Feature: Healthcheck endpoint should inform the health of service
 
     Scenario: Returning a WARNING (429) status when one downstream service is critical and critical timeout has not expired  
         Given the release calendar is running
-        And one of the downstream services is failing
+        And the downstream service is failing
         And I wait 2 seconds for the healthcheck to be available
         When I GET "/health"
         Then the HTTP status code should be "429"
@@ -86,7 +86,7 @@ Feature: Healthcheck endpoint should inform the health of service
 
     Scenario: Returning a CRITICAL (500) status when health endpoint called
         Given the release calendar is running
-        And one of the downstream services is failing
+        And the downstream service is failing
         And I wait 2 seconds for the healthcheck to be available
         When I GET "/health"
         And I wait 4 seconds to pass the critical timeout

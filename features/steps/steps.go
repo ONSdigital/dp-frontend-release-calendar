@@ -44,12 +44,7 @@ type Check struct {
 // RegisterSteps registers the specific steps needed to do component tests for the release calendar
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I should receive the following health JSON response:$`, c.iShouldReceiveTheFollowingHealthJSONResponse)
-	ctx.Step(`^I wait (\d+) seconds`, c.delayTimeBySeconds)
-	ctx.Step(`^all of the downstream services are healthy$`, c.allOfTheDownstreamServicesAreHealthy)
-	ctx.Step(`^one of the downstream services is failing`, c.oneOfTheDownstreamServicesIsFailing)
-	ctx.Step(`^one of the downstream services is warning`, c.oneOfTheDownstreamServicesIsWarning)
-	ctx.Step(`^the page should have the following xml content$`, c.thePageShouldHaveTheFollowingXmlContent)
-	ctx.Step(`^the response header "([^"]*)" should contain "([^"]*)"$`, c.theResponseHeaderShouldContain)
+	ctx.Step(`^the downstream service is (healthy|warning|failing)$`, c.theDownstreamServiceStatus)
 	ctx.Step(`^the release calendar is running$`, c.theReleaseCalendarIsRunning)
 	ctx.Step(`^there is a Search API that gives a successful response and returns ([1-9]\d*|0) results`, c.thereIsASearchAPIThatGivesASuccessfulResponseAndReturnsResults)
 }
@@ -81,35 +76,27 @@ func (c *Component) theReleaseCalendarIsRunning() error {
 	return nil
 }
 
-// delayTimeBySeconds pauses the goroutine for the given seconds
-func (c *Component) delayTimeBySeconds(sec int) error {
-	time.Sleep(time.Duration(int64(sec)) * time.Second)
-	return nil
+func (c *Component) theDownstreamServiceStatus(status string) error {
+	var statusCode int
+	switch status {
+	case "healthy":
+		statusCode = 200
+	case "warning":
+		statusCode = 429
+	case "failing":
+		statusCode = 500
+	default:
+		return fmt.Errorf("unknown status: %s", status)
+	}
+
+	return c.setDownstreamServiceStatus(statusCode)
 }
 
-func (c *Component) allOfTheDownstreamServicesAreHealthy() error {
+func (c *Component) setDownstreamServiceStatus(statusCode int) error {
 	c.FakeAPIRouter.healthRequest.Lock()
 	defer c.FakeAPIRouter.healthRequest.Unlock()
 
-	c.FakeAPIRouter.healthRequest.CustomHandle = healthCheckStatusHandle(200)
-
-	return nil
-}
-
-func (c *Component) oneOfTheDownstreamServicesIsWarning() error {
-	c.FakeAPIRouter.healthRequest.Lock()
-	defer c.FakeAPIRouter.healthRequest.Unlock()
-
-	c.FakeAPIRouter.healthRequest.CustomHandle = healthCheckStatusHandle(429)
-
-	return nil
-}
-
-func (c *Component) oneOfTheDownstreamServicesIsFailing() error {
-	c.FakeAPIRouter.healthRequest.Lock()
-	defer c.FakeAPIRouter.healthRequest.Unlock()
-
-	c.FakeAPIRouter.healthRequest.CustomHandle = healthCheckStatusHandle(500)
+	c.FakeAPIRouter.healthRequest.CustomHandle = healthCheckStatusHandle(statusCode)
 
 	return nil
 }
@@ -210,18 +197,5 @@ func (c *Component) thePageShouldHaveTheFollowingXmlContent(body *godog.DocStrin
 	if actual != expected {
 		return errors.New("expected body to be: " + "\n" + expected + "\n\t but actual is: " + "\n" + actual)
 	}
-	return nil
-}
-
-func (c *Component) theResponseHeaderShouldContain(key, value string) (err error) {
-	responseHeader := c.FakeAPIRouter.searchRequest.Response.Header
-	actualValue, actualExist := responseHeader[key]
-	if !actualExist {
-		return errors.New("expected header key " + key + ", does not exist in the header ")
-	}
-	if actualValue[0] != value {
-		return errors.New("expected header value " + value + ", but is actually is :" + actualValue[0])
-	}
-
 	return nil
 }
