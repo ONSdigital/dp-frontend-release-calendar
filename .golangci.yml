@@ -8,7 +8,7 @@ run:
   timeout: 5m
 linters-settings:
   govet:
-    check-shadowing: true
+    shadowing: true
   golint:
     min-confidence: 0
   gocyclo:
@@ -79,7 +79,7 @@ issues:
         - dupl
         - gosec
         - revive
-    - path: main.go|service|component.go
+    - path: main.go|service.go|component.go
       linters:
         - typecheck
   new: false
@@ -87,6 +87,6 @@ issues:
 # golangci.com configuration
 # https://github.com/golangci/golangci/wiki/Configuration
 service:
-  golangci-lint-version: 1.54.x # use the fixed version to not introduce new linters unexpectedly
+  golangci-lint-version: 1.61.x # use the fixed version to not introduce new linters unexpectedly
   prepare:
     - echo "here I can run custom commands, but no preparation needed for this repo"
