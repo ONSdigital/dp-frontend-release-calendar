@@ -23,7 +23,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
-	github.com/ONSdigital/dp-component-test v0.13.0
+	github.com/ONSdigital/dp-component-test v0.14.0
 	github.com/ONSdigital/dp-cookies v0.5.0 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.7.0 // indirect
 	github.com/c2h5oh/datasize v0.0.0-20231215233829-aa82cc1e6500 // indirect
