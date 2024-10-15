@@ -30,7 +30,6 @@ type Component struct {
 	Config         *config.Config
 	ErrorFeature   componentTest.ErrorFeature
 	FakeAPIRouter  *FakeAPI
-	fakeRequest    *httpfake.Request
 	HTTPServer     *http.Server
 	ServiceRunning bool
 	svc            *service.Service
@@ -41,8 +40,10 @@ type Component struct {
 // NewReleaseCalendarComponent creates a release calendar component
 func NewReleaseCalendarComponent() (c *Component, err error) {
 	c = &Component{
-		HTTPServer: &http.Server{},
-		svcErrors:  make(chan error),
+		HTTPServer: &http.Server{
+			ReadHeaderTimeout: 5 * time.Second,
+		},
+		svcErrors: make(chan error),
 	}
 
 	ctx := context.Background()
@@ -98,7 +99,7 @@ func (c *Component) InitialiseService() (http.Handler, error) {
 	return c.HTTPServer.Handler, nil
 }
 
-func getHealthCheckOK(cfg *config.Config, buildTime, gitCommit, version string) (service.HealthChecker, error) {
+func getHealthCheckOK(cfg *config.Config, _, _, _ string) (service.HealthChecker, error) {
 	componentBuildTime := strconv.Itoa(int(time.Now().Unix()))
 	versionInfo, err := healthcheck.NewVersionInfo(componentBuildTime, gitCommitHash, appVersion)
 	if err != nil {
@@ -108,7 +109,7 @@ func getHealthCheckOK(cfg *config.Config, buildTime, gitCommit, version string) 
 	return &hc, nil
 }
 
-func (c *Component) getHealthClient(name string, url string) *health.Client {
+func (c *Component) getHealthClient(name, url string) *health.Client {
 	return &health.Client{
 		URL:    url,
 		Name:   name,
@@ -119,9 +120,9 @@ func (c *Component) getHealthClient(name string, url string) *health.Client {
 // newMock mocks HTTP Client
 func (f *FakeAPI) getMockAPIHTTPClient() *dphttp.ClienterMock {
 	return &dphttp.ClienterMock{
-		SetPathsWithNoRetriesFunc: func(paths []string) {},
+		SetPathsWithNoRetriesFunc: func(_ []string) {},
 		GetPathsWithNoRetriesFunc: func() []string { return []string{} },
-		DoFunc: func(ctx context.Context, req *http.Request) (*http.Response, error) {
+		DoFunc: func(_ context.Context, req *http.Request) (*http.Response, error) {
 			return f.fakeHTTP.Server.Client().Do(req)
 		},
 	}

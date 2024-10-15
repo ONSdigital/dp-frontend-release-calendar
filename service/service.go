@@ -92,8 +92,8 @@ func (svc *Service) Run(ctx context.Context, svcErrors chan error) {
 	log.Info(ctx, "Starting server")
 	go func() {
 		if err := svc.Server.ListenAndServe(); err != nil {
-			log.Fatal(ctx, "failed to start http listen and serve", err)
 			svcErrors <- err
+			log.Fatal(ctx, "failed to start http listen and serve", err)
 		}
 	}()
 }

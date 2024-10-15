@@ -17,7 +17,6 @@ func main() {
 
 	if err := run(ctx); err != nil {
 		log.Fatal(ctx, "application unexpectedly failed", err)
-		os.Exit(1)
 	}
 
 	os.Exit(0)

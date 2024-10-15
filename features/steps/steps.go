@@ -3,11 +3,9 @@ package steps
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/ONSdigital/dp-frontend-release-calendar/service"
@@ -102,7 +100,7 @@ func (c *Component) setDownstreamServiceStatus(statusCode int) error {
 }
 
 func healthCheckStatusHandle(status int) httpfake.Responder {
-	return func(w http.ResponseWriter, r *http.Request, rh *httpfake.Request) {
+	return func(w http.ResponseWriter, _ *http.Request, rh *httpfake.Request) {
 		rh.Lock()
 		defer rh.Unlock()
 		w.WriteHeader(status)
@@ -112,7 +110,7 @@ func healthCheckStatusHandle(status int) httpfake.Responder {
 func (c *Component) iShouldReceiveTheFollowingHealthJSONResponse(expectedResponse *godog.DocString) error {
 	var healthResponse, expectedHealth HealthCheckTest
 
-	responseBody, err := ioutil.ReadAll(c.APIFeature.HTTPResponse.Body)
+	responseBody, err := io.ReadAll(c.APIFeature.HTTPResponse.Body)
 	if err != nil {
 		return fmt.Errorf("failed to read response of release calendar component - error: %v", err)
 	}
@@ -132,7 +130,7 @@ func (c *Component) iShouldReceiveTheFollowingHealthJSONResponse(expectedRespons
 	return c.ErrorFeature.StepError()
 }
 
-func (c *Component) validateHealthCheckResponse(healthResponse HealthCheckTest, expectedResponse HealthCheckTest) {
+func (c *Component) validateHealthCheckResponse(healthResponse, expectedResponse HealthCheckTest) {
 	maxExpectedStartTime := c.StartTime.Add((c.Config.HealthCheckInterval + 1) * time.Second)
 
 	assert.Equal(&c.ErrorFeature, expectedResponse.Status, healthResponse.Status)
@@ -147,7 +145,7 @@ func (c *Component) validateHealthCheckResponse(healthResponse HealthCheckTest, 
 	}
 }
 
-func (c *Component) validateHealthVersion(versionResponse healthcheck.VersionInfo, expectedVersion healthcheck.VersionInfo, maxExpectedStartTime time.Time) {
+func (c *Component) validateHealthVersion(versionResponse, expectedVersion healthcheck.VersionInfo, maxExpectedStartTime time.Time) {
 	assert.True(&c.ErrorFeature, versionResponse.BuildTime.Before(maxExpectedStartTime))
 	assert.Equal(&c.ErrorFeature, expectedVersion.GitCommit, versionResponse.GitCommit)
 	assert.Equal(&c.ErrorFeature, expectedVersion.Language, versionResponse.Language)
@@ -180,22 +178,5 @@ func (c *Component) thereIsASearchAPIThatGivesASuccessfulResponseAndReturnsResul
 
 	c.FakeAPIRouter.searchReleasesRequest.Response = generateReleasesResponse(count)
 
-	return nil
-}
-
-func (c *Component) thePageShouldHaveTheFollowingXmlContent(body *godog.DocString) error {
-
-	tmpExpected := string(c.FakeAPIRouter.searchRequest.Response.BodyBuffer[:])
-	actual := strings.Replace(strings.Replace(strings.TrimSpace(string(tmpExpected[:])), "\n", "", -1), "\t", "", -1)
-	actual = strings.Join(strings.Fields(strings.TrimSpace(actual)), " ")
-	actual = strings.Replace(actual, "><", "> <", -1)
-
-	expected := strings.Replace(strings.Replace(strings.TrimSpace(string(body.Content[:])), "\n", "", -1), "\t", "", -1)
-	expected = strings.Join(strings.Fields(strings.TrimSpace(expected)), " ")
-	expected = strings.Replace(expected, "><", "> <", -1)
-
-	if actual != expected {
-		return errors.New("expected body to be: " + "\n" + expected + "\n\t but actual is: " + "\n" + actual)
-	}
 	return nil
 }
