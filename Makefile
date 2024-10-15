@@ -45,7 +45,7 @@ fmt: ## Run Go formatting on code
 	go fmt ./...
 
 .PHONY: lint
-lint: ## Used in ci to run linters against Go code
+lint: generate-prod ## Used in ci to run linters against Go code
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
 	golangci-lint run ./...
 
