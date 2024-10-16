@@ -79,9 +79,6 @@ issues:
         - dupl
         - gosec
         - revive
-    - path: main.go|service|component.go
-      linters:
-        - typecheck
   new: false
 
 # golangci.com configuration
