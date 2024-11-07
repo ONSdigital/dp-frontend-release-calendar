@@ -12,7 +12,7 @@ import (
 )
 
 // To mock interfaces in this file
-//go:generate mockgen -source=clients.go -destination=mock_clients.go -package=handlers github.com/ONSdigital/dp-frontend-articles-controller/handlers
+//go:generate mockgen -source=clients.go -destination=mock_clients.go -package=handlers github.com/ONSdigital/dp-frontend-release-calendar/handlers
 
 // ClientError is an interface that can be used to retrieve the status code if a client has errored
 type ClientError interface {
