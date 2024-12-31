@@ -3,10 +3,10 @@ module github.com/ONSdigital/dp-frontend-release-calendar
 go 1.23
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.261.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.262.0
 	github.com/ONSdigital/dp-healthcheck v1.6.3
-	github.com/ONSdigital/dp-net/v2 v2.12.0
-	github.com/ONSdigital/dp-renderer/v2 v2.16.0
+	github.com/ONSdigital/dp-net/v2 v2.13.0
+	github.com/ONSdigital/dp-renderer/v2 v2.16.1
 	github.com/ONSdigital/dp-search-api v1.48.0
 	github.com/ONSdigital/log.go/v2 v2.4.3
 	github.com/cucumber/godog v0.15.0
@@ -18,7 +18,7 @@ require (
 	github.com/kevinburke/go-bindata v3.24.0+incompatible
 	github.com/maxcnunes/httpfake v1.2.4
 	github.com/smartystreets/goconvey v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
@@ -43,7 +43,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
-	github.com/gosimple/slug v1.14.0 // indirect
+	github.com/gosimple/slug v1.15.0 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
@@ -59,7 +59,6 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.4.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/smarty/assertions v1.16.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
@@ -70,13 +69,14 @@ require (
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	go.mongodb.org/mongo-driver v1.17.1 // indirect
-	go.opentelemetry.io/otel v1.32.0 // indirect
-	go.opentelemetry.io/otel/metric v1.32.0 // indirect
-	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
-	golang.org/x/net v0.31.0 // indirect
-	golang.org/x/sync v0.9.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
+	go.opentelemetry.io/otel v1.33.0 // indirect
+	go.opentelemetry.io/otel/metric v1.33.0 // indirect
+	go.opentelemetry.io/otel/trace v1.33.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
