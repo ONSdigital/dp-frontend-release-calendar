@@ -54,6 +54,8 @@ type Calendar struct {
 	Entries             Entries                 `json:"entries"`
 	KeywordSearch       coreModel.CompactSearch `json:"keyword_search"`
 	TotalSearchPosition int                     `json:"total_search_position,omitempty"`
+	EnableFeedbackAPI   bool                    `json:"enable_feedback_api"`
+	FeedbackAPIURL      string                  `json:"feedback_api_url"`
 }
 
 func (calendar Calendar) FuncIsFilterSearchPresent() bool {

@@ -341,6 +341,8 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 	calendar.ServiceMessage = serviceMessage
 	calendar.EmergencyBanner = mapEmergencyBanner(emergencyBannerContent)
 	calendar.Metadata.Title = helper.Localise("ReleaseCalendarPageTitle", calendar.Language, 1)
+	calendar.FeatureFlags.EnableFeedbackAPI = cfg.EnableFeedbackAPI
+	calendar.FeatureFlags.FeedbackAPIURL = cfg.FeedbackAPIURL
 	calendar.KeywordSearch = coreModel.CompactSearch{
 		ElementId: "keyword-search",
 		InputName: "keywords",

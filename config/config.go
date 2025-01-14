@@ -17,6 +17,8 @@ type Config struct {
 	DefaultMaximumLimit         int           `envconfig:"DEFAULT_MAXIMUM_LIMIT"`
 	DefaultMaximumSearchResults int           `envconfig:"DEFAULT_MAXIMUM_SEARCH_RESULTS"`
 	DefaultSort                 string        `envconfig:"DEFAULT_SORT"`
+	EnableFeedbackAPI           bool          `envconfig:"ENABLE_FEEDBACK_API"`
+	FeedbackAPIURL              string        `envconfig:"FEEDBACK_API_URL"`
 	GracefulShutdownTimeout     time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckCriticalTimeout  time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
@@ -42,7 +44,7 @@ func Get() (*Config, error) {
 	if cfg.Debug {
 		cfg.PatternLibraryAssetsPath = "http://localhost:9002/dist/assets"
 	} else {
-		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/b3361a2"
+		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/2c5185a"
 	}
 
 	cfg.RoutingPrefix = validateRoutingPrefix(cfg.RoutingPrefix)
@@ -63,6 +65,8 @@ func get() (*Config, error) {
 		DefaultMaximumLimit:         100,
 		DefaultMaximumSearchResults: 1000,
 		DefaultSort:                 queryparams.RelDateDesc.String(),
+		EnableFeedbackAPI:           false,
+		FeedbackAPIURL:              "http://localhost:23200/v1/feedback",
 		GracefulShutdownTimeout:     5 * time.Second,
 		HealthCheckCriticalTimeout:  90 * time.Second,
 		HealthCheckInterval:         30 * time.Second,
