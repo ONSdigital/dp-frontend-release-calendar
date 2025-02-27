@@ -13,12 +13,14 @@
     </a>
   </p>
 
-  <h3 class="ons-u-mb-no ons-u-fs-r--b">
-    {{- localise "ReleaseSubsectionPhone" .Language 1 -}}
-  </h3>
-  <p>
-    <a href="tel:{{ .Description.Contact.Telephone }}">
-      {{- .Description.Contact.Telephone -}}
-    </a>
-  </p>
+  {{ if .Description.Contact.Telephone }}
+    <h3 class="ons-u-mb-no ons-u-fs-r--b">
+      {{- localise "ReleaseSubsectionPhone" .Language 1 -}}
+    </h3>
+    <p>
+      <a href="tel:{{ .Description.Contact.Telephone }}">
+        {{- .Description.Contact.Telephone -}}
+      </a>
+    </p>
+  {{ end }}
 </div>
