@@ -36,7 +36,6 @@ type Release struct {
 	Description               ReleaseDescription `json:"description"`
 	AboutTheData              bool               `json:"about_the_data"`
 	PublicationState          PublicationState   `json:"publication_state"`
-	EnableFeedbackAPI         bool               `json:"enable_feedback_api"`
 	FeedbackAPIURL            string             `json:"feedback_api_url"`
 }
 
