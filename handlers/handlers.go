@@ -19,7 +19,7 @@ import (
 	core "github.com/ONSdigital/dp-renderer/v2/model"
 	"github.com/gorilla/feeds"
 
-	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
+	dphandlers "github.com/ONSdigital/dp-net/v3/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
