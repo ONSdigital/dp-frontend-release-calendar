@@ -36,7 +36,7 @@
             </div>
             <div class="ons-grid__col ons-col-8@m ons-col-12@s ons-u-p-no@xxs@m">
               <span class="ons-u-fs-r--b">{{ localise "ReleaseStatusLineNextRelease" .Language 1 }}:</span>
-              <span class="ons-u-nowrap">{{ dateTimeOnsDatePatternFormat .Description.NextRelease .Language }}</span>
+              <span class="ons-u-nowrap">{{ .Description.NextRelease .Language }}</span>
             </div>
           </div>
         {{ else }}
