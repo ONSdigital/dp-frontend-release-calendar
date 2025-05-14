@@ -31,10 +31,12 @@ const (
 
 func setStatusCode(req *http.Request, w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
-	if err, ok := err.(ClientError); ok {
-		status = err.Code()
+	if clientErr, ok := err.(ClientError); ok {
+		status = clientErr.Code()
+		log.Info(req.Context(), "setting client error response status")
+	} else {
+		log.Error(req.Context(), "setting internal error response status", err)
 	}
-	log.Error(req.Context(), "setting-response-status", err)
 	w.WriteHeader(status)
 }
 
