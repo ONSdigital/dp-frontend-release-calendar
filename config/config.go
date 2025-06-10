@@ -43,7 +43,7 @@ func Get() (*Config, error) {
 	if cfg.Debug {
 		cfg.PatternLibraryAssetsPath = "http://localhost:9002/dist/assets"
 	} else {
-		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/28d6b95"
+		cfg.PatternLibraryAssetsPath = "//cdn.ons.gov.uk/dp-design-system/f3e1909"
 	}
 
 	cfg.RoutingPrefix = validateRoutingPrefix(cfg.RoutingPrefix)
