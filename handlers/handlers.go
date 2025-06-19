@@ -57,6 +57,12 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 			return
 		}
 
+		if release.Description.MigrationLink != "" {
+			w.Header().Add("Location", release.Description.MigrationLink)
+			w.WriteHeader(http.StatusPermanentRedirect)
+			return
+		}
+
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(cfg, basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
 

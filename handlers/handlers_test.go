@@ -70,7 +70,7 @@ func TestUnitHandlers(t *testing.T) {
 		})
 	})
 
-	Convey("test API", t, func() {
+	Convey("test handler", t, func() {
 		mockRenderClient := NewMockRenderClient(mockCtrl)
 		mockConfig, _ := config.Get()
 
@@ -89,7 +89,7 @@ func TestUnitHandlers(t *testing.T) {
 			titleSegment := strings.ReplaceAll(strings.ToLower(r.Description.Title), " ", "")
 			r.URI = fmt.Sprintf("%s/%s", root, titleSegment)
 
-			Convey("test '/releases'", func() {
+			Convey("test '/releases/{release-title}'", func() {
 				router.HandleFunc(root+"/{release-title}", Release(*mockConfig, mockRenderClient, mockAPIClient, mockZebedeeClient))
 
 				req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s", root, titleSegment), http.NoBody)
@@ -148,6 +148,29 @@ func TestUnitHandlers(t *testing.T) {
 
 							So(w.Code, ShouldEqual, http.StatusOK)
 						})
+					})
+				})
+
+				Convey("When the response includes a migrationLink", func() {
+					redirect := "/redirect1"
+					releaseWithMigrationLink := releasecalendar.Release{
+						Description: releasecalendar.ReleaseDescription{
+							Title:         "Test release",
+							MigrationLink: redirect,
+						},
+						URI: "/releases/myrelease",
+					}
+
+					req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s", releaseWithMigrationLink.URI), http.NoBody)
+
+					mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
+					mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, releaseWithMigrationLink.URI).Return(&releaseWithMigrationLink, nil)
+
+					Convey("Then it returns 308", func() {
+						router.ServeHTTP(w, req)
+						location := w.Result().Header.Get("Location")
+						So(w.Code, ShouldEqual, http.StatusPermanentRedirect)
+						So(location, ShouldEqual, redirect)
 					})
 				})
 			})

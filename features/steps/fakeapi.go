@@ -11,6 +11,7 @@ type FakeAPI struct {
 	searchRequest         *httpfake.Request
 	searchReleasesRequest *httpfake.Request
 	navigationRequest     *httpfake.Request
+	releaseRequest        *httpfake.Request
 }
 
 // NewFakeAPI creates a new fake component API

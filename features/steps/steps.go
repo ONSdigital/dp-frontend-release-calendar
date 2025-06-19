@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	"github.com/ONSdigital/dp-frontend-release-calendar/service"
 	"github.com/ONSdigital/dp-frontend-release-calendar/service/mocks"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -45,6 +46,8 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^the downstream service is (healthy|warning|failing)$`, c.theDownstreamServiceStatus)
 	ctx.Step(`^the release calendar is running$`, c.theReleaseCalendarIsRunning)
 	ctx.Step(`^there is a Search API that gives a successful response and returns ([1-9]\d*|0) results`, c.thereIsASearchAPIThatGivesASuccessfulResponseAndReturnsResults)
+	ctx.Step(`^there is a Release Calendar API that gives a successful response for "([^"]*)$"`, c.thereIsAReleaseAPIThatGivesASuccessfulResponseFor)
+	ctx.Step(`^there is a Release Calendar API that gives a successful response for "([^"]*)" with a migration link`, c.thereIsAReleaseAPIThatGivesASuccessfulResponseForWithMigrationLink)
 }
 
 func (c *Component) theReleaseCalendarIsRunning() error {
@@ -177,6 +180,39 @@ func (c *Component) thereIsASearchAPIThatGivesASuccessfulResponseAndReturnsResul
 	defer c.FakeAPIRouter.searchReleasesRequest.Unlock()
 
 	c.FakeAPIRouter.searchReleasesRequest.Response = generateReleasesResponse(count)
+
+	return nil
+}
+
+func (c *Component) thereIsAReleaseAPIThatGivesASuccessfulResponseFor() error {
+	c.FakeAPIRouter.releaseRequest.Lock()
+	defer c.FakeAPIRouter.releaseRequest.Unlock()
+
+	mockedResult := releasecalendar.Release{
+		Description: releasecalendar.ReleaseDescription{
+			Title: "My test release",
+		},
+	}
+
+	c.FakeAPIRouter.releaseRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/releases/legacy")
+	c.FakeAPIRouter.releaseRequest.Response = generateReleaseEntryResponse(mockedResult)
+
+	return nil
+}
+
+func (c *Component) thereIsAReleaseAPIThatGivesASuccessfulResponseForWithMigrationLink() error {
+	c.FakeAPIRouter.releaseRequest.Lock()
+	defer c.FakeAPIRouter.releaseRequest.Unlock()
+
+	mockedResult := releasecalendar.Release{
+		Description: releasecalendar.ReleaseDescription{
+			Title:         "My test release with migration link",
+			MigrationLink: "/redirect1",
+		},
+	}
+
+	c.FakeAPIRouter.releaseRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/releases/legacy")
+	c.FakeAPIRouter.releaseRequest.Response = generateReleaseEntryResponse(mockedResult)
 
 	return nil
 }

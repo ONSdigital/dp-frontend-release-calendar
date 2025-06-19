@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
+	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	componentTest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
@@ -69,6 +70,13 @@ func NewReleaseCalendarComponent() (c *Component, err error) {
 
 	c.FakeAPIRouter.searchReleasesRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/search/releases")
 	c.FakeAPIRouter.searchReleasesRequest.Response = generateReleasesResponse(1)
+
+	c.FakeAPIRouter.releaseRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/releases/myrelease")
+	c.FakeAPIRouter.releaseRequest.Response = generateReleaseEntryResponse(releasecalendar.Release{
+		Description: releasecalendar.ReleaseDescription{
+			Title: "My test release default",
+		},
+	})
 
 	c.FakeAPIRouter.navigationRequest = c.FakeAPIRouter.fakeHTTP.NewHandler().Get("/data")
 
@@ -198,6 +206,14 @@ func generateReleasesResponse(count int) *httpfake.Response {
 	fakeAPIResponse := httpfake.NewResponse()
 	fakeAPIResponse.Status(200)
 	fakeAPIResponse.BodyStruct(searchAPIResponse)
+
+	return fakeAPIResponse
+}
+
+func generateReleaseEntryResponse(releaseEntry releasecalendar.Release) *httpfake.Response {
+	fakeAPIResponse := httpfake.NewResponse()
+	fakeAPIResponse.Status(200)
+	fakeAPIResponse.BodyStruct(releaseEntry)
 
 	return fakeAPIResponse
 }
