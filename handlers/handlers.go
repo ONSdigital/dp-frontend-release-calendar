@@ -58,8 +58,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 		}
 
 		if release.Description.MigrationLink != "" {
-			w.Header().Add("Location", release.Description.MigrationLink)
-			w.WriteHeader(http.StatusPermanentRedirect)
+			http.Redirect(w, r, release.Description.MigrationLink, http.StatusPermanentRedirect)
 			return
 		}
 
