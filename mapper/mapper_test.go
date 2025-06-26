@@ -547,7 +547,7 @@ func TestReleaseCalendarMapper(t *testing.T) {
 
 			So(calendar.AfterDate.ValidationErrDescription, ShouldResemble, expectedAfterErr.ValidationErrDescription)
 			So(calendar.BeforeDate.ValidationErrDescription, ShouldResemble, expectedBeforeErr.ValidationErrDescription)
-			So(calendar.Page.Error.ErrorItems, ShouldResemble, validationErrs)
+			So(calendar.Error.ErrorItems, ShouldResemble, validationErrs)
 		})
 
 		Convey("CreateReleaseCalendar handles invalid page parameter correctly", func() {
@@ -556,8 +556,8 @@ func TestReleaseCalendarMapper(t *testing.T) {
 			validationErrs := []coreModel.ErrorItem{}
 
 			calendar := CreateReleaseCalendar(basePage, params, releaseResponse, cfg, "", "", zebedee.EmergencyBanner{}, validationErrs)
-			So(calendar.Page.Error.ErrorItems, ShouldNotBeEmpty)
-			So(calendar.Page.Error.ErrorItems[0].Description.Text, ShouldEqual, fmt.Sprintf("invalid page parameter: value is above total pages (%d)", calendar.Pagination.TotalPages))
+			So(calendar.Error.ErrorItems, ShouldNotBeEmpty)
+			So(calendar.Error.ErrorItems[0].Description.Text, ShouldEqual, fmt.Sprintf("invalid page parameter: value is above total pages (%d)", calendar.Pagination.TotalPages))
 		})
 	})
 }
