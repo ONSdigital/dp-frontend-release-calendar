@@ -4,10 +4,11 @@ go 1.24
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.267.0
+	github.com/ONSdigital/dp-component-test v0.24.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
 	github.com/ONSdigital/dp-net/v3 v3.3.0
 	github.com/ONSdigital/dp-renderer/v2 v2.24.0
-	github.com/ONSdigital/dp-search-api v1.49.3
+	github.com/ONSdigital/dp-search-api v1.50.0
 	github.com/ONSdigital/log.go/v2 v2.4.5
 	github.com/cucumber/godog v0.15.0
 	github.com/golang/mock v1.6.0
@@ -18,20 +19,25 @@ require (
 	github.com/maxcnunes/httpfake v1.2.4
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.10.0
+
 )
 
 require (
 	github.com/BurntSushi/toml v1.5.0 // indirect
-	github.com/ONSdigital/dp-component-test v0.20.0
+	github.com/ONSdigital/dis-redis v0.3.0 // indirect
 	github.com/ONSdigital/dp-cookies v0.6.0 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.8.1 // indirect
+	github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 // indirect
+	github.com/alicebob/miniredis/v2 v2.34.0 // indirect
 	github.com/c2h5oh/datasize v0.0.0-20231215233829-aa82cc1e6500 // indirect
-	github.com/chromedp/cdproto v0.0.0-20250403032234-65de8f5d025b // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/chromedp/cdproto v0.0.0-20250414052033-3603534576c0 // indirect
 	github.com/chromedp/chromedp v0.13.6 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-json-experiment/json v0.0.0-20250223041408-d3c622f1b874 // indirect
@@ -58,6 +64,7 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/redis/go-redis/v9 v9.9.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/smarty/assertions v1.16.0 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
@@ -67,6 +74,7 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.36.0 // indirect
