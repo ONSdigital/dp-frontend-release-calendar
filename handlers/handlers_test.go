@@ -149,6 +149,19 @@ func TestUnitHandlers(t *testing.T) {
 							So(w.Code, ShouldEqual, http.StatusOK)
 						})
 					})
+
+					Convey("And the request uses eTags", func() {
+						mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
+
+						Convey("Then the eTag header is set", func() {
+							router.ServeHTTP(w, req)
+							eTag := w.Header().Get("ETag")
+
+							So(eTag, ShouldNotBeEmpty)
+							So(w.Code, ShouldEqual, http.StatusOK)
+						})
+					})
 				})
 
 				Convey("When the response includes a migrationLink", func() {
@@ -171,6 +184,23 @@ func TestUnitHandlers(t *testing.T) {
 						location := w.Result().Header.Get("Location")
 						So(w.Code, ShouldEqual, http.StatusPermanentRedirect)
 						So(location, ShouldEqual, redirect)
+					})
+				})
+
+				Convey("When the requested content has not changed", func() {
+					mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
+					mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
+					mockRenderClient.EXPECT().NewBasePageModel()
+
+					Convey("And the request has a matching If-None-Match header", func() {
+						eTag := `"b2fa00b05cccd263d7c9d00997d752ec17efdf1f"`
+						req.Header.Set("If-None-Match", eTag)
+
+						Convey("Then it returns 304", func() {
+							router.ServeHTTP(w, req)
+
+							So(w.Code, ShouldEqual, http.StatusNotModified)
+						})
 					})
 				})
 			})

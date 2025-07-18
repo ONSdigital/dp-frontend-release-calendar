@@ -20,6 +20,7 @@ import (
 	"github.com/gorilla/feeds"
 
 	dphandlers "github.com/ONSdigital/dp-net/v3/handlers"
+	"github.com/ONSdigital/dp-net/v3/handlers/response"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
@@ -64,6 +65,21 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 
 		basePage := rc.NewBasePageModel()
 		m := mapper.CreateRelease(cfg, basePage, *release, lang, cfg.CalendarPath(), homepageContent.ServiceMessage, homepageContent.EmergencyBanner)
+
+		b, err := json.Marshal(m)
+		if err != nil {
+			log.Error(ctx, "error marshalling release page model", err)
+			setStatusCode(r, w, err)
+			return
+		}
+
+		generatedETag := response.GenerateETag(b, false)
+		requestedETag := r.Header.Get("If-None-Match")
+		if requestedETag == generatedETag {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+		response.SetETag(w, generatedETag)
 
 		rc.BuildPage(w, m, "release")
 	})
