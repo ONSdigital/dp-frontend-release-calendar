@@ -193,7 +193,7 @@ func TestUnitHandlers(t *testing.T) {
 					mockRenderClient.EXPECT().NewBasePageModel()
 
 					Convey("And the request has a matching If-None-Match header", func() {
-						eTag := `"b2fa00b05cccd263d7c9d00997d752ec17efdf1f"`
+						eTag := `W/"b2fa00b05cccd263d7c9d00997d752ec17efdf1f"`
 						req.Header.Set("If-None-Match", eTag)
 
 						Convey("Then it returns 304", func() {

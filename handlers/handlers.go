@@ -73,7 +73,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 			return
 		}
 
-		generatedETag := response.GenerateETag(b, false)
+		generatedETag := response.GenerateETag(b, true)
 		requestedETag := r.Header.Get("If-None-Match")
 		if requestedETag == generatedETag {
 			w.WriteHeader(http.StatusNotModified)
