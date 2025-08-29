@@ -27,9 +27,12 @@ import (
 )
 
 const (
-	lang         = "en"
-	accessToken  = "token"
-	collectionID = "collection"
+	lang               = "en"
+	accessToken        = "token"
+	collectionID       = "collection"
+	sunsetLink         = "https://www.ons.gov.uk"
+	deprecationDate    = "Fri, 26 Aug 2025 23:59:59 GMT"
+	deprecationMessage = "The releases data endpoint is deprecated"
 )
 
 type testCliError struct{}
@@ -254,6 +257,75 @@ func TestUnitHandlers(t *testing.T) {
 					router.ServeHTTP(w, req)
 
 					So(w.Code, ShouldEqual, http.StatusInternalServerError)
+				})
+			})
+
+			Convey("Test '/releases/{release-title}/data' endpoint deprecation", func() {
+				Convey("When deprecation is enabled", func() {
+					mockConfig.Deprecation.EndpointDeprecation = true
+					mockConfig.Deprecation.SunsetLink = sunsetLink
+					mockConfig.Deprecation.DeprecationDate = deprecationDate
+					mockConfig.Deprecation.DeprecationMessage = deprecationMessage
+
+					Convey("And the sunset date has passed", func() {
+						mockConfig.Deprecation.SunsetDate = "Fri, 26 Aug 2025 23:59:59 GMT"
+
+						Convey("And the release is retrieved successfully", func() {
+							req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/data", root, titleSegment), http.NoBody)
+
+							router.HandleFunc(root+"/{release-title}/data", ReleaseData(*mockConfig, mockAPIClient))
+
+							router.ServeHTTP(w, req)
+
+							Convey("Then it returns 404", func() {
+								So(w.Code, ShouldEqual, http.StatusNotFound)
+								So(w.Header().Get("content-type"), ShouldEqual, "application/json")
+								So(w.Header().Get("sunset-link"), ShouldEqual, sunsetLink)
+								So(w.Header().Get("sunset-date"), ShouldEqual, "Fri, 26 Aug 2025 23:59:59 GMT")
+								So(w.Header().Get("deprecation-date"), ShouldEqual, deprecationDate)
+							})
+						})
+					})
+
+					Convey("And the sunset date has not passed", func() {
+						mockConfig.Deprecation.SunsetDate = "Fri, 26 Aug 2026 23:59:59 GMT"
+
+						Convey("And the release is retrieved successfully", func() {
+							req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/data", root, titleSegment), http.NoBody)
+
+							router.HandleFunc(root+"/{release-title}/data", ReleaseData(*mockConfig, mockAPIClient))
+
+							router.ServeHTTP(w, req)
+
+							Convey("Then it returns 200", func() {
+								So(w.Code, ShouldEqual, http.StatusOK)
+							})
+						})
+					})
+				})
+
+				Convey("When deprecation is disabled", func() {
+					mockConfig.Deprecation.EndpointDeprecation = false
+
+					js, _ := json.Marshal(r)
+					Convey("And the release is retrieved successfully", func() {
+						mockAPIClient.EXPECT().GetLegacyRelease(ctx, accessToken, collectionID, lang, r.URI).Return(&r, nil)
+
+						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/data", root, titleSegment), http.NoBody)
+						if err := setRequestHeaders(req); err != nil {
+							t.Fatalf("unable to set request headers, error: %v", err)
+						}
+
+						router.HandleFunc(root+"/{release-title}/data", ReleaseData(*mockConfig, mockAPIClient))
+
+						router.ServeHTTP(w, req)
+
+						Convey("Then it returns 200", func() {
+							So(w.Code, ShouldEqual, http.StatusOK)
+							So(w.Header().Get("content-type"), ShouldEqual, "application/json")
+							So(w.Body.Bytes(), ShouldResemble, js)
+						})
+					})
 				})
 			})
 		})
