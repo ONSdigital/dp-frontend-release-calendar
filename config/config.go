@@ -10,13 +10,14 @@ import (
 )
 
 type Config struct {
-	APIRouterURL                string        `envconfig:"API_ROUTER_URL"`
-	BindAddr                    string        `envconfig:"BIND_ADDR"`
-	Debug                       bool          `envconfig:"DEBUG"`
-	DefaultLimit                int           `envconfig:"DEFAULT_LIMIT"`
-	DefaultMaximumLimit         int           `envconfig:"DEFAULT_MAXIMUM_LIMIT"`
-	DefaultMaximumSearchResults int           `envconfig:"DEFAULT_MAXIMUM_SEARCH_RESULTS"`
-	DefaultSort                 string        `envconfig:"DEFAULT_SORT"`
+	APIRouterURL                string `envconfig:"API_ROUTER_URL"`
+	BindAddr                    string `envconfig:"BIND_ADDR"`
+	Debug                       bool   `envconfig:"DEBUG"`
+	DefaultLimit                int    `envconfig:"DEFAULT_LIMIT"`
+	DefaultMaximumLimit         int    `envconfig:"DEFAULT_MAXIMUM_LIMIT"`
+	DefaultMaximumSearchResults int    `envconfig:"DEFAULT_MAXIMUM_SEARCH_RESULTS"`
+	DefaultSort                 string `envconfig:"DEFAULT_SORT"`
+	Deprecation                 Deprecation
 	FeedbackAPIURL              string        `envconfig:"FEEDBACK_API_URL"`
 	GracefulShutdownTimeout     time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckCriticalTimeout  time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
@@ -26,6 +27,14 @@ type Config struct {
 	RoutingPrefix               string        `envconfig:"ROUTING_PREFIX"`
 	SiteDomain                  string        `envconfig:"SITE_DOMAIN"`
 	SupportedLanguages          []string      `envconfig:"SUPPORTED_LANGUAGES"`
+}
+
+type Deprecation struct {
+	EndpointDeprecation bool   `envconfig:"ENDPOINT_DEPRECATION"`
+	SunsetDate          string `envconfig:"SUNSET_DATE"`
+	SunsetLink          string `envconfig:"SUNSET_LINK"`
+	DeprecationDate     string `envconfig:"DEPRECATION_DATE"`
+	DeprecationMessage  string `envconfig:"DEPRECATION_MESSAGE"`
 }
 
 var cfg *Config
@@ -64,14 +73,21 @@ func get() (*Config, error) {
 		DefaultMaximumLimit:         100,
 		DefaultMaximumSearchResults: 1000,
 		DefaultSort:                 queryparams.RelDateDesc.String(),
-		FeedbackAPIURL:              "http://localhost:23200/v1/feedback",
-		GracefulShutdownTimeout:     5 * time.Second,
-		HealthCheckCriticalTimeout:  90 * time.Second,
-		HealthCheckInterval:         30 * time.Second,
-		IsPublishing:                false,
-		RoutingPrefix:               "",
-		SiteDomain:                  "localhost",
-		SupportedLanguages:          []string{"en", "cy"},
+		Deprecation: Deprecation{
+			EndpointDeprecation: false,
+			SunsetDate:          "", // should be of format "Wed, 11 Nov 2020 23:59:59 GMT"
+			SunsetLink:          "",
+			DeprecationDate:     "", // should be of format "Wed, 11 Nov 2020 23:59:59 GMT"
+			DeprecationMessage:  "",
+		},
+		FeedbackAPIURL:             "http://localhost:23200/v1/feedback",
+		GracefulShutdownTimeout:    5 * time.Second,
+		HealthCheckCriticalTimeout: 90 * time.Second,
+		HealthCheckInterval:        30 * time.Second,
+		IsPublishing:               false,
+		RoutingPrefix:              "",
+		SiteDomain:                 "localhost",
+		SupportedLanguages:         []string{"en", "cy"},
 	}
 
 	return cfg, envconfig.Process("", cfg)
