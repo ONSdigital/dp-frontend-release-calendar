@@ -87,39 +87,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 
 func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		deprecationConfig := cfg.Deprecation
-
-		if deprecationConfig.EndpointDeprecation {
-			now := time.Now().UTC()
-
-			parsedSunsetDate, err := time.Parse(time.RFC1123, deprecationConfig.SunsetDate)
-			if err != nil {
-				setStatusCode(r, w, err)
-				return
-			}
-
-			if parsedSunsetDate.Before(now) {
-				w.Header().Set("content-type", "application/json")
-
-				if deprecationConfig.SunsetDate != "" {
-					w.Header().Set("sunset-date", deprecationConfig.SunsetDate)
-				}
-
-				if deprecationConfig.SunsetDate != "" {
-					w.Header().Set("sunset-link", deprecationConfig.SunsetLink)
-				}
-
-				if deprecationConfig.DeprecationDate != "" {
-					w.Header().Set("deprecation-date", deprecationConfig.DeprecationDate)
-				}
-
-				w.WriteHeader(http.StatusNotFound)
-
-				if _, err = w.Write([]byte(deprecationConfig.DeprecationMessage)); err != nil {
-					return
-				}
-			}
-
+		if deprecated := HandleEndpointDeprecation(w, r, cfg.Deprecation); deprecated {
 			return
 		}
 

@@ -30,11 +30,11 @@ type Config struct {
 }
 
 type Deprecation struct {
-	EndpointDeprecation bool   `envconfig:"ENDPOINT_DEPRECATION"`
-	SunsetDate          string `envconfig:"SUNSET_DATE"`
-	SunsetLink          string `envconfig:"SUNSET_LINK"`
-	DeprecationDate     string `envconfig:"DEPRECATION_DATE"`
-	DeprecationMessage  string `envconfig:"DEPRECATION_MESSAGE"`
+	DeprecateEndpoint  bool   `envconfig:"DEPRECATE_ENDPOINT"`
+	Deprecation        string `envconfig:"DEPRECATION"`
+	DeprecationMessage string `envconfig:"DEPRECATION_MESSAGE"`
+	Link               string `envconfig:"LINK"`
+	Sunset             string `envconfig:"SUNSET"`
 }
 
 var cfg *Config
@@ -74,11 +74,11 @@ func get() (*Config, error) {
 		DefaultMaximumSearchResults: 1000,
 		DefaultSort:                 queryparams.RelDateDesc.String(),
 		Deprecation: Deprecation{
-			EndpointDeprecation: false,
-			SunsetDate:          "", // should be of format "Wed, 11 Nov 2020 23:59:59 GMT"
-			SunsetLink:          "",
-			DeprecationDate:     "", // should be of format "Wed, 11 Nov 2020 23:59:59 GMT"
-			DeprecationMessage:  "",
+			DeprecateEndpoint:  false,
+			Deprecation:        "", // should be of format "2025-08-29T10:00:00Z"
+			DeprecationMessage: "",
+			Link:               "",
+			Sunset:             "", // should be of format "2025-08-29"
 		},
 		FeedbackAPIURL:             "http://localhost:23200/v1/feedback",
 		GracefulShutdownTimeout:    5 * time.Second,
