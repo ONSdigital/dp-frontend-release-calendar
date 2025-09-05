@@ -48,6 +48,8 @@ Run `make help` to see full list of make targets.
 | SITE_DOMAIN                    | localhost                   |                                                                                                                    |
 | SUPPORTED_LANGUAGES            | []string{"en", "cy"}        | Supported languages                                                                                                |
 
+### Deprecation Configuration
+
 The following environment variables are for deprecating an endpoint in this service i.e. `/releases/data`.
 
 | Environment variable           | Default                     | Description                                                                                                        |
@@ -58,13 +60,26 @@ The following environment variables are for deprecating an endpoint in this serv
 | LINK                           | ""                          | A url to further information of the deprecation of the service or endpoints                                        |
 | SUNSET                         | ""                          | The date when this service will cease to return data on a deprecated endpoint and instead return a 404 status code with a message                   |
 
-For example:
+To deprecate an endpoint all values should be set on the environmental variables as follows;
 
-To deprecate an endpoint varaibles should be set as follows;
+```json
+[
+  {
+    "DEPRECATE_ENDPOINT": true,
+    "DEPRECATION": "2025-08-29",
+    "DEPRECATION_MESSAGE": "This endpoint is now deprecated.",
+    "LINK": "https://www.ons.gov.uk",
+    "SUNSET": "2025-08-29"
+  }
+]
+```
 
-```md
+All dates are parsed according to either RFC3339 ("2006-01-02T15:04:05Z07:00"), DateOnly ("2006-01-02") or DateTime ("2006-01-02 15:04:05") as defined in [Go's `time` package](https://pkg.go.dev/time#pkg-constants).
+
+Run with endpoint deprecation on
+
+```make
 make debug DEPRECATE_ENDPOINT=true SUNSET="2025-08-29" LINK="https://www.ons.gov.uk" DEPRECATION="2025-08-29T10:00:00Z" DEPRECATION_MESSAGE="The release data endpoint is now deprecated"
-
 ```
 
 ### Contributing

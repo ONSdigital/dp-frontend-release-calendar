@@ -75,10 +75,10 @@ func get() (*Config, error) {
 		DefaultSort:                 queryparams.RelDateDesc.String(),
 		Deprecation: Deprecation{
 			DeprecateEndpoint:  false,
-			Deprecation:        "", // should be of format "2025-08-29T10:00:00Z"
+			Deprecation:        "", // could be of format "2025-08-29T10:00:00Z, 2025-08-29 15:04:05 and 2025-08-29"
 			DeprecationMessage: "",
 			Link:               "",
-			Sunset:             "", // should be of format "2025-08-29"
+			Sunset:             "", // could be of format "2025-08-29T10:00:00Z, 2025-08-29 15:04:05 and 2025-08-29"
 		},
 		FeedbackAPIURL:             "http://localhost:23200/v1/feedback",
 		GracefulShutdownTimeout:    5 * time.Second,
