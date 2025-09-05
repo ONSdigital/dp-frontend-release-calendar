@@ -10,10 +10,10 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
-// HandleEndpointDeprecation take a deprecation config and checks if an endpoint deprecation
+// IsEndpointDeprecated takes a deprecation config and checks if an endpoint deprecation
 // flag is on. If on and deprecation date has passed; it sets the headers and returns a 404
 // with a message. It returns false if the deprecation date has not passed or there is an error.
-func HandleEndpointDeprecation(w http.ResponseWriter, r *http.Request, deprecationConfig config.Deprecation) bool {
+func IsEndpointDeprecated(w http.ResponseWriter, r *http.Request, deprecationConfig config.Deprecation) bool {
 	ctx := r.Context()
 
 	if deprecationConfig.DeprecateEndpoint {

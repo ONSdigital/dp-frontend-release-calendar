@@ -87,7 +87,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 
 func ReleaseData(cfg config.Config, api ReleaseCalendarAPI) http.HandlerFunc {
 	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
-		if deprecated := HandleEndpointDeprecation(w, r, cfg.Deprecation); deprecated {
+		if deprecated := IsEndpointDeprecated(w, r, cfg.Deprecation); deprecated {
 			return
 		}
 
