@@ -46,7 +46,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^the downstream service is (healthy|warning|failing)$`, c.theDownstreamServiceStatus)
 	ctx.Step(`^the release calendar is running$`, c.theReleaseCalendarIsRunning)
 	ctx.Step(`^there is a Search API that gives a successful response and returns ([1-9]\d*|0) results`, c.thereIsASearchAPIThatGivesASuccessfulResponseAndReturnsResults)
-	ctx.Step(`^there is a Release Calendar API that gives a successful response for "([^"]*)$"`, c.thereIsAReleaseAPIThatGivesASuccessfulResponseFor)
+	ctx.Step(`^there is a Release Calendar API that gives a successful response for "([^"]*)"$`, c.thereIsAReleaseAPIThatGivesASuccessfulResponseFor)
 	ctx.Step(`^there is a Release Calendar API that gives a successful response for "([^"]*)" with a migration link`, c.thereIsAReleaseAPIThatGivesASuccessfulResponseForWithMigrationLink)
 }
 
