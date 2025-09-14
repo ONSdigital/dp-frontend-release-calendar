@@ -74,11 +74,6 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 		}
 
 		generatedETag := response.GenerateETag(b, true)
-		requestedETag := r.Header.Get("If-None-Match")
-		if requestedETag == generatedETag {
-			w.WriteHeader(http.StatusNotModified)
-			return
-		}
 		response.SetETag(w, generatedETag)
 
 		rc.BuildPage(w, m, "release")

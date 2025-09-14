@@ -186,23 +186,6 @@ func TestUnitHandlers(t *testing.T) {
 						So(location, ShouldEqual, redirect)
 					})
 				})
-
-				Convey("When the requested content has not changed", func() {
-					mockZebedeeClient.EXPECT().GetHomepageContent(ctx, "", "", lang, "/")
-					mockAPIClient.EXPECT().GetLegacyRelease(ctx, "", "", lang, r.URI).Return(&r, nil)
-					mockRenderClient.EXPECT().NewBasePageModel()
-
-					Convey("And the request has a matching If-None-Match header", func() {
-						eTag := `W/"b2fa00b05cccd263d7c9d00997d752ec17efdf1f"`
-						req.Header.Set("If-None-Match", eTag)
-
-						Convey("Then it returns 304", func() {
-							router.ServeHTTP(w, req)
-
-							So(w.Code, ShouldEqual, http.StatusNotModified)
-						})
-					})
-				})
 			})
 
 			Convey("test '/releases/{release-title}/data' endpoint", func() {
