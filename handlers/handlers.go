@@ -74,6 +74,9 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 		}
 
 		generatedETag := response.GenerateETag(b, true)
+
+		log.Info(ctx, "generated etag", log.Data{"etag": generatedETag})
+
 		response.SetETag(w, generatedETag)
 
 		rc.BuildPage(w, m, "release")
