@@ -20,8 +20,8 @@ LDFLAGS = -ldflags "-X $(SERVICE_PATH).BuildTime=$(BUILD_TIME) -X $(SERVICE_PATH
 all: delimiter-AUDIT audit delimiter-LINTERS lint delimiter-UNIT-TESTS test delimiter-COMPONENT-TESTS test-component delimiter-FINISH ## Runs multiple targets, audit, lint, test and test-component
 
 .PHONY: audit
-audit: ## Runs checks for security vulnerabilities on dependencies (including transient ones)
-	go list -json -m all | nancy sleuth
+audit: generate-prod ## Runs checks for security vulnerabilities on dependencies (including transient ones)
+	dis-vulncheck --build-tags=production
 
 .PHONY: build
 build: generate-prod ## Builds binary of application code and stores in bin directory as dp-frontend-release-calendar
