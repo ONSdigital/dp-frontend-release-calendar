@@ -13,8 +13,7 @@ A Release page is constructed from the data drawn from the Release API.
 
 Run `make help` to see full list of make targets.
 
-* Run the Digital Publishing Design System (`dp-design-system`) in a
-  separate shell with `./run.sh`
+* Run [`dis-design-system-go`](https://github.com/ONSdigital/dis-design-system-go) in a separate shell to generate static assets (css/js)
 * Run `make debug`
 * In your browser, visit one of:
   * `http://localhost:27700/releasecalendar`
