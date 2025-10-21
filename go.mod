@@ -1,15 +1,15 @@
 module github.com/ONSdigital/dp-frontend-release-calendar
 
-go 1.24
+go 1.25
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.267.0
+	github.com/ONSdigital/dis-design-system-go v1.0.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.269.0
 	github.com/ONSdigital/dp-component-test v0.23.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
-	github.com/ONSdigital/dp-net/v3 v3.3.0
-	github.com/ONSdigital/dp-renderer/v2 v2.25.0
+	github.com/ONSdigital/dp-net/v3 v3.5.0
 	github.com/ONSdigital/dp-search-api v1.50.0
-	github.com/ONSdigital/log.go/v2 v2.4.5
+	github.com/ONSdigital/log.go/v2 v2.5.0
 	github.com/cucumber/godog v0.15.0
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/feeds v1.2.0
@@ -18,14 +18,13 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/maxcnunes/httpfake v1.2.4
 	github.com/smartystreets/goconvey v1.8.1
-	github.com/stretchr/testify v1.10.0
-
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
 	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/ONSdigital/dis-redis v0.3.0 // indirect
-	github.com/ONSdigital/dp-cookies v0.6.0 // indirect
+	github.com/ONSdigital/dp-cookies v0.7.0 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.8.1 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 // indirect
 	github.com/alicebob/miniredis/v2 v2.34.0 // indirect
@@ -76,15 +75,15 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect
-	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
-	go.opentelemetry.io/otel v1.37.0 // indirect
-	go.opentelemetry.io/otel/metric v1.37.0 // indirect
-	go.opentelemetry.io/otel/trace v1.37.0 // indirect
-	golang.org/x/crypto v0.40.0 // indirect
-	golang.org/x/net v0.42.0 // indirect
-	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
+	go.opentelemetry.io/otel v1.38.0 // indirect
+	go.opentelemetry.io/otel/metric v1.38.0 // indirect
+	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	golang.org/x/crypto v0.43.0 // indirect
+	golang.org/x/net v0.46.0 // indirect
+	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
