@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ONSdigital/dis-design-system-go/helper"
+	coreModel "github.com/ONSdigital/dis-design-system-go/model"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
@@ -12,8 +14,6 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/model"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
-	"github.com/ONSdigital/dp-renderer/v2/helper"
-	coreModel "github.com/ONSdigital/dp-renderer/v2/model"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

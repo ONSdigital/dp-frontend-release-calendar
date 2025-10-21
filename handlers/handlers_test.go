@@ -13,13 +13,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ONSdigital/dis-design-system-go/helper"
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
-	"github.com/ONSdigital/dp-renderer/v2/helper"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"

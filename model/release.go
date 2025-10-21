@@ -1,7 +1,7 @@
 package model
 
 import (
-	coreModel "github.com/ONSdigital/dp-renderer/v2/model"
+	coreModel "github.com/ONSdigital/dis-design-system-go/model"
 )
 
 type Link struct {

@@ -10,10 +10,10 @@ import (
 	url "net/url"
 	reflect "reflect"
 
+	model "github.com/ONSdigital/dis-design-system-go/model"
 	releasecalendar "github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	zebedee "github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
-	model "github.com/ONSdigital/dp-renderer/v2/model"
 	gomock "github.com/golang/mock/gomock"
 )
 

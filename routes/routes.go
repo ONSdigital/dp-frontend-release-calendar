@@ -10,7 +10,7 @@ import (
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/handlers"
 
-	render "github.com/ONSdigital/dp-renderer/v2"
+	render "github.com/ONSdigital/dis-design-system-go"
 
 	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"

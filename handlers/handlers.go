@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
+	core "github.com/ONSdigital/dis-design-system-go/model"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mapper"
 	"github.com/ONSdigital/dp-frontend-release-calendar/queryparams"
-	core "github.com/ONSdigital/dp-renderer/v2/model"
 	"github.com/gorilla/feeds"
 
 	dphandlers "github.com/ONSdigital/dp-net/v3/handlers"
