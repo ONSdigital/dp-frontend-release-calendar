@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	core "github.com/ONSdigital/dis-design-system-go/model"
+	core "github.com/ONSdigital/dis-design-system-go/v2/model"
 	"github.com/ONSdigital/log.go/v2/log"
 )
 

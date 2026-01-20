@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ONSdigital/dis-design-system-go/helper"
+	"github.com/ONSdigital/dis-design-system-go/v2/helper"
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"

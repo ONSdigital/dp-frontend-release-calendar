@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ONSdigital/dis-design-system-go/helper"
-	coreModel "github.com/ONSdigital/dis-design-system-go/model"
+	"github.com/ONSdigital/dis-design-system-go/v2/helper"
+	coreModel "github.com/ONSdigital/dis-design-system-go/v2/model"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
