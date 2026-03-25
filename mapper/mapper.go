@@ -9,6 +9,8 @@ import (
 	"github.com/ONSdigital/dis-design-system-go/v2/helper"
 	coreModel "github.com/ONSdigital/dis-design-system-go/v2/model"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+
+	//nolint:staticcheck // using deprecated until migration to dp-search-api SDK
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
@@ -318,7 +320,7 @@ func mapBreadcrumbTrail(description model.ReleaseDescription, language, path str
 }
 
 func mapLink(links []releasecalendar.Link) []model.Link {
-	res := []model.Link{}
+	res := make([]model.Link, 0, 1)
 	for _, l := range links {
 		res = append(res, model.Link{
 			Title:   l.Title,
@@ -771,7 +773,7 @@ func mapSortOptions(params queryparams.ValidatedParams) []model.SortOption {
 }
 
 func convertMarkdownToHTML(markdowns []string) []string {
-	markdownHTML := []string{}
+	markdownHTML := make([]string, 0, 1)
 	for _, markdown := range markdowns {
 		html := blackfriday.Run([]byte(markdown))
 		markdownHTML = append(markdownHTML, string(html))

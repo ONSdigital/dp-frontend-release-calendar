@@ -7,6 +7,8 @@ import (
 	render "github.com/ONSdigital/dis-design-system-go/v2"
 	"github.com/ONSdigital/dis-design-system-go/v2/middleware/renderror"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+
+	//nolint:staticcheck // using deprecated until migration to dp-search-api SDK
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 	"github.com/ONSdigital/dp-frontend-release-calendar/assets"

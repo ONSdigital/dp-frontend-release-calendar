@@ -9,6 +9,8 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+
+	//nolint:staticcheck // using deprecated until migration to dp-search-api SDK
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	componentTest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
@@ -131,6 +133,7 @@ func (f *FakeAPI) getMockAPIHTTPClient() *dphttp.ClienterMock {
 		SetPathsWithNoRetriesFunc: func(_ []string) {},
 		GetPathsWithNoRetriesFunc: func() []string { return []string{} },
 		DoFunc: func(_ context.Context, req *http.Request) (*http.Response, error) {
+			//nolint:gosec // using fake HTTP server so is safe
 			return f.fakeHTTP.Server.Client().Do(req)
 		},
 	}

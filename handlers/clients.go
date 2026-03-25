@@ -7,6 +7,8 @@ import (
 
 	"github.com/ONSdigital/dis-design-system-go/v2/model"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+
+	//nolint:staticcheck // using deprecated until migration to dp-search-api SDK
 	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-api-clients-go/v2/zebedee"
 )

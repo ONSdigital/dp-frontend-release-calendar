@@ -16,6 +16,8 @@ import (
 	"github.com/ONSdigital/dis-design-system-go/v2/helper"
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	"github.com/ONSdigital/dp-api-clients-go/v2/releasecalendar"
+
+	//nolint:staticcheck // using deprecated until migration to dp-search-api SDK
 	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-frontend-release-calendar/config"
 	"github.com/ONSdigital/dp-frontend-release-calendar/mocks"
