@@ -1,15 +1,15 @@
 module github.com/ONSdigital/dp-frontend-release-calendar
 
-go 1.24.0
+go 1.26
 
 require (
-	github.com/ONSdigital/dis-design-system-go/v2 v2.0.0
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.273.0
+	github.com/ONSdigital/dis-design-system-go/v2 v2.1.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.277.0
 	github.com/ONSdigital/dp-component-test v0.23.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
-	github.com/ONSdigital/dp-net/v3 v3.9.0
+	github.com/ONSdigital/dp-net/v3 v3.10.0
 	github.com/ONSdigital/dp-search-api v1.50.0
-	github.com/ONSdigital/log.go/v2 v2.5.1
+	github.com/ONSdigital/log.go/v2 v2.5.2
 	github.com/cucumber/godog v0.15.0
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/feeds v1.2.0
@@ -19,6 +19,15 @@ require (
 	github.com/maxcnunes/httpfake v1.2.4
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.11.1
+)
+
+require (
+	github.com/ONSdigital/dp-authorisation v0.5.0 // indirect
+	github.com/ONSdigital/dp-elasticsearch/v3 v3.0.2 // indirect
+	github.com/ONSdigital/dp-search-scrubber-api v0.6.0 // indirect
+	github.com/elastic/go-elasticsearch/v7 v7.10.0 // indirect
+	github.com/tdewolff/minify v2.3.6+incompatible // indirect
+	github.com/tdewolff/parse v2.3.4+incompatible // indirect
 )
 
 require (
@@ -37,7 +46,7 @@ require (
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/fatih/color v1.18.0 // indirect
+	github.com/fatih/color v1.19.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-json-experiment/json v0.0.0-20250223041408-d3c622f1b874 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -76,14 +85,14 @@ require (
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.39.0 // indirect
-	go.opentelemetry.io/otel/metric v1.39.0 // indirect
-	go.opentelemetry.io/otel/trace v1.39.0 // indirect
-	golang.org/x/crypto v0.47.0 // indirect
-	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	go.opentelemetry.io/otel v1.42.0 // indirect
+	go.opentelemetry.io/otel/metric v1.42.0 // indirect
+	go.opentelemetry.io/otel/trace v1.42.0 // indirect
+	golang.org/x/crypto v0.49.0 // indirect
+	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
