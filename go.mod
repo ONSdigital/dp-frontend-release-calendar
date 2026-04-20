@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/ONSdigital/dis-design-system-go/v2 v2.1.0
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.277.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.273.0
 	github.com/ONSdigital/dp-component-test v0.23.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
 	github.com/ONSdigital/dp-net/v3 v3.10.0
@@ -19,15 +19,6 @@ require (
 	github.com/maxcnunes/httpfake v1.2.4
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.11.1
-)
-
-require (
-	github.com/ONSdigital/dp-authorisation v0.5.0 // indirect
-	github.com/ONSdigital/dp-elasticsearch/v3 v3.0.2 // indirect
-	github.com/ONSdigital/dp-search-scrubber-api v0.6.0 // indirect
-	github.com/elastic/go-elasticsearch/v7 v7.10.0 // indirect
-	github.com/tdewolff/minify v2.3.6+incompatible // indirect
-	github.com/tdewolff/parse v2.3.4+incompatible // indirect
 )
 
 require (
