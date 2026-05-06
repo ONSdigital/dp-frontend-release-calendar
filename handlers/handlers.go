@@ -451,7 +451,7 @@ func createRSSFeed(ctx context.Context, w http.ResponseWriter, r *http.Request, 
 	feed.Items = []*feeds.Item{}
 	for i := range releases.Releases {
 		release := &releases.Releases[i]
-		date, parseErr := time.Parse("2006-01-02T15:04:05.000Z", release.Description.ReleaseDate)
+		date, parseErr := time.Parse(time.RFC3339, release.Description.ReleaseDate)
 		if parseErr != nil {
 			return fmt.Errorf("error parsing time: %s", parseErr)
 		}
