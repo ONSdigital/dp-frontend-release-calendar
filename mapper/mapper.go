@@ -19,6 +19,8 @@ import (
 	"github.com/russross/blackfriday/v2"
 )
 
+const patternMismatch = "pattern-mismatch"
+
 func createTableOfContents(
 	description model.ReleaseDescription,
 	relatedDocuments []model.Link,
@@ -438,7 +440,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			},
 			DayDataAttributes: []coreModel.DataAttribute{
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "day"),
 					},
@@ -446,7 +448,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			},
 			MonthDataAttributes: []coreModel.DataAttribute{
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "month"),
 					},
@@ -460,7 +462,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 					},
 				},
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "after", "year"),
 					},
@@ -519,7 +521,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			},
 			DayDataAttributes: []coreModel.DataAttribute{
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "day"),
 					},
@@ -527,7 +529,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 			},
 			MonthDataAttributes: []coreModel.DataAttribute{
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "month"),
 					},
@@ -541,7 +543,7 @@ func CreateReleaseCalendar(basePage coreModel.Page, params queryparams.Validated
 					},
 				},
 				{
-					Key: "pattern-mismatch",
+					Key: patternMismatch,
 					Value: coreModel.Localisation{
 						Text: helper.Localise("ValidationPatternMismatch", lang, 1, "before", "year"),
 					},

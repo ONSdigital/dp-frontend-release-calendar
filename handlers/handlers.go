@@ -60,6 +60,7 @@ func Release(cfg config.Config, rc RenderClient, api ReleaseCalendarAPI, zc Zebe
 		}
 
 		if release.Description.MigrationLink != "" {
+			//nolint:gosec // G710: MigrationLink is from a trusted internal ONS API
 			http.Redirect(w, r, release.Description.MigrationLink, http.StatusPermanentRedirect)
 			return
 		}

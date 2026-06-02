@@ -34,6 +34,8 @@ const (
 	Type        = "release-type"
 	Census      = "census"
 	Highlight   = "highlight"
+	logKeyParam = "param"
+	logKeyValue = "value"
 )
 
 type intValidator func(valueAsString string) (int, error)
@@ -84,7 +86,7 @@ func validateAndGetIntParam(ctx context.Context, params url.Values, paramName st
 	if asString != "" {
 		limit, err = validator(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": paramName, "value": asString})
+			log.Warn(ctx, err.Error(), log.Data{logKeyParam: paramName, logKeyValue: asString})
 			return 0, fmt.Errorf("invalid %s parameter: %s", paramName, err.Error())
 		}
 	}
@@ -105,7 +107,7 @@ func GetSortOrder(ctx context.Context, params url.Values, defaultValue string) (
 	if asString != "" {
 		sort, err = parseSort(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": SortName, "value": asString})
+			log.Warn(ctx, err.Error(), log.Data{logKeyParam: SortName, logKeyValue: asString})
 			return defaultSort, fmt.Errorf("invalid %s parameter: %s", SortName, err.Error())
 		}
 	}
@@ -141,7 +143,7 @@ func GetReleaseType(ctx context.Context, params url.Values, defaultValue Release
 	if asString != "" {
 		relType, err = parseReleaseType(asString)
 		if err != nil {
-			log.Warn(ctx, err.Error(), log.Data{"param": Type, "value": asString})
+			log.Warn(ctx, err.Error(), log.Data{logKeyParam: Type, logKeyValue: asString})
 			return defaultValue, fmt.Errorf("invalid %s parameter: %s", Type, err.Error())
 		}
 	}
@@ -159,7 +161,7 @@ func GetBoolean(ctx context.Context, params url.Values, name string, defaultValu
 
 	upcoming, err := strconv.ParseBool(asString)
 	if err != nil {
-		log.Warn(ctx, "invalid boolean value", log.Data{"param": name, "value": asString})
+		log.Warn(ctx, "invalid boolean value", log.Data{logKeyParam: name, logKeyValue: asString})
 		return defaultValue, fmt.Errorf("invalid boolean value for parameter %q", name)
 	}
 
