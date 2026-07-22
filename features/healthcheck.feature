@@ -4,6 +4,7 @@ Feature: Healthcheck endpoint should inform the health of service
         Given the release calendar is running
         And the downstream service is healthy
         And I wait 2 seconds for the healthcheck to be available
+        And the health checks should have completed within 3 seconds
         When I GET "/health"
         Then the HTTP status code should be "200"
         And the response header "Content-Type" should be "application/json; charset=utf-8"
@@ -32,6 +33,7 @@ Feature: Healthcheck endpoint should inform the health of service
         Given the release calendar is running  
         And the downstream service is warning
         And I wait 2 seconds for the healthcheck to be available
+        And the health checks should have completed within 3 seconds
         When I GET "/health"
         Then the HTTP status code should be "429"
         And the response header "Content-Type" should be "application/json; charset=utf-8"
@@ -60,6 +62,7 @@ Feature: Healthcheck endpoint should inform the health of service
         Given the release calendar is running
         And the downstream service is failing
         And I wait 2 seconds for the healthcheck to be available
+        And the health checks should have completed within 3 seconds
         When I GET "/health"
         Then the HTTP status code should be "429"
         And the response header "Content-Type" should be "application/json; charset=utf-8"
@@ -90,6 +93,7 @@ Feature: Healthcheck endpoint should inform the health of service
         And I wait 2 seconds for the healthcheck to be available
         When I GET "/health"
         And I wait 4 seconds to pass the critical timeout
+        And the health checks should have completed within 7 seconds
         And I GET "/health"
         Then the HTTP status code should be "500"
         And the response header "Content-Type" should be "application/json; charset=utf-8"
