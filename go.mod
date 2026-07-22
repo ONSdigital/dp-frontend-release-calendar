@@ -3,7 +3,7 @@ module github.com/ONSdigital/dp-frontend-release-calendar
 go 1.26
 
 require (
-	github.com/ONSdigital/dis-design-system-go/v2 v2.1.0
+	github.com/ONSdigital/dis-design-system-go/v2 v2.4.1
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.273.0
 	github.com/ONSdigital/dp-component-test v0.23.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
@@ -81,9 +81,9 @@ require (
 	go.opentelemetry.io/otel/trace v1.42.0 // indirect
 	golang.org/x/crypto v0.49.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
-	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/text v0.39.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
