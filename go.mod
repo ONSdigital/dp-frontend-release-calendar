@@ -3,7 +3,7 @@ module github.com/ONSdigital/dp-frontend-release-calendar
 go 1.26
 
 require (
-	github.com/ONSdigital/dis-design-system-go/v2 v2.4.1
+	github.com/ONSdigital/dis-design-system-go/v2 v2.4.3
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.273.0
 	github.com/ONSdigital/dp-component-test v1.4.7
 	github.com/ONSdigital/dp-healthcheck v1.6.4
