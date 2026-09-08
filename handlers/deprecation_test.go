@@ -74,7 +74,8 @@ func TestEndpointDeprecation(t *testing.T) {
 				})
 
 				Convey("And the sunset date has not passed", func() {
-					mockConfig.Deprecation.Sunset = "2026-08-29"
+					futureDate := time.Now().AddDate(1, 0, 0).Format("2006-01-02")
+					mockConfig.Deprecation.Sunset = futureDate
 
 					Convey("And the release is retrieved successfully", func() {
 						req := httptest.NewRequest("GET", fmt.Sprintf("http://localhost:27700%s/%s/data", root, titleSegment), http.NoBody)
